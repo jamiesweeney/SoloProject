@@ -1,6 +1,7 @@
 # performs a simple device inquiry, followed by a remote name request of each
 # discovered device
 
+import traceback
 import os
 import sys
 import struct
@@ -146,6 +147,7 @@ def collect_devices():
     try:
         mode = read_inquiry_mode(bt_device)
     except Exception as e:
+        traceback.print_exc()
         errorMsg("Error reading inquiry mode:", e)
     
     #Write inquiry mode
@@ -174,3 +176,4 @@ def errorMsg(text, error):
     sys.exit(1)
 
 
+print (collect_devices())
