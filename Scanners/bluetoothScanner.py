@@ -7,6 +7,7 @@ import sys
 import struct
 import bluetooth._bluetooth as bluez
 import bluetooth
+import datetime
 
 def printpacket(packet):
     for c in packet:
@@ -70,7 +71,7 @@ def write_inquiry_mode(sock, mode):
     if status != 0: return -1
     return 0
 
-def device_inquiry(sock):
+def device_inquiry(sock, time):
     
     # save current filter
     old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
@@ -84,7 +85,7 @@ def device_inquiry(sock):
     bluez.hci_filter_set_ptype(filtr, bluez.HCI_EVENT_PKT)
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, filtr )
 
-    duration = 10
+    duration = time
     max_responses = 255
     cmd_pkt = struct.pack("BBBBB", 0x33, 0x8b, 0x9e, duration, max_responses)
     bluez.hci_send_cmd(sock, bluez.OGF_LINK_CTL, bluez.OCF_INQUIRY, cmd_pkt)
@@ -99,21 +100,22 @@ def device_inquiry(sock):
 
         #Enquiry result with rssi
         if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
-            pkt = pkt[3:]
+	    pkt = pkt[3:]
             nrsp = bluetooth.get_byte(pkt[0])
             for i in range(nrsp):
                 addr = bluez.ba2str( pkt[1+6*i:1+6*i+6] )
                 rssi = bluetooth.byte_to_signed_int(
                         bluetooth.get_byte(pkt[1+13*nrsp+i]))
                 results[addr] = rssi
+                print_device(addr, rssi)
 
         #Enquiry result without rssi
         elif event == bluez.EVT_INQUIRY_RESULT:
-            pkt = pkt[3:]
+	    pkt = pkt[3:]
             nrsp = bluetooth.get_byte(pkt[0])
             for i in range(nrsp):
                 addr = bluez.ba2str( pkt[1+6*i:1+6*i+6] )
-                results[addr] = None
+                print_device(addr, None)
 
         #On finish
         elif event == bluez.EVT_INQUIRY_COMPLETE:
@@ -131,6 +133,24 @@ def device_inquiry(sock):
 
     return results
 
+def print_device(addr, rssi):
+
+    time = datetime.datetime.now()
+    time_string = time.strftime("%Y-%m-%d %H:%M:%S")
+
+    name = bluetooth.lookup_name(addr, 100)
+
+    log_string = time_string + " " + addr
+
+
+    if (rssi):
+        log_string = log_string +  " " + (str)(rssi)
+
+    if (name):
+	log_string + log_string + " " + name
+ 
+    print (log_string)
+    log_file.flush()
 
 def collect_devices():
 
@@ -159,21 +179,22 @@ def collect_devices():
         except Exception as e:
             errorMsg("Error writing inquiry mode:", e)
 
+    #Start scanning
+    print ("[INFO] Bluetooth Scan Started")
+    log_file.flush()
+
     #Perform equiry
-    devices = device_inquiry(bt_device)
-
-    #Get device names
-    for device_key in devices:
-        devices[device_key] = [bluetooth.lookup_name(device_key, 100) ,devices[device_key]]
-
-    #Return
-    return (devices)
-
+    while (True):
+    	device_inquiry(bt_device,20)
 
 def errorMsg(text, error):
     print (text)
     print (error)
     sys.exit(1)
 
+log_file = open("bluetoothScanner.log", "a")
+sys.stdout = log_file
+collect_devices()
+print ("[INFO] Bluetooth Scan Finished")
+log_file.close()
 
-print (collect_devices())
