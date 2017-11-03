@@ -8,12 +8,8 @@ import struct
 import bluetooth._bluetooth as bluez
 import bluetooth
 import datetime
-
-def printpacket(packet):
-    for c in packet:
-        sys.stdout.write("%02x " % struct.unpack("B",c)[0])
-    print() 
-
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from myconstants import BT_LOG
 
 def read_inquiry_mode(sock):
     """returns the current mode, or -1 on failure"""
@@ -90,8 +86,6 @@ def device_inquiry(sock, time):
     cmd_pkt = struct.pack("BBBBB", 0x33, 0x8b, 0x9e, duration, max_responses)
     bluez.hci_send_cmd(sock, bluez.OGF_LINK_CTL, bluez.OCF_INQUIRY, cmd_pkt)
 
-    results = {}
-
     #While still scanning
     done = False
     while not done:
@@ -106,7 +100,6 @@ def device_inquiry(sock, time):
                 addr = bluez.ba2str( pkt[1+6*i:1+6*i+6] )
                 rssi = bluetooth.byte_to_signed_int(
                         bluetooth.get_byte(pkt[1+13*nrsp+i]))
-                results[addr] = rssi
                 print_device(addr, rssi)
 
         #Enquiry result without rssi
@@ -125,13 +118,12 @@ def device_inquiry(sock, time):
         elif event == bluez.EVT_CMD_STATUS:
             status, ncmd, opcode = struct.unpack("BBH", pkt[3:7])
             if status != 0:
-                printpacket(pkt[3:7])
                 done = True
                 
     # restore old filter
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
 
-    return results
+    return
 
 def print_device(addr, rssi):
 
@@ -147,10 +139,11 @@ def print_device(addr, rssi):
         log_string = log_string +  " " + (str)(rssi)
 
     if (name):
-	log_string + log_string + " " + name
- 
-    print (log_string)
-    log_file.flush()
+	log_string + log_string + " " + name 
+   
+    log_file = open(BT_LOG, "a+")
+    log_file.write((log_string + '\n'))
+    log_file.close()
 
 def collect_devices():
 
@@ -180,8 +173,9 @@ def collect_devices():
             errorMsg("Error writing inquiry mode:", e)
 
     #Start scanning
-    print ("[INFO] Bluetooth Scan Started")
-    log_file.flush()
+    log_file = open(BT_LOG, "a+")
+    log_file.write(("[INFO] Bluetooth Scan Started" + '\n'))
+    log_file.close()
 
     #Perform equiry
     while (True):
@@ -192,9 +186,9 @@ def errorMsg(text, error):
     print (error)
     sys.exit(1)
 
-log_file = open("bluetoothScanner.log", "a")
-sys.stdout = log_file
+
 collect_devices()
-print ("[INFO] Bluetooth Scan Finished")
+log_file = open("BT_LOG", "a+")
+log_file.write("[INFO] Bluetooth Scan Finished")
 log_file.close()
 
