@@ -5,18 +5,31 @@ import subprocess
 import time
 import sys
 import datetime
+import os
 import myconstants
+import argparse
 
 #Default values
 period = 20
 
+#Make sure sudo
+if os.getuid() != 0:
+    print("Failed - You need to run as sudo")
+    sys.exit(-1)    
+
 #Collect arguments
-if (len(sys.argv) > 1):
-    period = float(sys.argv[1])
+parser = argparse.ArgumentParser()
+parser.add_argument('--period', type=int, help='period to update report')
+args = parser.parse_args()
+
+if ('period' in args):
+    period = period
+
+
 
 #Run setup script
 print ("Running setup")
-cmd = "Scanners/setupBluetooth.sh"
+cmd = myconstants.BT_SETUP_SCRIPT
 setup = subprocess.Popen(cmd , shell=True)
 setup.wait()
 
@@ -28,10 +41,10 @@ print ("-Setup success")
 
 #Start scanners
 print ("Starting bluetooth scanner")
-bluetooth_scanner = subprocess.Popen("python Scanners/bluetoothScanner.py", shell=True)
+bluetooth_scanner = subprocess.Popen(("python " + myconstants.BT_SCANNER), shell=True)
 
 print ("Starting bluetooth LE scanner")
-bluetoothle_scanner = subprocess.Popen("python Scanners/bluetoothLEScanner.py", shell=True)
+bluetoothle_scanner = subprocess.Popen("python " + myconstants.BTLE_SCANNER, shell=True)
 
 #Start loop
 while (True):
