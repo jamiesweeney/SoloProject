@@ -8,8 +8,10 @@ import struct
 import bluetooth._bluetooth as bluez
 import bluetooth
 import datetime
+import hashlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from myconstants import BT_LOG
+import argparse
 
 def read_inquiry_mode(sock):
     """returns the current mode, or -1 on failure"""
@@ -83,6 +85,9 @@ def device_inquiry(sock, time):
 
     duration = time
     max_responses = 255
+    print (time)
+    print (duration)
+    print (period)
     cmd_pkt = struct.pack("BBBBB", 0x33, 0x8b, 0x9e, duration, max_responses)
     bluez.hci_send_cmd(sock, bluez.OGF_LINK_CTL, bluez.OCF_INQUIRY, cmd_pkt)
 
@@ -98,6 +103,8 @@ def device_inquiry(sock, time):
             nrsp = bluetooth.get_byte(pkt[0])
             for i in range(nrsp):
                 addr = bluez.ba2str( pkt[1+6*i:1+6*i+6] )
+                if (hash_addrs):
+                	addr =  hashlib.sha224(addr.replace(":", "")).hexdigest()
                 rssi = bluetooth.byte_to_signed_int(
                         bluetooth.get_byte(pkt[1+13*nrsp+i]))
                 print_device(addr, rssi)
@@ -108,6 +115,8 @@ def device_inquiry(sock, time):
             nrsp = bluetooth.get_byte(pkt[0])
             for i in range(nrsp):
                 addr = bluez.ba2str( pkt[1+6*i:1+6*i+6] )
+                if (hash_addrs):
+		    addr = hashlib.sha224(addr.replace(":","")).hexdigest()
                 print_device(addr, None)
 
         #On finish
@@ -129,8 +138,9 @@ def print_device(addr, rssi):
 
     time = datetime.datetime.now()
     time_string = time.strftime("%Y-%m-%d %H:%M:%S")
-
-    name = bluetooth.lookup_name(addr, 100)
+    name = None
+    if not (hash_addrs):
+        name = bluetooth.lookup_name(addr, 100)
 
     log_string = time_string + " " + addr
 
@@ -179,13 +189,30 @@ def collect_devices():
 
     #Perform equiry
     while (True):
-    	device_inquiry(bt_device,20)
+    	device_inquiry(bt_device,period)
 
 def errorMsg(text, error):
     print (text)
     print (error)
     sys.exit(1)
 
+
+#Default values
+hash_addrs = False
+
+#Collect arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--period', type=int, help='period to update report')
+parser.add_argument('--hash', type=bool, help='option to hash addresses of devices')
+args = parser.parse_args()
+
+if ('period' in args):
+    period = args.period
+else:
+    period = 20
+
+if ('hash' in args):
+    hash_addrs = args.hash
 
 collect_devices()
 log_file = open("BT_LOG", "a+")
