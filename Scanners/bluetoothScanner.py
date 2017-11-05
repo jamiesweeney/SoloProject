@@ -25,11 +25,11 @@ from myconstants import BT_LOG
 
 #Prints a log entry to file
 def printToLog(printString):
-
     #Get current time
     time_string = str(int(time.time()))
-    with open(BT_LOG, "a+") as f:
-        f.write(time_string + " " + printString + '\n')
+    if (log_addrs):
+    	with open(BT_LOG, "a+") as f:
+            f.write(time_string + " " + printString + '\n')
 
 
 #Sets up the bluetooth adapter to scan
@@ -211,6 +211,7 @@ def errorMsg(text, error):
 dev_id = 0          #ID of the bluetooth device to use
 period = 20         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
 hash_addrs = False  #Hash MAC addresses or not
+log_addrs = False   #Log MAC addresses of not
 
 #Constants
 log_start_str = "[INFO] Bluetooth Scan Started"
@@ -219,19 +220,28 @@ log_end_str = "[INFO] Bluetooth Scan Finished"
 #Collect arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report')
-parser.add_argument('--hash', type=bool, help='option to hash addresses of devices')
+parser.add_argument('--hash', type=str, help='option to hash addresses of devices')
+parser.add_argument('--log', type=str, help='option to log addresses of devices')
 args = parser.parse_args()
+args = vars(args)
 
-if (args.period != None):
-    period = args.period
+if (args['period'] != None):
+    period = args['period']
 
-if (args.hash != None):
-    hash_addrs = args.hash
+if (args['hash'] == 'True'):
+    hash_addrs = True
+
+if (args['log'] == 'True'):
+    log_addrs = True
 
 #Attempt setup
 bt_device = setup_bluetooth()
 if not (bt_device):
     sys.exit(1)
+
+print (period)
+print (hash_addrs)
+print (log_addrs)
 
 #Start scanning
 printToLog(log_start_str)

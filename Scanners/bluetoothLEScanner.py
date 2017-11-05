@@ -25,8 +25,9 @@ def printToLog(printString):
 
     #Get current time
     time_string = str(int(time.time()))
-    with open(BTLE_LOG, "a+") as f:
-        f.write(time_string + " " + printString + '\n')
+    if (log_addrs):
+        with open(BTLE_LOG, "a+") as f:
+            f.write(time_string + " " + printString + '\n')
 
 
 #Class which defines how each discovery is handles
@@ -35,6 +36,7 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, device, isNewDev, isNewData):
+        print ("jjjj")
         if (hash_addrs):
             device.addr = hashlib.sha224(device.addr.replace(":", "")).hexdigest()
         log_string = device.addr + " " + (str)(device.rssi)
@@ -46,6 +48,7 @@ class ScanDelegate(DefaultDelegate):
 #Default values for scanning variables
 period = 120         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
 hash_addrs = False  #Hash MAC addresses or not
+log_addrs = False   #Log MAX addresses or not
 
 #Constants
 log_start_str = "[INFO] Bluetooth LE Scan Started"
@@ -54,15 +57,19 @@ log_end_str = "[INFO] Bluetooth LE Scan Finished"
 #Collect arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report')
-parser.add_argument('--hash', type=bool, help='option to hash addresses of devices')
+parser.add_argument('--hash', type=str, help='option to hash addresses of devices')
+parser.add_argument('--log', type=str, help='option to log addresses of devices')
 args = parser.parse_args()
+args = vars(args)
 
-if (args.period != None):
-    period = args.period
+if (args['period'] != None):
+    period = args['period']
 
-if (args.hash != None):
-    hash_addrs = args.hash
+if (args['hash'] == 'True'):
+    hash_addrs = True
 
+if (args['log'] == 'True'):
+    log_addrs = True
 
 #Scan
 printToLog(log_start_str)
