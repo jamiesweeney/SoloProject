@@ -11,6 +11,7 @@
 import argparse
 from bluepy.btle import Scanner, DefaultDelegate
 import os
+import timeit
 import sys
 import datetime
 import time
@@ -36,7 +37,6 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, device, isNewDev, isNewData):
-        print ("jjjj")
         if (hash_addrs):
             device.addr = hashlib.sha224(device.addr.replace(":", "")).hexdigest()
         log_string = device.addr + " " + (str)(device.rssi)
@@ -59,6 +59,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report')
 parser.add_argument('--hash', type=str, help='option to hash addresses of devices')
 parser.add_argument('--log', type=str, help='option to log addresses of devices')
+parser.add_argument('--time', type=int, help='option to timeout scanning after certain amount of seconds')
 args = parser.parse_args()
 args = vars(args)
 
@@ -71,9 +72,15 @@ if (args['hash'] == 'True'):
 if (args['log'] == 'True'):
     log_addrs = True
 
+if (args['time'] != None):
+    timeout = args['time']
+
 #Scan
 printToLog(log_start_str)
 scanner = Scanner().withDelegate(ScanDelegate())
-scanner.scan(period)
+
+start = timeit.default_timer()
+while (((timeit.default_timer() - start) < timeout) or timeout == 0):
+    scanner.scan(period)
 printToLog(log_end_str)
 

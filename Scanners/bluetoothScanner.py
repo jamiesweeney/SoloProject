@@ -17,6 +17,7 @@ import bluetooth._bluetooth as bluez
 import bluetooth
 import datetime
 import time
+import timeit
 import hashlib
 #Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -212,6 +213,7 @@ dev_id = 0          #ID of the bluetooth device to use
 period = 20         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
 hash_addrs = False  #Hash MAC addresses or not
 log_addrs = False   #Log MAC addresses of not
+timeout = 60	    #Time to stop scanning after
 
 #Constants
 log_start_str = "[INFO] Bluetooth Scan Started"
@@ -222,6 +224,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report')
 parser.add_argument('--hash', type=str, help='option to hash addresses of devices')
 parser.add_argument('--log', type=str, help='option to log addresses of devices')
+parser.add_argument('--time', type=int, help='timeout option for scanning in seconds')
 args = parser.parse_args()
 args = vars(args)
 
@@ -234,17 +237,19 @@ if (args['hash'] == 'True'):
 if (args['log'] == 'True'):
     log_addrs = True
 
+if (args['time'] != None):
+    timeout = args['time']
+
 #Attempt setup
 bt_device = setup_bluetooth()
 if not (bt_device):
     sys.exit(1)
 
-print (period)
-print (hash_addrs)
-print (log_addrs)
-
 #Start scanning
 printToLog(log_start_str)
-device_inquiry(bt_device)
+
+start = timeit.default_timer()
+while ((((timeit.default_timer()) - start) < timeout) or timeout == 0):
+    device_inquiry(bt_device)
 printToLog(log_end_str)
 
