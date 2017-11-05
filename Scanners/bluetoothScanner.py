@@ -1,7 +1,7 @@
 # Jamie Sweeney '17/18 Solo Project
 # bluetoothScannery.py
 # This file contains modules used for scanning for nearby bluetooth devices
-#   
+#
 # Args:
 #   --period int    Time to scan for each time
 #   --hash bool     Hash MAC addresses or not
@@ -16,6 +16,7 @@ import struct
 import bluetooth._bluetooth as bluez
 import bluetooth
 import datetime
+import time
 import hashlib
 #Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,11 +27,10 @@ from myconstants import BT_LOG
 def printToLog(printString):
 
     #Get current time
-    time = datetime.datetime.now()
-    time_string = time.strftime("%Y-%m-%d %H:%M:%S")
+    time_string = str(int(time.time()))
     with open(BT_LOG, "a+") as f:
         f.write(time_string + " " + printString + '\n')
-       
+
 
 #Sets up the bluetooth adapter to scan
 def setup_bluetooth():
@@ -62,7 +62,7 @@ def setup_bluetooth():
 
 #Performs the device inquiry process
 def device_inquiry(sock):
-    
+
     # save current filter
     old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
 
@@ -205,10 +205,10 @@ def errorMsg(text, error):
     print (error)
     sys.exit(1)
 
-#   -- MAIN -- 
+#   -- MAIN --
 
 #Default values for scanning variables
-dev_id = 0	    #ID of the bluetooth device to use
+dev_id = 0          #ID of the bluetooth device to use
 period = 20         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
 hash_addrs = False  #Hash MAC addresses or not
 
@@ -237,3 +237,4 @@ if not (bt_device):
 printToLog(log_start_str)
 device_inquiry(bt_device)
 printToLog(log_end_str)
+
