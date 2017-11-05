@@ -1,7 +1,7 @@
 # Jamie Sweeney '17/18 Solo Project
 # bluetoothLEScannery.py
 # This file contains modules used for scanning for nearby bluetooth low-energy devices
-#   
+#
 # Args:
 #   --period int    Time to scan for each time
 #   --hash bool     Hash MAC addresses or not
@@ -13,6 +13,7 @@ from bluepy.btle import Scanner, DefaultDelegate
 import os
 import sys
 import datetime
+import time
 import hashlib
 #Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,13 +24,12 @@ from myconstants import BTLE_LOG
 def printToLog(printString):
 
     #Get current time
-    time = datetime.datetime.now()
-    time_string = time.strftime("%Y-%m-%d %H:%M:%S")
+    time_string = str(int(time.time()))
     with open(BTLE_LOG, "a+") as f:
         f.write(time_string + " " + printString + '\n')
 
 
-#Class which defines how each discovery is handles 
+#Class which defines how each discovery is handles
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
@@ -41,7 +41,7 @@ class ScanDelegate(DefaultDelegate):
         printToLog(log_string)
 
 
-#   -- MAIN -- 
+#   -- MAIN --
 
 #Default values for scanning variables
 period = 120         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
@@ -69,3 +69,4 @@ printToLog(log_start_str)
 scanner = Scanner().withDelegate(ScanDelegate())
 scanner.scan(period)
 printToLog(log_end_str)
+
