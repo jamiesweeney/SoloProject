@@ -11,6 +11,7 @@
 import argparse
 from bluepy.btle import Scanner, DefaultDelegate
 import os
+import timeit
 import sys
 import datetime
 import time
@@ -25,8 +26,9 @@ def printToLog(printString):
 
     #Get current time
     time_string = str(int(time.time()))
-    with open(BTLE_LOG, "a+") as f:
-        f.write(time_string + " " + printString + '\n')
+    if (log_addrs):
+        with open(BTLE_LOG, "a+") as f:
+            f.write(time_string + " " + printString + '\n')
 
 
 #Class which defines how each discovery is handles
@@ -46,6 +48,7 @@ class ScanDelegate(DefaultDelegate):
 #Default values for scanning variables
 period = 120         #Time to scan for each time (this number represents x where x*1.25 = time in seconds)
 hash_addrs = False  #Hash MAC addresses or not
+log_addrs = False   #Log MAX addresses or not
 
 #Constants
 log_start_str = "[INFO] Bluetooth LE Scan Started"
@@ -54,19 +57,30 @@ log_end_str = "[INFO] Bluetooth LE Scan Finished"
 #Collect arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report')
-parser.add_argument('--hash', type=bool, help='option to hash addresses of devices')
+parser.add_argument('--hash', type=str, help='option to hash addresses of devices')
+parser.add_argument('--log', type=str, help='option to log addresses of devices')
+parser.add_argument('--time', type=int, help='option to timeout scanning after certain amount of seconds')
 args = parser.parse_args()
+args = vars(args)
 
-if (args.period != None):
-    period = args.period
+if (args['period'] != None):
+    period = args['period']
 
-if (args.hash != None):
-    hash_addrs = args.hash
+if (args['hash'] == 'True'):
+    hash_addrs = True
 
+if (args['log'] == 'True'):
+    log_addrs = True
+
+if (args['time'] != None):
+    timeout = args['time']
 
 #Scan
 printToLog(log_start_str)
 scanner = Scanner().withDelegate(ScanDelegate())
-scanner.scan(period)
+
+start = timeit.default_timer()
+while (((timeit.default_timer() - start) < timeout) or timeout == 0):
+    scanner.scan(period)
 printToLog(log_end_str)
 
