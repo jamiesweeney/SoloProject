@@ -24,7 +24,7 @@ import os
 import myconstants
 import argparse
 import threading
-from scanners import bluetoothScanner, bluetootLEScanner
+from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
 
 #-- Class for thread safe dictionary for holding devices --#
@@ -36,7 +36,6 @@ class DeviceDictionary:
 
     #-- Add to dictionary, smoothing rssi value if necessary --#
     def add(self, time_arrived, address, rssi):
-
         # Get mutex
         self.mutex.acquire()
         current_time = time.time()
@@ -83,12 +82,12 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
     device_queue = Queue()
 
     # Set scanner thread vars
-    if (scanner == BT_SCANNER):
+    if (scanner == myconstants.BT_SCANNER):
         name = 'blutooth_scanner'
         target = bluetoothScanner.start
-    elif (scanner == BTLE_SCANNER):
+    elif (scanner == myconstants.BTLE_SCANNER):
         name = 'blutoothle_scanner'
-        target = bluetoothLEScanner.start
+        target = bluetoothLEScanner.start_ble
     else:
         name = target = None
 
@@ -99,11 +98,10 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
     scanner_thread.start()
 
     # While scanner thread is running and queue isn't empty, load devices into dictionary
-    while(scanner_thread.isAlive() and not device_queue.isEmpty()):
+    while(scanner_thread.isAlive()):
         time.sleep(0.5)
-
-        while not (device_queue.isEmpty()):
-            current_device = device_queue.pop()
+        while not (device_queue.empty()):
+            current_device = device_queue.get()
             devices.add(current_device[0], current_device[1], current_device[2])
 
     return
@@ -114,13 +112,13 @@ if os.getuid() != 0:
     sys.exit(-1)
 
 #-- Collect arguments --#
+parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report', default = 30)
 parser.add_argument('--c_period', type=int, help='period to scan for', default = 30)
 parser.add_argument('--hash', type=bool, help='option to hash addresses of devices', default = False)
 parser.add_argument('--log', type=bool, help='option to log addresses of devices', default = True)
 parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 180)
 parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 180)
-parser = argparse.ArgumentParser()
 args = parser.parse_args()
 
 #-- Setup bluetooth --#
@@ -139,23 +137,24 @@ print ("-Setup success")
 device_dict = DeviceDictionary(args.decay_time)
 
 #-- Initialise bluetooth monitor thread --#
-bluetooth_monitor = threading.Thread( name='bluetooth_monitor',
-                                      target=bluetooth_monitor,
-                                      args=( myconstants.BT_SCANNER, device_dict, args.c_period,
-                                             args.hash, args.log, args.timeout))
-bluetooth_monitor.start()
+bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
+      				       target=bluetooth_monitor,
+                                       args=( myconstants.BT_SCANNER, device_dict, args.c_period,
+                                              args.hash, args.log, args.timeout))
+#bluetooth_monitor_thread.start()
 
 #-- Initialise bluetooth LE monitor thread --#
-bluetoothle_monitor = threading.Thread( name='bluetoothle_monitor',
+bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
                                       target=bluetooth_monitor,
                                       args=( myconstants.BTLE_SCANNER, device_dict, args.c_period,
                                              args.hash, args.log, args.timeout))
-bluetoothle_monitor.start()
+bluetoothle_monitor_thread.start()
 
 #-- Start reporting --#
-while (bluetooth_monitor.isAlive() or bluetoothle_monitor.isAlive()):
+while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
+    print (". . . . .")
+    print("Time                 Address                     RSSI")
     temp_devices = device_dict.read()
     for device in temp_devices:
-        print("Time                 Address                     RSSI")
         print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))

@@ -24,6 +24,7 @@ import hashlib
 # Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from myconstants import BT_LOG
+dev_id=0
 
 #-- Initiates scanning process with specified arguments --#
 def start(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, device_queue=None):
@@ -35,8 +36,8 @@ def start(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, device_
             device_queue    - device list to add new devices to
     '''
     dev_id = 0
-    log_start_str = "[INFO] Bluetooth Scan Started"
-    log_end_str = "[INFO] Bluetooth Scan Finished"
+    log_start_str = "[INFO] Bluetooth Scan Started\n"
+    log_end_str = "[INFO] Bluetooth Scan Finished\n"
 
     # Attempt setup
     bt_device = setup_bluetooth()
@@ -47,7 +48,7 @@ def start(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, device_
     start_time = timeit.default_timer()
     if (log_out):
         print_to_log(log_start_str)
-    while ((((timeit.default_timer()) - start) < timeout) or timeout == 0):
+    while ((((timeit.default_timer()) - start_time) < timeout) or timeout == 0):
         device_inquiry(bt_device, cycle_period, hash_addrs, log_out, device_queue)
     if (log_out):
         print_to_log(log_end_str)
@@ -203,15 +204,15 @@ def device_inquiry(sock, cycle_period, hash_addrs, log_out, device_queue):
 def register_device(addr, rssi, log_out, device_queue):
 
     #Get current time
-    time = str(int(time.time()))
+    current_time = str(int(time.time()))
 
     #Add to device queue
     if (device_queue != None):
-        device_queue.put(time, addr, rssi)
+        device_queue.put([current_time, addr, rssi])
 
     #Log string
     if (log_out):
-        log_str = str(time) + " " + str(addr) + " " + str(rssi) + '\n'
+        log_str = str(current_time) + " " + str(addr) + " " + str(rssi) + '\n'
         print_to_log(log_str)
 
 #-- Prints to the specified log file --#
@@ -226,4 +227,4 @@ def errorMsg(text, error):
     sys.exit(1)
 
 # If called as a script, just call start function
-start()
+#start()
