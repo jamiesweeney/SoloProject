@@ -161,9 +161,12 @@ def device_inquiry(sock, cycle_period, hash_addrs, log_out, device_queue):
     #While still scanning
     done = False
     while not done:
-        pkt = sock.recv(255)
+        sock.settimeout(5)
+        try:
+            pkt = sock.recv(255)
+        except:
+            break
         ptype, event, plen = struct.unpack("BBB", pkt[:3])
-
         #Enquiry result with rssi
         if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
             pkt = pkt[3:]

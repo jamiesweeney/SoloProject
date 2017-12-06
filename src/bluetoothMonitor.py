@@ -24,8 +24,16 @@ import os
 import myconstants
 import argparse
 import threading
+import csv
+import google.cloud.storage
 from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
+
+#-- Google Storage Variables --#
+room = '000'
+bucket_name = 'bluetoothscanner'
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
+
 
 #-- Class for thread safe dictionary for holding devices --#
 class DeviceDictionary:
@@ -36,6 +44,8 @@ class DeviceDictionary:
 
     #-- Add to dictionary, smoothing rssi value if necessary --#
     def add(self, time_arrived, address, rssi):
+        address = address.lower() 
+       
         # Get mutex
         self.mutex.acquire()
         current_time = time.time()
@@ -43,7 +53,7 @@ class DeviceDictionary:
         # If alreading present in list
         if (address in self.devices):
             # And has not decayed - smooth rssi value for entry
-            if (self.devices[address][0] >= (current_time - self.decay_time)):
+            if (int(self.devices[address][0]) >= (current_time - self.decay_time)):
                 new_rssi = (float(self.devices[address][1]) + float(rssi))/float(2)
                 self.devices[address] = [time_arrived, new_rssi]
             # And has decayed - just add new entry
@@ -67,8 +77,8 @@ class DeviceDictionary:
 
         #Iterate over all devices, and filter out any that have decayed
         for device in self.devices.keys():
-            if (self.devices[device][0] < min_time):
-                del self.device[device]
+            if (int(self.devices[device][0]) < int(min_time)):
+                del self.devices[device]
 
         #Release and return
         return_dict = self.devices
@@ -106,6 +116,30 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
 
     return
 
+
+def send_to_storage(data):
+    log_time = str(time.time()).split(".")[0]
+    log_f = "logs/" +log_time + ".csv" 
+    with open(log_f, 'wb') as myfile:
+        wr = csv.writer(myfile)
+        for device in temp_devices:
+            row = [temp_devices[device][0], str(device), str(temp_devices[device][1])]
+            wr.writerow(row)
+
+    blob = bucket.blob(room + "/" + log_time)
+    blob.upload_from_filename(log_f)
+
+
+
+            
+    return
+
+
+    
+
+
+
+
 #-- Make sure sudo --#
 if os.getuid() != 0:
     print("Failed - You need to run as sudo")
@@ -113,12 +147,14 @@ if os.getuid() != 0:
 
 #-- Collect arguments --#
 parser = argparse.ArgumentParser()
-parser.add_argument('--period', type=int, help='period to update report', default = 30)
-parser.add_argument('--c_period', type=int, help='period to scan for', default = 30)
+parser.add_argument('--period', type=int, help='period to update report', default = 60)
+parser.add_argument('--c_period', type=int, help='period to scan for', default = 10)
 parser.add_argument('--hash', type=bool, help='option to hash addresses of devices', default = False)
-parser.add_argument('--log', type=bool, help='option to log addresses of devices', default = True)
-parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 180)
-parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 180)
+parser.add_argument('--log', type=bool, help='option to log data', default = True)
+parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 600)
+parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 90)
+parser.add_argument('--push', type=bool, help='option to push data to google storage', default = True)
+
 args = parser.parse_args()
 
 #-- Setup bluetooth --#
@@ -141,7 +177,6 @@ bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
       				       target=bluetooth_monitor,
                                        args=( myconstants.BT_SCANNER, device_dict, args.c_period,
                                               args.hash, args.log, args.timeout))
-#bluetooth_monitor_thread.start()
 
 #-- Initialise bluetooth LE monitor thread --#
 bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
@@ -149,12 +184,26 @@ bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
                                       args=( myconstants.BTLE_SCANNER, device_dict, args.c_period,
                                              args.hash, args.log, args.timeout))
 bluetoothle_monitor_thread.start()
+bluetooth_monitor_thread.start()
+
+#-- Set up google storage bucket --#
+storage_client = google.cloud.storage.Client()
+bucket = storage_client.get_bucket(bucket_name)
+
 
 #-- Start reporting --#
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
+    
     print (". . . . .")
-    print("Time                 Address                     RSSI")
+    print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
+    print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
+    print("Time                 Address        RSSI")
+    
     temp_devices = device_dict.read()
     for device in temp_devices:
         print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
+
+    if (args.push):
+        send_to_storage(temp_devices)
+
