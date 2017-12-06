@@ -24,8 +24,16 @@ import os
 import myconstants
 import argparse
 import threading
+import csv
+import google.cloud.storage
 from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
+
+#-- Google Storage Variables --#
+room = '000'
+bucket_name = 'bluetoothscanner'
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
+
 
 #-- Class for thread safe dictionary for holding devices --#
 class DeviceDictionary:
@@ -108,6 +116,30 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
 
     return
 
+
+def send_to_storage(data):
+    log_time = str(time.time()).split(".")[0]
+    log_f = "logs/" +log_time + ".csv" 
+    with open(log_f, 'wb') as myfile:
+        wr = csv.writer(myfile)
+        for device in temp_devices:
+            row = [temp_devices[device][0], str(device), str(temp_devices[device][1])]
+            wr.writerow(row)
+
+    blob = bucket.blob(room + "/" + log_time)
+    blob.upload_from_filename(log_f)
+
+
+
+            
+    return
+
+
+    
+
+
+
+
 #-- Make sure sudo --#
 if os.getuid() != 0:
     print("Failed - You need to run as sudo")
@@ -115,12 +147,12 @@ if os.getuid() != 0:
 
 #-- Collect arguments --#
 parser = argparse.ArgumentParser()
-parser.add_argument('--period', type=int, help='period to update report', default = 20)
-parser.add_argument('--c_period', type=int, help='period to scan for', default = 20)
+parser.add_argument('--period', type=int, help='period to update report', default = 60)
+parser.add_argument('--c_period', type=int, help='period to scan for', default = 10)
 parser.add_argument('--hash', type=bool, help='option to hash addresses of devices', default = False)
 parser.add_argument('--log', type=bool, help='option to log addresses of devices', default = True)
-parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 60)
-parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 60)
+parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 600)
+parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 90)
 args = parser.parse_args()
 
 #-- Setup bluetooth --#
@@ -152,8 +184,13 @@ bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
 bluetoothle_monitor_thread.start()
 bluetooth_monitor_thread.start()
 
+#-- Set up google storage bucket --#
+storage_client = google.cloud.storage.Client()
+bucket = storage_client.get_bucket(bucket_name)
+
+
 #-- Start reporting --#
-while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or True):
+while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
     
     print (". . . . .")
@@ -164,3 +201,6 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
     temp_devices = device_dict.read()
     for device in temp_devices:
         print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
+
+    send_to_storage(temp_devices)
+

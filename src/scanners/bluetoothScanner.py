@@ -161,7 +161,7 @@ def device_inquiry(sock, cycle_period, hash_addrs, log_out, device_queue):
     #While still scanning
     done = False
     while not done:
-        sock.settimeout(cycle_period)
+        sock.settimeout(5)
         try:
             pkt = sock.recv(255)
         except:
