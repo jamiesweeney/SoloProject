@@ -36,6 +36,8 @@ class DeviceDictionary:
 
     #-- Add to dictionary, smoothing rssi value if necessary --#
     def add(self, time_arrived, address, rssi):
+        address = address.lower() 
+       
         # Get mutex
         self.mutex.acquire()
         current_time = time.time()
@@ -113,12 +115,12 @@ if os.getuid() != 0:
 
 #-- Collect arguments --#
 parser = argparse.ArgumentParser()
-parser.add_argument('--period', type=int, help='period to update report', default = 30)
-parser.add_argument('--c_period', type=int, help='period to scan for', default = 30)
+parser.add_argument('--period', type=int, help='period to update report', default = 20)
+parser.add_argument('--c_period', type=int, help='period to scan for', default = 20)
 parser.add_argument('--hash', type=bool, help='option to hash addresses of devices', default = False)
 parser.add_argument('--log', type=bool, help='option to log addresses of devices', default = True)
-parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 180)
-parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 180)
+parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 60)
+parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 60)
 args = parser.parse_args()
 
 #-- Setup bluetooth --#
@@ -141,7 +143,6 @@ bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
       				       target=bluetooth_monitor,
                                        args=( myconstants.BT_SCANNER, device_dict, args.c_period,
                                               args.hash, args.log, args.timeout))
-#bluetooth_monitor_thread.start()
 
 #-- Initialise bluetooth LE monitor thread --#
 bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
@@ -149,12 +150,17 @@ bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
                                       args=( myconstants.BTLE_SCANNER, device_dict, args.c_period,
                                              args.hash, args.log, args.timeout))
 bluetoothle_monitor_thread.start()
+bluetooth_monitor_thread.start()
 
 #-- Start reporting --#
-while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
+while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or True):
     time.sleep(args.period)
+    
     print (". . . . .")
-    print("Time                 Address                     RSSI")
+    print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
+    print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
+    print("Time                 Address        RSSI")
+    
     temp_devices = device_dict.read()
     for device in temp_devices:
         print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
