@@ -150,9 +150,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=int, help='period to update report', default = 60)
 parser.add_argument('--c_period', type=int, help='period to scan for', default = 10)
 parser.add_argument('--hash', type=bool, help='option to hash addresses of devices', default = False)
-parser.add_argument('--log', type=bool, help='option to log addresses of devices', default = True)
+parser.add_argument('--log', type=bool, help='option to log data', default = True)
 parser.add_argument('--timeout', type=int, help='timeout option for scanning in seconds', default = 600)
 parser.add_argument('--decay_time', type=int, help='time at which devices decay from dictionary', default = 90)
+parser.add_argument('--push', type=bool, help='option to push data to google storage', default = True)
+
 args = parser.parse_args()
 
 #-- Setup bluetooth --#
@@ -202,5 +204,6 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
     for device in temp_devices:
         print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
 
-    send_to_storage(temp_devices)
+    if (args.push):
+        send_to_storage(temp_devices)
 
