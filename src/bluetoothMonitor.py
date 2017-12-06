@@ -45,7 +45,7 @@ class DeviceDictionary:
         # If alreading present in list
         if (address in self.devices):
             # And has not decayed - smooth rssi value for entry
-            if (self.devices[address][0] >= (current_time - self.decay_time)):
+            if (int(self.devices[address][0]) >= (current_time - self.decay_time)):
                 new_rssi = (float(self.devices[address][1]) + float(rssi))/float(2)
                 self.devices[address] = [time_arrived, new_rssi]
             # And has decayed - just add new entry
@@ -69,8 +69,8 @@ class DeviceDictionary:
 
         #Iterate over all devices, and filter out any that have decayed
         for device in self.devices.keys():
-            if (self.devices[device][0] < min_time):
-                del self.device[device]
+            if (int(self.devices[device][0]) < int(min_time)):
+                del self.devices[device]
 
         #Release and return
         return_dict = self.devices
