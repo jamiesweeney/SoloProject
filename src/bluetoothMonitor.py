@@ -29,6 +29,7 @@ import google.cloud.storage
 from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
 
+
 #-- Google Storage Variables --#
 room = '0'
 bucket_name = 'bluetoothscanner'
@@ -119,7 +120,7 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
 
 def send_to_storage(data):
     log_time = str(time.time()).split(".")[0]
-    log_f = "logs/" +log_time + ".csv" 
+    log_f = sys.path[0] + "/logs/" +log_time + ".csv" 
     with open(log_f, 'wb') as myfile:
         wr = csv.writer(myfile)
         for device in temp_devices:
