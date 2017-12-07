@@ -30,7 +30,7 @@ from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
 
 #-- Google Storage Variables --#
-room = '000'
+room = '0'
 bucket_name = 'bluetoothscanner'
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
 
@@ -194,6 +194,7 @@ bucket = storage_client.get_bucket(bucket_name)
 #-- Start reporting --#
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
+    room = str(int(room) + 1)
     
     print (". . . . .")
     print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
