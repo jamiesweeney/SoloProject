@@ -29,8 +29,9 @@ import google.cloud.storage
 from scanners import bluetoothScanner, bluetoothLEScanner
 from multiprocessing import Process, Queue
 
+
 #-- Google Storage Variables --#
-room = '000'
+room = '0'
 bucket_name = 'bluetoothscanner'
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
 
@@ -119,7 +120,7 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
 
 def send_to_storage(data):
     log_time = str(time.time()).split(".")[0]
-    log_f = "logs/" +log_time + ".csv" 
+    log_f = sys.path[0] + "/logs/" +log_time + ".csv" 
     with open(log_f, 'wb') as myfile:
         wr = csv.writer(myfile)
         for device in temp_devices:
@@ -194,7 +195,6 @@ bucket = storage_client.get_bucket(bucket_name)
 #-- Start reporting --#
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
-    
     print (". . . . .")
     print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
     print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
