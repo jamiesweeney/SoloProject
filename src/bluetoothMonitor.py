@@ -195,8 +195,6 @@ bucket = storage_client.get_bucket(bucket_name)
 #-- Start reporting --#
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
     time.sleep(args.period)
-    room = str(int(room) + 1)
-    
     print (". . . . .")
     print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
     print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
