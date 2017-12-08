@@ -21,19 +21,72 @@ import time
 import sys
 import datetime
 import os
-import myconstants
 import argparse
 import threading
 import csv
 import google.cloud.storage
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from scanners import bluetoothScanner, bluetoothLEScanner
+from config import BLUETOOTH_BUCKET, BLUETOOTH_BUCKET_CREDENTIALS, BLUETOOTH_SETUP_SCRIPT, REPORTERS_LOG_DIR, BLUETOOTH_REPORTER_LOG, ROOM_NO
 from multiprocessing import Process, Queue
 
 
-#-- Google Storage Variables --#
-room = '0'
-bucket_name = 'bluetoothscanner'
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
+#-- Starts the bluetooth reporting
+
+def start_bluetooth_report(period, c_period, hash_addrs, log, timeout, decay_time, push):
+
+    #-- Setup bluetooth --#
+    print ("Running setup")
+    cmd = str(BLUETOOTH_SETUP_SCRIPT)
+    setup = subprocess.Popen(cmd, shell=True)
+    setup.wait()
+
+    #-- If failed exit --#
+    if (setup.returncode != 0):
+        print ("Failed - could not setup bluetooth device")
+        return
+    print ("-Setup success")
+
+    #-- Initialise thread safe dictionary --#
+    device_dict = DeviceDictionary(args.decay_time)
+
+    #-- Initialise bluetooth monitor thread --#
+    bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
+                                                target=bluetooth_monitor,
+                                                args=( "BT_SCANNER", device_dict, c_period,
+                                                hash_addrs, log, timeout))
+
+    #-- Initialise bluetooth LE monitor thread --#
+    bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
+                                                target=bluetooth_monitor,
+                                                args=( "BTLE_SCANNER", device_dict, c_period,
+                                                hash_addrs, log, timeout))
+    bluetoothle_monitor_thread.start()
+    bluetooth_monitor_thread.start()
+
+    #-- Set up google storage bucket --#
+    if (push == True):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(BLUETOOTH_BUCKET_CREDENTIALS)
+        storage_client = google.cloud.storage.Client()
+        bucket = storage_client.get_bucket(BLUETOOTH_BUCKET)
+        
+
+
+    #-- Start reporting --#
+    while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
+        time.sleep(args.period)
+        print (". . . . .")
+        print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
+        print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
+        print("Time                 Address        RSSI")
+    
+        temp_devices = device_dict.read()
+        for device in temp_devices:
+            print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
+
+        if (push == True):
+            send_to_storage(temp_devices, log, bucket)
 
 
 #-- Class for thread safe dictionary for holding devices --#
@@ -86,6 +139,7 @@ class DeviceDictionary:
         self.mutex.release()
         return return_dict
 
+
 #-- Worker thread for collecting scanner output and adding to device dictionary --#
 def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeout):
 
@@ -93,10 +147,10 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
     device_queue = Queue()
 
     # Set scanner thread vars
-    if (scanner == myconstants.BT_SCANNER):
+    if (scanner == "BT_SCANNER"):
         name = 'blutooth_scanner'
         target = bluetoothScanner.start
-    elif (scanner == myconstants.BTLE_SCANNER):
+    elif (scanner == "BTLE_SCANNER"):
         name = 'blutoothle_scanner'
         target = bluetoothLEScanner.start_ble
     else:
@@ -118,28 +172,35 @@ def bluetooth_monitor(scanner, devices, cycle_period, hash_addrs, log_out, timeo
     return
 
 
-def send_to_storage(data):
+#-- Sends the report to external storage --#
+def send_to_storage(data, log, bucket):
     log_time = str(time.time()).split(".")[0]
-    log_f = sys.path[0] + "/logs/" +log_time + ".csv" 
+    log_f = REPORTERS_LOG_DIR + "/" + "abc" + ".csv" 
+
+
+    if (log == True):
+        print_to_log("New Report at time: " + log_time + "\n")
+        
     with open(log_f, 'wb') as myfile:
         wr = csv.writer(myfile)
-        for device in temp_devices:
-            row = [temp_devices[device][0], str(device), str(temp_devices[device][1])]
+        for device in data:
+            row = [data[device][0], str(device), str(data[device][1])]
             wr.writerow(row)
 
-    blob = bucket.blob(room + "/" + log_time)
+            if (log == True):
+                print_to_log("    " + str(row) + "\n")
+
+
+    blob = bucket.blob(ROOM_NO + "/" + log_time)
     blob.upload_from_filename(log_f)
-
-
-
+    os.remove(log_f)
             
     return
 
-
-    
-
-
-
+#-- Prints to the specified log file --#
+def print_to_log(log_str):
+    with open(BLUETOOTH_REPORTER_LOG, "a+") as f:
+        f.write(log_str)
 
 #-- Make sure sudo --#
 if os.getuid() != 0:
@@ -158,52 +219,5 @@ parser.add_argument('--push', type=bool, help='option to push data to google sto
 
 args = parser.parse_args()
 
-#-- Setup bluetooth --#
-print ("Running setup")
-cmd = myconstants.BT_SETUP_SCRIPT
-setup = subprocess.Popen(cmd, shell=True)
-setup.wait()
-
-#-- If failed exit --#
-if (setup.returncode != 0):
-    print ("Failed - could not setup bluetooth device")
-    sys.exit(-1)
-print ("-Setup success")
-
-#-- Initialise thread safe dictionary --#
-device_dict = DeviceDictionary(args.decay_time)
-
-#-- Initialise bluetooth monitor thread --#
-bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
-      				       target=bluetooth_monitor,
-                                       args=( myconstants.BT_SCANNER, device_dict, args.c_period,
-                                              args.hash, args.log, args.timeout))
-
-#-- Initialise bluetooth LE monitor thread --#
-bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
-                                      target=bluetooth_monitor,
-                                      args=( myconstants.BTLE_SCANNER, device_dict, args.c_period,
-                                             args.hash, args.log, args.timeout))
-bluetoothle_monitor_thread.start()
-bluetooth_monitor_thread.start()
-
-#-- Set up google storage bucket --#
-storage_client = google.cloud.storage.Client()
-bucket = storage_client.get_bucket(bucket_name)
-
-
-#-- Start reporting --#
-while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
-    time.sleep(args.period)
-    print (". . . . .")
-    print ("BT Monitor OK - " + str(bluetooth_monitor_thread.isAlive()))
-    print ("BTLE Monitor OK - " + str(bluetoothle_monitor_thread.isAlive()))
-    print("Time                 Address        RSSI")
-    
-    temp_devices = device_dict.read()
-    for device in temp_devices:
-        print(temp_devices[device][0] + "    " + str(device) + "     " + str(temp_devices[device][1]))
-
-    if (args.push):
-        send_to_storage(temp_devices)
+start_bluetooth_report(args.period, args.c_period, args.hash, args.log, args.timeout, args.decay_time, args.push)
 

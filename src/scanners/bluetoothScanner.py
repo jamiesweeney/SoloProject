@@ -23,7 +23,7 @@ import timeit
 import hashlib
 # Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from myconstants import BT_LOG
+from config import BLUETOOTH_SCANNER_LOG
 dev_id=0
 
 #-- Initiates scanning process with specified arguments --#
@@ -203,7 +203,7 @@ def device_inquiry(sock, cycle_period, hash_addrs, log_out, device_queue):
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
     return
 
-#-- Registers device with system and logs it--#
+#-- Registers device with system and logs it --#
 def register_device(addr, rssi, log_out, device_queue):
 
     #Get current time
@@ -220,7 +220,7 @@ def register_device(addr, rssi, log_out, device_queue):
 
 #-- Prints to the specified log file --#
 def print_to_log(log_str):
-    with open(BT_LOG, "a+") as f:
+    with open(BLUETOOTH_SCANNER_LOG, "a+") as f:
         f.write(log_str)
 
 #-- Prints error messeges and exits the program --#
@@ -228,6 +228,3 @@ def errorMsg(text, error):
     print (text)
     print (error)
     sys.exit(1)
-
-# If called as a script, just call start function
-#start()
