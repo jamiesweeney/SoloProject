@@ -15,6 +15,9 @@ CAMERA_DIR = os.path.join(SRC_DIR + "/camera")
 # Credentials directory
 CREDS_DIR = os.path.join("/home/pi/.credentials/")
 
+# Darknet object detection directory
+DARKNET_DIR = "/home/pi/darknet-nnpack/"
+
 # Django front-end demo directory
 DEMO_DIR = os.path.join(SRC_DIR + "/display_demo")
 
@@ -38,9 +41,17 @@ SETUP_DIR = os.path.join(SRC_DIR + "/setup")
 
 
 #-------------------------------------------------------------#
-#-- Credential files --#
+#-- Credential Files --#
 BLUETOOTH_BUCKET_CREDENTIALS = os.path.join(CREDS_DIR + "/bluetoothBucket.json")
 
+
+#-------------------------------------------------------------#
+#-- Darknet YOLO Files --#
+DARKNET_DATA_FILE = DARKNET_DIR + "cfg/voc.data"
+DARKNET_CFG_FILE = DARKNET_DIR + "cfg/tiny-yolo-voc.cfg"
+DARKNET_WEIGHTS_FILE = DARKNET_DIR + "tiny-yolo-voc.weights"
+
+DARKNET_IMAGE = DARKNET_DIR + "testing.jpg"
 
 #-------------------------------------------------------------#
 #-- Log Files --#
