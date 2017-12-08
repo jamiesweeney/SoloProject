@@ -2,17 +2,21 @@ import os
 
 #-------------------------------------------------------------#
 #-- Directories --#
+
+# Source code directory
+SRC_DIR = os.path.dirname(os.path.realpath(__file__))
+
 # Base directory
-BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+BASE_DIR = SRC_DIR.rstrip("/src")
 
 # Camera modules directory 
-CAMERA_DIR = os.path.join(BASE_DIR + "/camera")
+CAMERA_DIR = os.path.join(SRC_DIR + "/camera")
 
 # Credentials directory
 CREDS_DIR = os.path.join("/home/pi/.credentials/")
 
 # Django front-end demo directory
-DEMO_DIR = os.path.join(BASE_DIR + "/display_demo")
+DEMO_DIR = os.path.join(SRC_DIR + "/display_demo")
 
 # Log directies
 LOG_DIR = os.path.join(BASE_DIR + "/logs")
@@ -21,16 +25,16 @@ SCANNERS_LOG_DIR = os.path.join(LOG_DIR + "/scanners")
 SENSORS_LOG_DIR = os.path.join(LOG_DIR + "/sensors")
 
 # Reporter directory
-REPORTERS_DIR = os.path.join(BASE_DIR + "/reporters")
+REPORTERS_DIR = os.path.join(SRC_DIR + "/reporters")
 
 # Scanners directory
-SCANNERS_DIR = os.path.join(BASE_DIR + "/scanners")
+SCANNERS_DIR = os.path.join(SRC_DIR + "/scanners")
 
 # Sensors directory
-SENSORS_DIR = os.path.join(BASE_DIR + "/sensors")
+SENSORS_DIR = os.path.join(SRC_DIR + "/sensors")
 
 # Setup directory
-SETUP_DIR = os.path.join(BASE_DIR + "/setup")
+SETUP_DIR = os.path.join(SRC_DIR + "/setup")
 
 
 #-------------------------------------------------------------#
