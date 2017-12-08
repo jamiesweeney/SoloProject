@@ -52,7 +52,7 @@ BLUETOOTH_SCANNER_LOG = os.path.join(SCANNERS_LOG_DIR + "/bluetoothScanner.log")
 BLUETOOTHLE_SCANNER_LOG = os.path.join(SCANNERS_LOG_DIR + "/bluetoothLEScanner.log")
 
 # Sensor logs
-TEMPERATURE_SENSOR_LOG = os.path.join(SCANNERS_LOG_DIR + "/temperatureSensor.log")
+TEMPERATURE_SENSOR_LOG = os.path.join(SENSORS_LOG_DIR + "/temperatureSensor.log")
 
 
 #-------------------------------------------------------------#

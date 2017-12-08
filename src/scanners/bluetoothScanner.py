@@ -215,7 +215,7 @@ def register_device(addr, rssi, log_out, device_queue):
 
     #Log string
     if (log_out):
-        log_str = str(current_time) + " " + str(addr) + " " + str(rssi) + '\n'
+        log_str = str(current_time) + "," + str(addr) + "," + str(rssi) + '\n'
         print_to_log(log_str)
 
 #-- Prints to the specified log file --#

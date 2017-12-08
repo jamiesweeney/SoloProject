@@ -6,6 +6,10 @@
 '''
 
 #-- Imports --#
+import sys
+import os
+import time
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import commands
 from config import TEMPERATURE_SENSOR_LOG
 
@@ -21,7 +25,7 @@ def get_cpu_temperature(log_out=False):
     temp = temp.split("=")[1]
     temp = temp.split("'")[0]
 
-    log_str = str(int(time.time())) + str(temp) + "\n"
+    log_str = str(int(time.time())) +"," + str(temp) + "\n"
 
     if (log_out):
         print_to_log(log_str)
@@ -30,5 +34,7 @@ def get_cpu_temperature(log_out=False):
 
 #-- Prints to the specified log file --#
 def print_to_log(log_str):
-    with open(BLUETOOTHLE_SCANNER_LOG, "a+") as f:
+    with open(TEMPERATURE_SENSOR_LOG, "a+") as f:
         f.write(log_str)
+
+get_cpu_temperature(log_out=True)
