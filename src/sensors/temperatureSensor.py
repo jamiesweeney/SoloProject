@@ -1,7 +1,5 @@
 ''' temperatureSensor.py
     Contains functions used for collecting temperature information
-    Functions:
-        get_cpu_temperature - returns the cpu thermometer reading
 
     Jamie Sweeney
     2017/18 Solo Project
@@ -9,9 +7,13 @@
 
 #-- Imports --#
 import commands
+from config import TEMPERATURE_SENSOR_LOG
 
 #-- Returns the cpu temperature as float --#
-def get_cpu_temperature():
+def get_cpu_temperature(log_out=False):
+    ''' Gets the current cpu temperature with specified arguments
+            log_out         - log output or not
+    '''
     #Get temperature reading
     temp = commands.getstatusoutput("/opt/vc/bin/vcgencmd measure_temp")[1]
 
@@ -19,4 +21,14 @@ def get_cpu_temperature():
     temp = temp.split("=")[1]
     temp = temp.split("'")[0]
 
+    log_str = str(int(time.time())) + str(temp) + "\n"
+
+    if (log_out):
+        print_to_log(log_str)
+
     return float(temp)
+
+#-- Prints to the specified log file --#
+def print_to_log(log_str):
+    with open(BLUETOOTHLE_SCANNER_LOG, "a+") as f:
+        f.write(log_str)

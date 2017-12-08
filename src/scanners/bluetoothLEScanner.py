@@ -3,8 +3,6 @@
     The only function that should be called from outside this module is start_ble() which
     will start the bluetooth LE scan with the specified parameters
 
-    Invoking this file as a script will call the start() function
-
     Jamie Sweeney
     2017/18 Solo Project
 '''
@@ -20,7 +18,7 @@ import time
 import hashlib
 # Do this to get other python files in the project directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from myconstants import BTLE_LOG
+from config import BLUETOOTHLE_SCANNER_LOG
 
 #-- Initiates scanning process with specified arguments --#
 def start_ble(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, device_queue=None):
@@ -41,14 +39,17 @@ def start_ble(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, dev
         print_to_log(log_start_str)
     scanner = Scanner().withDelegate(ScanDelegate(hash_addrs, log_out, device_queue))
     while ((((timeit.default_timer()) - start_time) < timeout) or timeout == 0):
-        scanner.scan(timeout=cycle_period)
+        try:
+            scanner.scan(timeout=cycle_period)
+        except:
+            pass
     if (log_out):
         print_to_log(log_end_str)
     return
 
 #-- Prints to the specified log file --#
 def print_to_log(log_str):
-    with open(BTLE_LOG, "a+") as f:
+    with open(BLUETOOTHLE_SCANNER_LOG, "a+") as f:
         f.write(log_str)
 
 #-- Class which defines how each discovery is handles --#
@@ -77,6 +78,3 @@ class ScanDelegate(DefaultDelegate):
         if (self.log_out):
             log_str = str(disc_time) + " " + str(addr) + " " + str(rssi) + '\n'
             print_to_log(log_str)
-
-# If called as a script, just call start function
-#start_ble()
