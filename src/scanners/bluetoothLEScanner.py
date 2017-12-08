@@ -76,5 +76,5 @@ class ScanDelegate(DefaultDelegate):
 
         #Log string
         if (self.log_out):
-            log_str = str(disc_time) + " " + str(addr) + " " + str(rssi) + '\n'
+            log_str = str(disc_time) + "," + str(addr) + "," + str(rssi) + '\n'
             print_to_log(log_str)
