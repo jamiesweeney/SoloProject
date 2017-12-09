@@ -7,11 +7,10 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import DARKNET_DIR, DARKNET_IMAGE, DARKNET_DATA_FILE, DARKNET_CFG_FILE, DARKNET_WEIGHTS_FILE, CAMERA_OUT_LOG_DIR, CAMERA_RAW_LOG_DIR
 
-def start_detection(cycle_period=20, log_out=False, log_raw=False, timeout=180):
-
+def start_detection(cycle_period=20, log_out=False, log_raw=False, timeout=180, output_queue=None):
     # Mininum of 20 seconds cycle period
     if (cycle_period < 20):
-        cycle_period = 20
+        cycle_period = 10
 
     # Darknet YOLO call string
     call_str = "./darknet detector test " + DARKNET_DATA_FILE +" "+ DARKNET_CFG_FILE +" "+ DARKNET_WEIGHTS_FILE  + " " + DARKNET_IMAGE
@@ -51,6 +50,9 @@ def start_detection(cycle_period=20, log_out=False, log_raw=False, timeout=180):
             if obj_split[0] == "person":
                 person_list += [obj]
 
+        if (output_queue != None):
+            output_queue.put(person_list)
+
         # Log output
         if (log_out):
             log_f = CAMERA_OUT_LOG_DIR + "/" + time_c + ".png"
@@ -61,6 +63,3 @@ def start_detection(cycle_period=20, log_out=False, log_raw=False, timeout=180):
             wait_period = loop_diff
         else:
             wait_period = 0
- 
-start_detection(log_out=True, log_raw=True)
-        
