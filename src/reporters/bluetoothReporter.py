@@ -1,4 +1,4 @@
-''' bluetoothMonitor.py
+''' bluetoothReporter.py
     Contains a script used for starting a bluetooth + bluetooth LE scan and printing reports
 
     Args:
@@ -26,38 +26,36 @@ import threading
 import csv
 import google.cloud.storage
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from scanners import bluetoothScanner, bluetoothLEScanner
-from config import BLUETOOTH_BUCKET, BLUETOOTH_BUCKET_CREDENTIALS, BLUETOOTH_SETUP_SCRIPT, REPORTERS_LOG_DIR, BLUETOOTH_REPORTER_LOG, ROOM_NO
+from config import BLUETOOTH_BUCKET, GOOGLE_CREDENTIALS, BLUETOOTH_SETUP_SCRIPT, REPORTERS_LOG_DIR, BLUETOOTH_REPORTER_LOG, ROOM_NO
 from multiprocessing import Process, Queue
 
 
-#-- Starts the bluetooth reporting
-
+#-- Starts the bluetooth reporting --#
 def start_bluetooth_report(period, c_period, hash_addrs, log, timeout, decay_time, push):
 
-    #-- Setup bluetooth --#
+    # Setup bluetooth
     print ("Running setup")
     cmd = str(BLUETOOTH_SETUP_SCRIPT)
     setup = subprocess.Popen(cmd, shell=True)
     setup.wait()
 
-    #-- If failed exit --#
+    # If failed exit
     if (setup.returncode != 0):
         print ("Failed - could not setup bluetooth device")
         return
     print ("-Setup success")
 
-    #-- Initialise thread safe dictionary --#
+    # Initialise thread safe dictionary
     device_dict = DeviceDictionary(args.decay_time)
 
-    #-- Initialise bluetooth monitor thread --#
+    # Initialise bluetooth monitor thread
     bluetooth_monitor_thread = threading.Thread( name='bluetooth_monitor',
                                                 target=bluetooth_monitor,
                                                 args=( "BT_SCANNER", device_dict, c_period,
                                                 hash_addrs, log, timeout))
 
-    #-- Initialise bluetooth LE monitor thread --#
+    # Initialise bluetooth LE monitor thread
     bluetoothle_monitor_thread = threading.Thread( name='bluetoothle_monitor',
                                                 target=bluetooth_monitor,
                                                 args=( "BTLE_SCANNER", device_dict, c_period,
@@ -65,15 +63,15 @@ def start_bluetooth_report(period, c_period, hash_addrs, log, timeout, decay_tim
     bluetoothle_monitor_thread.start()
     bluetooth_monitor_thread.start()
 
-    #-- Set up google storage bucket --#
+    # Set up google storage bucket
     if (push == True):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(BLUETOOTH_BUCKET_CREDENTIALS)
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(GOOGLE_CREDENTIALS)
         storage_client = google.cloud.storage.Client()
         bucket = storage_client.get_bucket(BLUETOOTH_BUCKET)
         
 
 
-    #-- Start reporting --#
+    # Start reporting
     while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive()):
         time.sleep(args.period)
         print (". . . . .")

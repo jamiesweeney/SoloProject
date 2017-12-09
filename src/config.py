@@ -23,6 +23,9 @@ DEMO_DIR = os.path.join(SRC_DIR + "/display_demo")
 
 # Log directies
 LOG_DIR = os.path.join(BASE_DIR + "/logs")
+CAMERA_LOG_DIR = os.path.join(LOG_DIR + "/camera")
+CAMERA_OUT_LOG_DIR = os.path.join(CAMERA_LOG_DIR + "/out")
+CAMERA_RAW_LOG_DIR = os.path.join(CAMERA_LOG_DIR + "/raw")
 REPORTERS_LOG_DIR = os.path.join(LOG_DIR + "/reporters")
 SCANNERS_LOG_DIR = os.path.join(LOG_DIR + "/scanners")
 SENSORS_LOG_DIR = os.path.join(LOG_DIR + "/sensors")
@@ -42,7 +45,7 @@ SETUP_DIR = os.path.join(SRC_DIR + "/setup")
 
 #-------------------------------------------------------------#
 #-- Credential Files --#
-BLUETOOTH_BUCKET_CREDENTIALS = os.path.join(CREDS_DIR + "/bluetoothBucket.json")
+GOOGLE_CREDENTIALS = os.path.join(CREDS_DIR + "/googleCreds.json")
 
 
 #-------------------------------------------------------------#
@@ -55,8 +58,11 @@ DARKNET_IMAGE = DARKNET_DIR + "testing.jpg"
 
 #-------------------------------------------------------------#
 #-- Log Files --#
+
 # Reporters logs
 BLUETOOTH_REPORTER_LOG = os.path.join(REPORTERS_LOG_DIR + "/bluetoothReporter.log")
+CAMERA_REPORTER_LOG = os.path.join(REPORTERS_LOG_DIR + "/cameraReporter.log")
+
 
 # Scanner logs
 BLUETOOTH_SCANNER_LOG = os.path.join(SCANNERS_LOG_DIR + "/bluetoothScanner.log")
@@ -74,5 +80,6 @@ BLUETOOTH_SETUP_SCRIPT = os.path.join(SETUP_DIR + "/setupBluetooth.sh")
 #-------------------------------------------------------------#
 #-- Google Storage Variables --#
 BLUETOOTH_BUCKET = "bluetoothscanner"
+CAMERA_BUCKET = "cameradetector"
 ROOM_NO = "070"
 
