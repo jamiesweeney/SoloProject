@@ -25,7 +25,7 @@ import argparse
 import threading
 import csv
 import google.cloud.storage
-     
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scanners import bluetoothScanner, bluetoothLEScanner
 from config import BLUETOOTH_BUCKET, GOOGLE_CREDENTIALS, BLUETOOTH_SETUP_SCRIPT, REPORTERS_LOG_DIR, BLUETOOTH_REPORTER_LOG, ROOM_NO
 from multiprocessing import Process, Queue

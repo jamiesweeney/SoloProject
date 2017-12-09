@@ -33,8 +33,14 @@ def start_camera_report(period, log, timeout, push):
 
     while (detector_thread.isAlive()):
         time.sleep(period)
+
+        print (". . . . .")
+        print ("Camera Detector OK - " + str(detector_thread.isAlive()))
+        
         out_list = output_queue.get()
 
+        print str(out_list)
+        
         if (push == True):
             send_to_storage(out_list, log, bucket)
 
@@ -70,4 +76,19 @@ def print_to_log(log_str):
     with open(config.CAMERA_REPORTER_LOG, "a+") as f:
         f.write(log_str)
 
-start_camera_report(20, True, 100, True)
+
+#-- Make sure sudo --#
+if os.getuid() != 0:
+    print("Failed - You need to run as sudo")
+    sys.exit(-1)
+
+#-- Collect arguments --#
+parser = argparse.ArgumentParser()
+parser.add_argument('--period', type=int, help='period to update report', default = 60)
+parser.add_argument('--log', type=bool, help='option to log data', default = True)
+parser.add_argument('--timeout', type=int, help='timeout option in seconds', default = 600)
+parser.add_argument('--push', type=bool, help='option to push data to google storage', default = True)
+
+args = parser.parse_args()
+
+start_camera_report(args.period, args.log, args.timeout, args.push)
