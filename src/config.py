@@ -62,6 +62,7 @@ DARKNET_IMAGE = DARKNET_DIR + "testing.jpg"
 # Reporters logs
 BLUETOOTH_REPORTER_LOG = os.path.join(REPORTERS_LOG_DIR + "/bluetoothReporter.log")
 CAMERA_REPORTER_LOG = os.path.join(REPORTERS_LOG_DIR + "/cameraReporter.log")
+TEMPERATURE_REPORTER_LOG = os.path.join(REPORTERS_LOG_DIR + "/temperatureReporter.log")
 
 
 # Scanner logs
@@ -81,5 +82,6 @@ BLUETOOTH_SETUP_SCRIPT = os.path.join(SETUP_DIR + "/setupBluetooth.sh")
 #-- Google Storage Variables --#
 BLUETOOTH_BUCKET = "bluetoothscanner"
 CAMERA_BUCKET = "cameradetector"
+TEMPERATURE_BUCKET = "temperaturesensor"
 ROOM_NO = "070"
 
