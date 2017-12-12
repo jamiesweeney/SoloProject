@@ -63,3 +63,4 @@ def start_detection(cycle_period=20, log_out=False, log_raw=False, timeout=180, 
             wait_period = loop_diff
         else:
             wait_period = 0
+
