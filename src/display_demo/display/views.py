@@ -4,9 +4,10 @@ import os
 import time
 
 bucket_name = 'bluetoothscanner'
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/Workspace/SoloProject/src/creds.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/pi/.credentials/googleCreds.json"
 timeout = 600
 page_list = []
+
 
 def index(request):
     global page_list
