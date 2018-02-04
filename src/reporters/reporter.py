@@ -14,100 +14,33 @@ import config
 import google.cloud.storage
 
 
-cycle_period = 20
-report_period = 60
-hash_addrs = False
-log_output = True
-timeout = 600
-detection_dict = None
-
-#-- Make sure sudo --#
-if os.getuid() != 0:
-    print("Failed - You need to run as sudo")
-    sys.exit(-1)
-
-
-#-- Setup Bluetooth device --#
-cmd = str(BLUETOOTH_SETUP_SCRIPT)
-setup = subprocess.Popen(cmd, shell=True)
-setup.wait()
-
-if (setup.returncode != 0):
-    print ("Failed - Could not setup bluetooth device")
-    sys.exit(-1)
-
-
-#-- Set up google storage bucket --#
-if (push == True):
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(GOOGLE_CREDENTIALS)
-    storage_client = google.cloud.storage.Client()
-    bucket = storage_client.get_bucket(BLUETOOTH_BUCKET)
-
-
-#-- Initialise thread safe dictionary for bluetooth devices --#
-device_dict = DeviceDictionary(args.decay_time)
-camera_output = CameraOutput()
-
-
-# Initialise bluetooth monitor thread
-bluetooth_monitor_thread = threading.Thread( name = 'bluetooth_monitor',
-                                            target = monitor,
-                                            args = ("BT", device_dict, (cycle_period, hash_addrs, log_output, timeout)))
-
-# Initialise bluetooth LE monitor thread
-bluetoothle_monitor_thread = threading.Thread( name = 'bluetoothle_monitor',
-                                            target = monitor,
-                                            args = ("BTLE", device_dict, (cycle_period, hash_addrs, log_output, timeout)))
-
-# Initialise camera monitor thread
-camera_monitor_thread = threading.Thread( name = 'camera_monitor',
-                                        target = camera_monitor,
-                                        args = ("CAMERA", camera_output, (cycle_period, log_output, log_output, timeout)))
-
-# Start monitor threads
-bluetoothle_monitor_thread.start()
-bluetooth_monitor_thread.start()
-camera_monitor_thread.start()
-
-
-# Start reporting
-while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or camera_monitor_thread.isAlive()):
-    time.sleep(report_period)
-
-    temp_devices = device_dict.read()
-    temp_people = camera_output.read()
-
-    output = {"devices" : temp_devices, "people" : temp_people}
-    print (str(output))
-
-
 def monitor(mon_type, detection_dict, det_args):
 
     output_queue = Queue()
-    det_args.append(output_queue)
+    #det_args = det_args + (output_queue)
 
     # Set scanner thread vars
-    if (scanner == "BT"):
+    if (mon_type == "BT"):
         name = 'blutooth_scanner'
         target = bluetoothScanner.start
-    elif (scanner == "BTLE"):
+    elif (mon_type  == "BTLE"):
         name = 'blutoothle_scanner'
         target = bluetoothLEScanner.start_ble
-    elif (mon_type = "CAMERA"):
+    elif (mon_type == "CAMERA"):
         name = 'camera_monitor'
         target = cameraDetection.start_detection
 
     # Initialise and run detector thread
     detector_thread = threading.Thread( name=name,
                                        target=target,
-                                       args=det_args )
+                                       args=det_args + (output_queue,) )
     detector_thread.start()
 
     # While detector is running and queue isn't empty, load detections into dictionary
     while(detector_thread.isAlive()):
         time.sleep(0.5)
         while not (output_queue.empty()):
-            current_detect = device_queue.get()
+            current_detect = output_queue.get()
             detection_dict.add(current_detect)
 
 
@@ -121,7 +54,12 @@ class DeviceDictionary:
         self.decay_time = decay_time
 
     # Add to dictionary, smoothing rssi value if necessary
-    def add(self, time_arrived, address, rssi):
+    def add(self, entry):
+        
+        time_arrived = entry[0]
+        address = entry[1]
+        rssi = entry[2]
+
         address = address.lower()
 
         # Get mutex
@@ -175,12 +113,14 @@ class CameraOutput:
     # Update the people count
     def add(self, output):
 
+
+        print (str(output))
         # Get mutex
         self.mutex.acquire()
         current_time = time.time()
 
         # Update people count with new prediction, smoothing result
-        new_people = ( float(self.people) + float(rssi) ) / float(2)
+        new_people = ( float(self.people) + float(len(output)) ) / float(2)
         self.people = new_people
 
         # Release mutex
@@ -194,3 +134,81 @@ class CameraOutput:
         self.mutex.release()
 
         return people
+
+
+
+cycle_period = 20
+report_period = 10
+hash_addrs = False
+log_output = True
+timeout = 300
+detection_dict = None
+push = True
+decay_time = 120
+
+#-- Make sure sudo --#
+if os.getuid() != 0:
+    print("Failed - You need to run as sudo")
+    sys.exit(-1)
+
+
+#-- Setup Bluetooth device --#
+cmd = str(config.BLUETOOTH_SETUP_SCRIPT)
+setup = subprocess.Popen(cmd, shell=True)
+setup.wait()
+
+if (setup.returncode != 0):
+    print ("Failed - Could not setup bluetooth device")
+    sys.exit(-1)
+
+
+#-- Set up google storage bucket --#
+if (push == True):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(config.GOOGLE_CREDENTIALS)
+    storage_client = google.cloud.storage.Client()
+    bucket = storage_client.get_bucket(config.BLUETOOTH_BUCKET)
+
+
+#-- Initialise thread safe dictionary for bluetooth devices --#
+device_dict = DeviceDictionary(decay_time)
+camera_output = CameraOutput()
+
+
+# Initialise bluetooth monitor thread
+bluetooth_monitor_thread = threading.Thread( name = 'bluetooth_monitor',
+                                            target = monitor,
+                                            args = ("BT", device_dict, (cycle_period, hash_addrs, log_output, timeout)))
+
+# Initialise bluetooth LE monitor thread
+bluetoothle_monitor_thread = threading.Thread( name = 'bluetoothle_monitor',
+                                            target = monitor,
+                                            args = ("BTLE", device_dict, (cycle_period, hash_addrs, log_output, timeout)))
+
+# Initialise camera monitor thread
+camera_monitor_thread = threading.Thread( name = 'camera_monitor',
+                                        target = monitor,
+                                        args = ("CAMERA", camera_output, (cycle_period, log_output, log_output, timeout)))
+
+print ("starting")
+# Start monitor threads
+bluetoothle_monitor_thread.start()
+bluetooth_monitor_thread.start()
+camera_monitor_thread.start()
+
+
+print ("started")
+
+# Start reporting
+while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or camera_monitor_thread.isAlive()):
+
+    print ("BT - " + str(bluetooth_monitor_thread.isAlive()))
+    print ("BTLE - " + str(bluetoothle_monitor_thread.isAlive()))
+    print ("CAMERA - " + str(camera_monitor_thread.isAlive()))
+
+    temp_devices = device_dict.read()
+    temp_people = camera_output.read()
+
+    output = {"devices" : len(temp_devices), "people" : temp_people}
+    print (str(output))
+    time.sleep(report_period)
+
