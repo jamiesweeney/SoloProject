@@ -5,7 +5,9 @@ from flask import Flask
 from subprocess import call
 from subprocess import check_output
 import config
+from flask import request
 import random
+
 
 app = Flask(__name__)
 
@@ -59,19 +61,28 @@ def getRoom(room_id):
 # Accepts data from a pi and adds changes to the database
 @app.route("/api/v1/pi-reports/add", methods = ['POST'])
 def addReport():
+    print (request)
     content = request.get_json()
+    print (content)
 
     # Verify identity
     if (magic_authentication(content) == False):
         return "NOT AUTHORIZED"
 
+
+    room_id = content['roomID']
+    time = content['time']
+    devices = content['devices']
+    people = content['people']
+
     # Feed data to linear Regression alg
     ans =  magic_algorithm(content)
 
     # Put output into database
-    cmd = ("\"INSERT INTO reports (roomID, time, devices, people, estimate) VALUES ()\";").format(str(room_id))
+    cmd = ("\"INSERT INTO reports (roomID, time, devices, people, estimate) VALUES ({}, {}, {}, {}, {})\";").format(str(room_id), time, devices, people, ans)
+    print (cmd)
     response = send_command(cmd)
-    return response
+    return "OK"
 
 
 #-- Authentication --#
@@ -101,4 +112,4 @@ def magic_algorithm(input):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', ssl_context='adhoc')
+    app.run(host='0.0.0.0')
