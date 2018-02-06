@@ -9,9 +9,11 @@ import argparse
 import threading
 import csv
 from multiprocessing import Process, Queue
-from sensors import cameraDetection, temperatureSensor, bluetoothScanner, bluetoothLEScanner
+from sensors import cameraDetection, bluetoothScanner, bluetoothLEScanner
 import config
 import google.cloud.storage
+import json
+import urllib2
 
 
 def monitor(mon_type, detection_dict, det_args):
@@ -55,7 +57,7 @@ class DeviceDictionary:
 
     # Add to dictionary, smoothing rssi value if necessary
     def add(self, entry):
-        
+
         time_arrived = entry[0]
         address = entry[1]
         rssi = entry[2]
@@ -136,7 +138,6 @@ class CameraOutput:
         return people
 
 
-
 cycle_period = 20
 report_period = 10
 hash_addrs = False
@@ -160,13 +161,6 @@ setup.wait()
 if (setup.returncode != 0):
     print ("Failed - Could not setup bluetooth device")
     sys.exit(-1)
-
-
-#-- Set up google storage bucket --#
-if (push == True):
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(config.GOOGLE_CREDENTIALS)
-    storage_client = google.cloud.storage.Client()
-    bucket = storage_client.get_bucket(config.BLUETOOTH_BUCKET)
 
 
 #-- Initialise thread safe dictionary for bluetooth devices --#
@@ -196,7 +190,15 @@ bluetooth_monitor_thread.start()
 camera_monitor_thread.start()
 
 
-print ("started")
+# Setup post request data
+host = os.getenv("REPORT_SERVER_HOST")
+print (host)
+api_ext = "/api/v1/pi-reports/add"
+print (api_ext)
+address = host + api_ext
+roomID = os.getenv("REPORT_ROOM_ID")
+
+post_data = {"auth" : "BLANK_KEY", "roomID" : roomID, "time" : None, "people" : None, "devices" : None}
 
 # Start reporting
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or camera_monitor_thread.isAlive()):
@@ -210,5 +212,16 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
 
     output = {"devices" : len(temp_devices), "people" : temp_people}
     print (str(output))
+
+    # Fill in report post data
+    post_data["time"] = time.time()
+    post_data["people"] = temp_people
+    post_data["devices"] = len(temp_devices)
+
+    # Post data to server
+    req = urllib2.Request(address)
+    req.add_header('Content-Type', 'application/json')
+    response = urllib2.urlopen(req, json.dumps(post_data))
+
     time.sleep(report_period)
 
