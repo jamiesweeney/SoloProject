@@ -47,8 +47,8 @@ DARKNET_IMAGE = DARKNET_DIR + "testing.jpg"
 REPORTER_LOG = os.path.join(REPORTER_LOG_DIR + "reporter.log")
 
 # Sensor logs
-BLUETOOTH_SCANNER_LOG = os.path.join(SCANNERS_LOG_DIR + "/bluetoothScanner.log")
-BLUETOOTHLE_SCANNER_LOG = os.path.join(SCANNERS_LOG_DIR + "/bluetoothLEScanner.log")
+BLUETOOTH_SCANNER_LOG = os.path.join(SENSORS_LOG_DIR + "/bluetoothScanner.log")
+BLUETOOTHLE_SCANNER_LOG = os.path.join(SENSORS_LOG_DIR + "/bluetoothLEScanner.log")
 
 
 #-------------------------------------------------------------#
