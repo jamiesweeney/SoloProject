@@ -4,13 +4,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from flask import Flask
 from subprocess import call
 from subprocess import check_output
-import config
 import random
+from flask import request
 
 app = Flask(__name__)
 
 
-# My SQL command and arguments
+#-- MySQL command and arguments --#
 mysql_cmd = os.getenv('SERVER_MYSQL_PATH')
 ssl_ca = os.getenv('SERVER_SSL_CA')
 ssl_cert = os.getenv('SERVER_SSL_CENT')
@@ -39,7 +39,6 @@ def getBuilding(building_id):
     response = send_command(cmd)
     return str(response)
 
-
 # Returns the information for one floor
 @app.route("/api/v1/floors/get/<int:floor_id>")
 def getFloor(floor_id):
@@ -62,16 +61,23 @@ def addReport():
     content = request.get_json()
 
     # Verify identity
-    if (magic_authentication(content) == False):
+    auth = content['auth']
+    if (magic_authentication(auth) == False):
         return "NOT AUTHORIZED"
 
+    # Get data
+    room_id = content['roomID']
+    time_n = content['time']
+    devices = content['devices']
+    people = content['people']
+
     # Feed data to linear Regression alg
-    ans =  magic_algorithm(content)
+    ans =  magic_algorithm(room_id, time_n, devices, people)
 
     # Put output into database
-    cmd = ("\"INSERT INTO reports (roomID, time, devices, people, estimate) VALUES ()\";").format(str(room_id))
+    cmd = ("\"INSERT INTO reports (roomID, time, devices, people, estimate) VALUES ({}, {}, {}, {}, {})\";").format(room_id,time_n, devices, people, ans)
     response = send_command(cmd)
-    return response
+    return "OK"
 
 
 #-- Authentication --#
@@ -96,9 +102,9 @@ def send_command(cmd):
 
 #-- Linear Regression --#
 # Takes RPi output data and returns a guess of room occupancy based on linear reg alg.
-def magic_algorithm(input):
+def magic_algorithm(room_id, time_n, devices, people):
     return (random.randint(0,100))
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', ssl_context='adhoc')
+    app.run(host='0.0.0.0')
