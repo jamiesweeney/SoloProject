@@ -5,7 +5,7 @@ from flask import Flask
 from subprocess import call
 from subprocess import check_output
 import random
-from flask import request
+from flask import request,  render_template, json
 
 app = Flask(__name__)
 
@@ -24,34 +24,112 @@ database = os.getenv('SERVER_DB_NAME')
 base_cmd = "\"{}\" --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
 
 
+#-- Web pages --#
+@app.route("/webapp/home")
+def wp_index():
+    return render_template('/html/home.html')
+
+@app.route("/webapp/building/<int:building_id>")
+def wp_building(building_id):
+    return render_template('/html/building.html', building_id=building_id)
+
+
 #-- Get Requests --#
 # Returns all the buildings
 @app.route("/api/v1/buildings/get-all")
 def getAllBuildings():
     cmd = ("\"SELECT * FROM buildings;\"")
-    response = send_command(cmd)
-    return str(response)
+    db_response = send_command(cmd)
+
+    buildings = []
+    for building in db_response:
+        info = {"building_id": building[0], "building_name": building[1], "building_desc": building[2]}
+        buildings.append(info)
+    data = {}
+    data = {"buildings": buildings}
+
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 # Returns the information for one building
 @app.route("/api/v1/buildings/get/<int:building_id>")
 def getBuilding(building_id):
     cmd = ("\"SELECT * FROM floors AS f WHERE f.buildingID = {}\";").format(str(building_id))
-    response = send_command(cmd)
-    return str(response)
+    db_response = send_command(cmd)
+
+    floors = []
+    for floor in db_response:
+        info = {"building_id": floor[0], "floor_id": floor[1], "floor_name": floor[2], "floor_desc" : floor[3]}
+        floors.append(info)
+    data = {"floors": floors}
+
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 # Returns the information for one floor
 @app.route("/api/v1/floors/get/<int:floor_id>")
 def getFloor(floor_id):
     cmd = ("\"SELECT * FROM rooms AS r WHERE r.floorID = {}\";").format(str(floor_id))
-    response = send_command(cmd)
-    return str(response)
+    db_response = send_command(cmd)
+
+    rooms = []
+    for room in db_response:
+        info = {"floor_id": room[0], "room_id": room[1], "room_name": room[2], "room_desc" : room[3]}
+        rooms.append(info)
+    data = {"rooms": rooms}
+
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 # Returns the information for one room
 @app.route("/api/v1/rooms/get/<int:room_id>")
 def getRoom(room_id):
     cmd = ("\"SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20\";").format(str(room_id))
-    response = send_command(cmd)
-    return str(response)
+    db_response = send_command(cmd)
+
+    reports = []
+    for report in db_response:
+        info = {"room_id": report[0], "report_id": report[1], "time": report[2], "devices" : report[3], "people" : report[4], "estimate" : report[5]}
+        reports.append(info)
+
+    data = {"reports": reports}
+
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+# Returns current prediction for one room
+@app.route("/api/v1/rooms/get_estimate/<int:room_id>")
+def getRoomEstimate(room_id):
+    cmd = ("\"SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1\";").format(str(room_id))
+    db_response = send_command(cmd)
+
+    report = db_response[0]
+    info = {"room_id": report[0], "time": report[2], "estimate" : report[5]}
+
+    data = {"report": info}
+
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 #-- Pi Requests --#

@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+  </head>
+
+  <body>
+    <div class=header>
+      <div class=header_info>
+        <h2>Room Occupancy Tracking</h2>
+      </div>
+    </div>
+
+    <div id=contentsbox>
+      {% block contents %}{% endblock %}
+    </div>
+
+    <div class=footer>
+    </div>
+
+    {% block script %}{% endblock %}
+  </body>
+</html>
