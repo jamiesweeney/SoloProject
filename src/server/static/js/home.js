@@ -3,11 +3,9 @@
 var buildingContainer = document.getElementById("buildings");
 
 // Api Endpoints
-var base_url ="http://127.0.0.1:5000/"
-var buildings_url = base_url + "api/v1/buildings/get-all"
-var building_page = base_url + "webapp/building/"
-
-
+var base_url = "http://" + window.location.hostname +":5000"
+var buildings_url =  base_url + "/api/v1/buildings/get-all"
+var building_page = base_url + "/webapp/building/"
 
 var buildingImgDir = "../static/img/buildings/"
 

@@ -33,6 +33,14 @@ def wp_index():
 def wp_building(building_id):
     return render_template('/html/building.html', building_id=building_id)
 
+@app.route("/webapp/floor/<int:floor_id>")
+def wp_floor(floor_id):
+    return render_template('/html/floor.html')
+
+@app.route("/webapp/room/<int:room_id>")
+def wp_room(room_id):
+    return render_template('/html/room.html')
+
 
 #-- Get Requests --#
 # Returns all the buildings

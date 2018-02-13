@@ -3,7 +3,7 @@
 var floorContainer = document.getElementById("floors");
 
 // Api Endpoints
-var base_url ="http://127.0.0.1:5000"
+var base_url = "http://" + window.location.hostname +":5000"
 var building_url = base_url + "/api/v1/buildings/get/"
 var floor_url = base_url + "/api/v1/floors/get/"
 var est_url = base_url + "/api/v1/rooms/get_estimate/"
@@ -27,16 +27,26 @@ function addReport(report, floor_id){
   if (report["estimate"] == "NULL"){
     floor_div.totalOccupants = floor_div.totalOccupants
   }else{
+    if (isNaN(floor_div.totalOccupants) == true){
+      floor_div.totalOccupants = 0;
+    }
     floor_div.totalOccupants = parseInt(floor_div.totalOccupants) + parseInt(report["estimate"])
   }
 
-  var n = document.createElement("p")
-  var t_node = document.createTextNode(report["estimate"]);
+  if (floor_div.totalOccupants == 0){
+    floor_div.style.background = "white"
+  }else if (floor_div.totalOccupants <= 50){
+    floor_div.style.background = "seagreen"
+  }else if (floor_div.totalOccupants <= 100){
+    floor_div.style.background = "orange"
+  }else if (floor_div.totalOccupants <= 150){
+    floor_div.style.background = "orangered"
+  }else{
+    floor_div.style.background = "red"
+  }
 
-  n.appendChild(t_node)
-  floor_div.appendChild(n)
-
-
+  floorNum = floor_div.childNodes[1]
+  floorNum.childNodes[0].textContent = "Total: " + floor_div.totalOccupants
 }
 
 function handleEstimate(resp, floor_id){
@@ -91,17 +101,29 @@ function getRooms(floor_id){
 
 function addFloor(floor){
 
-  // New building div
+  // New floor div
   var new_floor = document.createElement("div");
   new_floor.id = "floor"+floor["floor_id"]
   new_floor.className = "floor"
   new_floor.totalOccupants = "NULL"
 
-  // Name para
-  var name = document.createElement("p")
+  // Floor name
+  var name_div = document.createElement("div")
+  name_div.className = "floorName"
+  var name = document.createElement("h1")
   var t_node = document.createTextNode(floor["floor_name"]);
   name.appendChild(t_node)
-  new_floor.appendChild(name)
+  name_div.appendChild(name)
+  new_floor.appendChild(name_div)
+
+  // Total number
+  var num_div = document.createElement("div")
+  num_div.className = "floorNum"
+  var num = document.createElement("h1")
+  var t_node = document.createTextNode("Total: ???");
+  num.appendChild(t_node)
+  num_div.appendChild(num)
+  new_floor.appendChild(num_div)
 
   // Add link
   new_floor.addEventListener('click', function(){
