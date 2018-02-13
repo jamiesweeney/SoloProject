@@ -193,4 +193,4 @@ def magic_algorithm(room_id, time_n, devices, people):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', threaded=True)

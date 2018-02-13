@@ -21,21 +21,34 @@ getRooms(floor_id)
 
 function addReport(report, room_id){
 
-  // Get floor div
+
+  // Get room div
   console.log("room"+room_id)
   var room_div = document.getElementById("room"+room_id)
 
   if (report["estimate"] == "NULL"){
     room_div.totalOccupants = room_div.totalOccupants
   }else{
-    room_div.totalOccupants = parseInt(report["estimate"])
+    if (isNaN(room_div.totalOccupants) == true){
+      room_div.totalOccupants = 0;
+    }
+    room_div.totalOccupants = parseInt(room_div.totalOccupants) + parseInt(report["estimate"])
   }
 
-  var n = document.createElement("p")
-  var t_node = document.createTextNode(report["estimate"]);
+  if (room_div.totalOccupants == 0){
+    room_div.style.background = "white"
+  }else if (room_div.totalOccupants <= 25){
+    room_div.style.background = "seagreen"
+  }else if (room_div.totalOccupants <= 50){
+    room_div.style.background = "orange"
+  }else if (room_div.totalOccupants <= 75){
+    room_div.style.background = "orangered"
+  }else{
+    room_div.style.background = "red"
+  }
 
-  n.appendChild(t_node)
-  room_div.appendChild(n)
+  roomNum = room_div.childNodes[1]
+  roomNum.childNodes[0].textContent = "Total: " + room_div.totalOccupants
 }
 
 function handleEstimate(resp, room_id){
@@ -69,11 +82,23 @@ function addRoom(room){
   new_room.className = "room"
   new_room.totalOccupants = "NULL"
 
-  // Name para
-  var name = document.createElement("p")
+  // room name
+  var name_div = document.createElement("div")
+  name_div.className = "roomName"
+  var name = document.createElement("h1")
   var t_node = document.createTextNode(room["room_name"]);
   name.appendChild(t_node)
-  new_room.appendChild(name)
+  name_div.appendChild(name)
+  new_room.appendChild(name_div)
+
+  // Total number
+  var num_div = document.createElement("div")
+  num_div.className = "roomNum"
+  var num = document.createElement("h1")
+  var t_node = document.createTextNode("Total: ???");
+  num.appendChild(t_node)
+  num_div.appendChild(num)
+  new_room.appendChild(num_div)
 
   // Add link
   new_room.addEventListener('click', function(){

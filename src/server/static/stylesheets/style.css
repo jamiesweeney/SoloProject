@@ -67,6 +67,7 @@ h2 {
 #floors {
   height:100%;
   width:100%;
+  align-items: center;
   align : center;
   overflow:auto;
   background-color:whitesmoke;
@@ -87,11 +88,12 @@ h2 {
   align : center;
   text-align: center;
   align-items: center;
-  height: 200px;
-  width: 200px;
+  min-height: 200px;
+  width: 20%;
+  min-width: 200px;
   background-color: seagreen;
   padding: 10px;
-  margin: 15px;
+  margin: 1.5%;
 }
 
 .footer {
@@ -102,6 +104,7 @@ h2 {
 
 
 .floor {
+  color: black;
   align-items : center;
   display:flex;
   vertical-align: middle;
@@ -132,18 +135,48 @@ h2 {
 
 
 .room {
+  color: black;
   align-items : center;
+  display:flex;
+  vertical-align: middle;
   float: left;
-  text-align: center;
+  text-align: left;
   align-items: center;
   height: 200px;
-  width: 45%;
-  background-color: seagreen;
+  width: 40%;
+  background-color: grey;
   padding: 10px;
   margin: 10px
+
+}
+
+.roomName {
+  width: 50%;
+  height: 80%;
+  float: left;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  display: flex;
+justify-content: center;
+align-items: center;
 }
 
 
+.roomNum {
+  width: 50%;
+  height: 80%;
+  align-items: middle;
+  text-align: center;
+  float: right;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  display: flex;
+justify-content: center;
+align-items: center; 
+}
 
 
 

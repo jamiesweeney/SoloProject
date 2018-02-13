@@ -37,9 +37,9 @@ function addReport(report, floor_id){
     floor_div.style.background = "white"
   }else if (floor_div.totalOccupants <= 50){
     floor_div.style.background = "seagreen"
-  }else if (floor_div.totalOccupants <= 100){
+  }else if (floor_div.totalOccupants <= 75){
     floor_div.style.background = "orange"
-  }else if (floor_div.totalOccupants <= 150){
+  }else if (floor_div.totalOccupants <= 100){
     floor_div.style.background = "orangered"
   }else{
     floor_div.style.background = "red"
