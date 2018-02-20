@@ -5,7 +5,7 @@ from flask import Flask
 from subprocess import call
 from subprocess import check_output
 import random
-from flask import request,  render_template, json
+from flask import request,  render_template, json, redirect
 
 app = Flask(__name__)
 
@@ -24,8 +24,12 @@ database = os.getenv('SERVER_DB_NAME')
 base_cmd = "{}  --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
 
 #-- Web pages --#
-@app.route("/webapp/home")
+@app.route("/")
 def wp_index():
+    return redirect("webapp/home", code=302)
+
+@app.route("/webapp/home")
+def wp_home():
     return render_template('/html/home.html')
 
 @app.route("/webapp/building/<int:building_id>")
