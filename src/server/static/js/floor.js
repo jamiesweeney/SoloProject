@@ -4,11 +4,11 @@ var roomContainer = document.getElementById("rooms");
 
 // Api Endpoints
 var base_url = window.location.hostname 
-var building_url = base_url + "/api/v1/buildings/get/"
-var floor_url = base_url + "/api/v1/floors/get/"
-var est_url = base_url + "/api/v1/rooms/get_estimate/"
+var building_url = "/api/v1/buildings/get/"
+var floor_url = "/api/v1/floors/get/"
+var est_url = "/api/v1/rooms/get_estimate/"
 
-var room_page = base_url + "/webapp/room/"
+var room_page = "/webapp/room/"
 
 var curr_url = window.location.href.split("/")
 var floor_id = curr_url.slice(-1)[0]

@@ -4,8 +4,8 @@ var buildingContainer = document.getElementById("buildings");
 
 // Api Endpoints
 var base_url = window.location.hostname
-var buildings_url =  base_url + "/api/v1/buildings/get-all"
-var building_page = base_url + "/webapp/building/"
+var buildings_url =  "/api/v1/buildings/get-all"
+var building_page = "/webapp/building/"
 
 var buildingImgDir = "../static/img/buildings/"
 
