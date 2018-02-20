@@ -21,8 +21,7 @@ password = os.getenv('SERVER_DB_PASSWORD')
 database = os.getenv('SERVER_DB_NAME')
 
 # Base cmd, can be exteneded with a SQL command using the '-e' input var
-base_cmd = "\"{}\" --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
-
+base_cmd = "{}  --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
 
 #-- Web pages --#
 @app.route("/webapp/home")
@@ -176,7 +175,8 @@ def magic_authentication(request):
 # Sends a command to the database
 def send_command(cmd):
     call_str = "{} -e {}".format(base_cmd, cmd)
-    ans = check_output(call_str)    # Get output
+    print (call_str)
+    ans = check_output(call_str, shell=True)    # Get output
     ans = ans.decode("utf-8")       # Decode from bytes
     ans = ans.replace('\r','')      # Format a little
     ans = ans.split("\n")[1:]       # Remove header

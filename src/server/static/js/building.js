@@ -3,7 +3,7 @@
 var floorContainer = document.getElementById("floors");
 
 // Api Endpoints
-var base_url = "http://" + window.location.hostname +":5000"
+var base_url = "http://" + window.location.hostname
 var building_url = base_url + "/api/v1/buildings/get/"
 var floor_url = base_url + "/api/v1/floors/get/"
 var est_url = base_url + "/api/v1/rooms/get_estimate/"
