@@ -7,6 +7,8 @@ from subprocess import check_output
 import random
 from flask import request,  render_template, json, redirect
 
+import MySQLdb
+
 app = Flask(__name__)
 
 
@@ -20,8 +22,15 @@ user = os.getenv('SERVER_DB_USERNAME')
 password = os.getenv('SERVER_DB_PASSWORD')
 database = os.getenv('SERVER_DB_NAME')
 
+#-- Create ssl dictionary object --#
+ssl =   {
+        'ca': ssl_ca,
+        'key': ssl_key,
+        'cert': ssl_cert
+        }
+
 # Base cmd, can be exteneded with a SQL command using the '-e' input var
-base_cmd = "{}  --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
+base_cmd = "\"{}\"  --ssl-ca=\"{}\" --ssl-cert=\"{}\" --ssl-key=\"{}\" --host=\"{}\" --user=\"{}\" --password=\"{}\" --database=\"{}\"".format(mysql_cmd, ssl_ca, ssl_cert, ssl_key, host, user, password, database)
 
 #-- Web pages --#
 @app.route("/")
@@ -49,11 +58,16 @@ def wp_room(room_id):
 # Returns all the buildings
 @app.route("/api/v1/buildings/get-all")
 def getAllBuildings():
-    cmd = ("\"SELECT * FROM buildings;\"")
-    db_response = send_command(cmd)
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM buildings;")
+    ans = cur.fetchall()
 
     buildings = []
-    for building in db_response:
+    for building in ans:
         info = {"building_id": building[0], "building_name": building[1], "building_desc": building[2]}
         buildings.append(info)
     data = {}
@@ -69,11 +83,16 @@ def getAllBuildings():
 # Returns the information for one building
 @app.route("/api/v1/buildings/get/<int:building_id>")
 def getBuilding(building_id):
-    cmd = ("\"SELECT * FROM floors AS f WHERE f.buildingID = {}\";").format(str(building_id))
-    db_response = send_command(cmd)
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM floors AS f WHERE f.buildingID = {};".format(building_id))
+    ans = cur.fetchall()
 
     floors = []
-    for floor in db_response:
+    for floor in ans:
         info = {"building_id": floor[0], "floor_id": floor[1], "floor_name": floor[2], "floor_desc" : floor[3]}
         floors.append(info)
     data = {"floors": floors}
@@ -88,11 +107,16 @@ def getBuilding(building_id):
 # Returns the information for one floor
 @app.route("/api/v1/floors/get/<int:floor_id>")
 def getFloor(floor_id):
-    cmd = ("\"SELECT * FROM rooms AS r WHERE r.floorID = {}\";").format(str(floor_id))
-    db_response = send_command(cmd)
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM rooms AS r WHERE r.floorID = {};".format(floor_id))
+    ans = cur.fetchall()
 
     rooms = []
-    for room in db_response:
+    for room in ans:
         info = {"floor_id": room[0], "room_id": room[1], "room_name": room[2], "room_desc" : room[3]}
         rooms.append(info)
     data = {"rooms": rooms}
@@ -107,11 +131,16 @@ def getFloor(floor_id):
 # Returns the information for one room
 @app.route("/api/v1/rooms/get/<int:room_id>")
 def getRoom(room_id):
-    cmd = ("\"SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20\";").format(str(room_id))
-    db_response = send_command(cmd)
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20;".format(room_id))
+    ans = cur.fetchall()
 
     reports = []
-    for report in db_response:
+    for report in ans:
         info = {"room_id": report[0], "report_id": report[1], "time": report[2], "devices" : report[3], "people" : report[4], "estimate" : report[5]}
         reports.append(info)
 
@@ -127,10 +156,15 @@ def getRoom(room_id):
 # Returns current prediction for one room
 @app.route("/api/v1/rooms/get_estimate/<int:room_id>")
 def getRoomEstimate(room_id):
-    cmd = ("\"SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1\";").format(str(room_id))
-    db_response = send_command(cmd)
 
-    report = db_response[0]
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1;".format(room_id))
+    ans = cur.fetchone()
+
+    report = ans
     info = {"room_id": report[0], "time": report[2], "estimate" : report[5]}
 
     data = {"report": info}
@@ -163,9 +197,15 @@ def addReport():
     # Feed data to linear Regression alg
     ans =  magic_algorithm(room_id, time_n, devices, people)
 
-    # Put output into database
-    cmd = ("\"INSERT INTO reports (roomID, time, devices, people, estimate) VALUES ({}, {}, {}, {}, {})\";").format(room_id,time_n, devices, people, ans)
-    response = send_command(cmd)
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cursor.executemany("INSERT INTO reports (roomID, time, devices, people, estimate) VALUES (%s, %s, %s, %s, %s)", [(room_id, time_n, devices, people, ans)])
+    ans = cur.fetchall()
+
+    conn.commit()
     return "OK"
 
 
@@ -176,18 +216,18 @@ def magic_authentication(request):
 
 
 #-- Database Management --#
-# Sends a command to the database
-def send_command(cmd):
-    call_str = "{} -e {}".format(base_cmd, cmd)
-    print (call_str)
-    ans = check_output(call_str, shell=True)    # Get output
-    ans = ans.decode("utf-8")       # Decode from bytes
-    ans = ans.replace('\r','')      # Format a little
-    ans = ans.split("\n")[1:]       # Remove header
-    for i in range(0, len(ans)):    # Split cells in row to list format
-        ans[i] = ans[i].split('\t')
-    ans = ans[:-1]
-    return ans
+
+# Gets an SQL connection to use for a DB --#
+def aquireSQLConnection(db_name):
+
+    # Connect to SQL database using login and ssl-certs
+    conn = MySQLdb.connect(host=host,
+                         user=user,
+                         passwd=password,
+                         db=db_name,
+                         ssl=ssl)
+
+    return conn
 
 
 #-- Linear Regression --#
