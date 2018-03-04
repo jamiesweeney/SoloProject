@@ -262,7 +262,7 @@ def adminGetBuilding(building_id):
 
     for floor in ans:
         floor_id = floor[1]
-        info = {"floor_id": floor[1], "floor_name": floor[0], "floor_desc" : floor[2], "rooms":[]}
+        info = {"building_id": building_id, "floor_id": floor[1], "floor_name": floor[0], "floor_desc" : floor[2], "rooms":[]}
 
         # Get each room
         cur.execute("SELECT name, id, description FROM rooms AS r WHERE r.floorID = {};".format(floor_id))
@@ -270,14 +270,14 @@ def adminGetBuilding(building_id):
 
         for room in rooms:
             room_id = room[1]
-            room_info = {"room_id": room[1], "room_name": room[0], "room_desc" : room[2], "rpis":[]}
+            room_info = {"building_id": building_id, "floor_id": floor_id, "room_id": room[1], "room_name": room[0], "room_desc" : room[2], "rpis":[]}
 
             # Get each rpi
             cur.execute("SELECT name, id, description, auth_key FROM rpis AS r WHERE r.roomID = {};".format(room_id))
             rpis = cur.fetchall()
 
             for rpi in rpis:
-                rpi_info = {"rpi_id": rpi[1], "rpi_name": rpi[0], "rpi_desc": rpi[2], "auth_key": rpi[3]}
+                rpi_info = {"building_id": building_id, "floor_id": floor_id, "room_id": room_id, "rpi_id": rpi[1], "rpi_name": rpi[0], "rpi_desc": rpi[2], "auth_key": rpi[3]}
 
                 room_info["rpis"].append(rpi_info)
             info["rooms"].append(room_info)

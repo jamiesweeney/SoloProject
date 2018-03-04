@@ -1,12 +1,24 @@
 // Dom Elements
 var adminpanel = document.getElementById("admin-panel");
 var buildingTable = document.getElementById("admin-buildings").childNodes[3];
-var userTable = document.getElementById("admin-users").childNodes[3];
+var floorTable = document.getElementById("admin-floors").childNodes[3];
+var roomTable = document.getElementById("admin-rooms").childNodes[3];
 var rpiTable = document.getElementById("admin-rpis").childNodes[3];
+var userTable = document.getElementById("admin-users").childNodes[3];
 
 
 var newBuildingName =  document.getElementById("new-building-name");
 var newBuildingDesc =  document.getElementById("new-building-desc");
+
+var newFloorName =  document.getElementById("new-floor-name");
+var newFloorDesc =  document.getElementById("new-floor-desc");
+
+var newRoomName =  document.getElementById("new-room-name");
+var newRoomDesc =  document.getElementById("new-room-desc");
+
+var newRpiName =  document.getElementById("new-rpi-name");
+var newRpiDesc =  document.getElementById("new-rpi-desc");
+
 
 // Api Endpoints
 var base_url = window.location.hostname
@@ -15,18 +27,34 @@ var building_url = "/api/v1/buildings/admin-get/"
 var users_url = "/api/v1/users/admin-get-all"
 var rpis_url = "/api/v1/rpis/admin-get-all"
 
+
 var add_buildings_url = "/api/v1/buildings/admin-add"
 var delete_buildings_url = "/api/v1/buildings/admin-delete"
 
+var add_floors_url = "/api/v1/floors/admin-add"
+var delete_floors_url = "/api/v1/floors/admin-delete"
+
+var add_rooms_url = "/api/v1/rooms/admin-add"
+var delete_rooms_url = "/api/v1/rooms/admin-delete"
+
+var add_rpis_url = "/api/v1/rpis/admin-add"
+var delete_rpis_url = "/api/v1/rpis/admin-delete"
 
 getBuildings()
 getUsers()
-getRpis()
+
+buildings_dict = {}
+selected_building = null
+selected_floor = null
+selected_room = null
 
 
 // Puts the building data in the table
 function addBuilding(resp){
+
+
   building = JSON.parse(resp)
+  buildings_dict[building["id"]] = building
 
   // New building div
   var new_building = document.createElement("tr");
@@ -80,14 +108,25 @@ function addBuilding(resp){
 
   // Add tools
   var b_tools = document.createElement("td")
+
+  // Delete tool
   var b_node = document.createElement("BUTTON")
   var t_node = document.createTextNode("DELETE");
   b_node.value = building["id"]
   b_node.onclick=function(){deleteBuilding(this.value)}
   b_node.appendChild(t_node)
   b_tools.appendChild(b_node)
-  new_building.appendChild(b_tools)
 
+  // Expand tool
+  var b_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("EXPAND");
+  b_node.value = building["id"]
+  b_node.onclick=function(){expandBuilding(this.value)}
+  b_node.appendChild(t_node)
+  b_tools.appendChild(b_node)
+
+
+  new_building.appendChild(b_tools)
   // Set class and id
   new_building.id = "admin-building"+building["id"]
   new_building.className = "admin-building"
@@ -96,8 +135,252 @@ function addBuilding(resp){
   buildingTable.appendChild(new_building)
 }
 
+
+// Puts the floor data in the table
+function addFloor(resp){
+
+  console.log(resp)
+
+  floor = resp
+
+  console.log(floor["rooms"])
+
+
+  // New floor div
+  var new_floor = document.createElement("tr");
+
+  // Fill building ID
+  var b_id = document.createElement("td")
+  var t_node = document.createTextNode(floor["building_id"]);
+  b_id.appendChild(t_node)
+  new_floor.appendChild(b_id)
+
+  // Fill ID
+  var f_id = document.createElement("td")
+  var t_node = document.createTextNode(floor["floor_id"]);
+  f_id.appendChild(t_node)
+  new_floor.appendChild(f_id)
+
+  // Fill name
+  var f_name = document.createElement("td")
+  var t_node = document.createTextNode(floor["floor_name"]);
+  f_name.appendChild(t_node)
+  new_floor.appendChild(f_name)
+
+  // Fill description
+  var f_description = document.createElement("td")
+  var t_node = document.createTextNode(floor["floor_desc"]);
+  f_description.appendChild(t_node)
+  new_floor.appendChild(f_description)
+
+  // Get room count and rpi count by iterating through building data
+  room_count = 0
+  rpi_count = 0
+
+  for (room in floor["rooms"]){
+      room_count += 1
+      rpi_count += floor["rooms"][room]["rpis"].length
+  }
+
+  // Fill #rooms
+  var f_rooms = document.createElement("td")
+  var t_node = document.createTextNode(room_count.toString());
+  f_rooms.appendChild(t_node)
+  new_floor.appendChild(f_rooms)
+
+  // Fill #rpis
+  var f_rpis = document.createElement("td")
+  var t_node = document.createTextNode(rpi_count.toString());
+  f_rpis.appendChild(t_node)
+  new_floor.appendChild(f_rpis)
+
+  // Add tools
+  var f_tools = document.createElement("td")
+
+  // Delete tool
+  var f_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("DELETE");
+  f_node.value = floor["floor_id"]
+  f_node.onclick=function(){deleteFloor(this.value)}
+  f_node.appendChild(t_node)
+  f_tools.appendChild(f_node)
+
+  // Expand tool
+  var f_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("EXPAND");
+  f_node.value = floor["floor_id"]
+  f_node.onclick=function(){expandFloor(this.value)}
+  f_node.appendChild(t_node)
+  f_tools.appendChild(f_node)
+
+  new_floor.appendChild(f_tools)
+
+  // Set class and id
+  new_floor.id = "admin-floor"+floor["floor_id"]
+  new_floor.className = "admin-floor"
+
+  // Add to table
+  floorTable.appendChild(new_floor)
+
+}
+
+
+// Puts the room data in the table
+function addRoom(resp){
+
+  room = resp
+
+  // New floor div
+  var new_room = document.createElement("tr");
+
+  // Fill building ID
+  var b_id = document.createElement("td")
+  var t_node = document.createTextNode(room["building_id"]);
+  b_id.appendChild(t_node)
+  new_room.appendChild(b_id)
+
+  // Fill floor ID
+  var f_id = document.createElement("td")
+  var t_node = document.createTextNode(room["floor_id"]);
+  f_id.appendChild(t_node)
+  new_room.appendChild(f_id)
+
+  // Fill ID
+  var r_id = document.createElement("td")
+  var t_node = document.createTextNode(room["room_id"]);
+  r_id.appendChild(t_node)
+  new_room.appendChild(r_id)
+
+  // Fill name
+  var r_name = document.createElement("td")
+  var t_node = document.createTextNode(room["room_name"]);
+  r_name.appendChild(t_node)
+  new_room.appendChild(r_name)
+
+  // Fill description
+  var r_description = document.createElement("td")
+  var t_node = document.createTextNode(room["room_desc"]);
+  r_description.appendChild(t_node)
+  new_room.appendChild(r_description)
+
+  // Fill #rpis
+  var r_rpis = document.createElement("td")
+  var t_node = document.createTextNode(room["rpis"].length);
+  r_rpis.appendChild(t_node)
+  new_room.appendChild(r_rpis)
+
+  // Add tools
+  var r_tools = document.createElement("td")
+
+  // Delete tool
+  var r_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("DELETE");
+  r_node.value = room["room_id"]
+  r_node.onclick=function(){deleteRoom(this.value)}
+  r_node.appendChild(t_node)
+  r_tools.appendChild(r_node)
+
+  // Expand tool
+  var r_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("EXPAND");
+  r_node.value = room["room_id"]
+  r_node.onclick=function(){expandRoom(this.value)}
+  r_node.appendChild(t_node)
+  r_tools.appendChild(r_node)
+
+  new_room.appendChild(r_tools)
+
+  // Set class and id
+  new_room.id = "admin-room"+room["room_id"]
+  new_room.className = "admin-room"
+
+  // Add to table
+  roomTable.appendChild(new_room)
+}
+
+// Puts the rpi data in the table
+function addRpi(resp){
+
+  console.log(resp)
+
+  rpi = resp
+
+  // New rpi div
+  var new_rpi = document.createElement("tr");
+
+  // Fill building ID
+  var b_id = document.createElement("td")
+  var t_node = document.createTextNode(rpi["building_id"]);
+  b_id.appendChild(t_node)
+  new_rpi.appendChild(b_id)
+
+  // Fill floor ID
+  var f_id = document.createElement("td")
+  var t_node = document.createTextNode(rpi["floor_id"]);
+  f_id.appendChild(t_node)
+  new_rpi.appendChild(f_id)
+
+  // Fill room ID
+  var r_id = document.createElement("td")
+  var t_node = document.createTextNode(rpi["room_id"]);
+  r_id.appendChild(t_node)
+  new_rpi.appendChild(r_id)
+
+  // Fill ID
+  var r_id = document.createElement("td")
+  var t_node = document.createTextNode(rpi["rpi_id"]);
+  r_id.appendChild(t_node)
+  new_rpi.appendChild(r_id)
+
+  // Fill name
+  var r_name = document.createElement("td")
+  var t_node = document.createTextNode(rpi["rpi_name"]);
+  r_name.appendChild(t_node)
+  new_rpi.appendChild(r_name)
+
+  // Fill description
+  var r_description = document.createElement("td")
+  var t_node = document.createTextNode(rpi["rpi_desc"]);
+  r_description.appendChild(t_node)
+  new_rpi.appendChild(r_description)
+
+  // Fill auth key
+  var r_key = document.createElement("td")
+  var t_node = document.createTextNode(rpi["auth_key"]);
+  r_key.appendChild(t_node)
+  new_rpi.appendChild(r_key)
+
+  // Fill last report
+  var r_key = document.createElement("td")
+  new_rpi.appendChild(r_key)
+
+  // Add tools
+  var r_tools = document.createElement("td")
+
+  // Delete tool
+  var r_node = document.createElement("BUTTON")
+  var t_node = document.createTextNode("DELETE");
+  r_node.value = rpi["rpi_id"]
+  r_node.onclick=function(){deleteRpi(this.value)}
+  r_node.appendChild(t_node)
+  r_tools.appendChild(r_node)
+  new_rpi.appendChild(r_tools)
+
+  // Set class and id
+  new_rpi.id = "admin-rpi"+rpi["rpi_id"]
+  new_rpi.className = "admin-rpi"
+
+  // Add to table
+  rpiTable.appendChild(new_rpi)
+}
+
+
+
+
 // Handles a building response
 function handleBuildings(resp){
+
+  buildings_dict = {}
 
   // Decode JSON
   data = JSON.parse(resp)
@@ -201,33 +484,33 @@ function getUsers(){
   xmlHttp.send(null);
 }
 
-
-
-function addRpi(resp){
-  console.log(resp)
-}
-
-function handleRpis(resp){
-  // Decode JSON
-  data = JSON.parse(resp)
-  rpis = data["rpis"]
-
-  // Add each building
-  for (rpi in rpis){
-    addRpi(rpis[rpi])
-  }
-}
-
-function getRpis(){
-  url = rpis_url
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() {
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-          handleRpis(xmlHttp.responseText);
-  }
-  xmlHttp.open("GET", url, true); // true for asynchronous
-  xmlHttp.send(null);
-}
+// 
+//
+// function addRpi(resp){
+//   console.log(resp)
+// }
+//
+// function handleRpis(resp){
+//   // Decode JSON
+//   data = JSON.parse(resp)
+//   rpis = data["rpis"]
+//
+//   // Add each building
+//   for (rpi in rpis){
+//     addRpi(rpis[rpi])
+//   }
+// }
+//
+// function getRpis(){
+//   url = rpis_url
+//   var xmlHttp = new XMLHttpRequest();
+//   xmlHttp.onreadystatechange = function() {
+//       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+//           handleRpis(xmlHttp.responseText);
+//   }
+//   xmlHttp.open("GET", url, true); // true for asynchronous
+//   xmlHttp.send(null);
+// }
 
 
 
@@ -262,4 +545,156 @@ function deleteBuilding(id){
        getBuildings()
     }
 });
+}
+
+// Expand a building
+function expandBuilding(id){
+
+  selected_building = id
+  building_data = buildings_dict[id.toString()]
+
+  floorTable.textContent = ''
+  floorTable.visible = true
+
+  for (floor in building_data["floors"]){
+    addFloor(building_data["floors"][floor])
+  }
+
+
+}
+
+
+// Send an add floor request
+function addNewFloor(){
+
+  building_id = selected_building
+  name = newFloorName.value
+  desc = newFloorDesc.value
+
+  // Make request, on sucess get all floors again
+  url = add_floors_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"building_id":building_id,"name":name, "description":desc}),
+    success: function(result) {
+      sel = selected_building
+      getBuildings()
+      expandBuilding(sel)
+    }
+});
+}
+
+// Send a delete floor request
+function deleteFloor(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_floors_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      sel = selected_building
+      getBuildings()
+      expandBuilding(sel)
+    }
+});
+}
+
+// Expand a building
+function expandFloor(id){
+
+  selected_floor = id
+  building_data = buildings_dict[selected_building.toString()]
+
+  for (floor in building_data["floors"]){
+    if (building_data["floors"][floor]["floor_id"] == id){
+      floor_data = building_data["floors"][floor]
+      break;
+    }
+  }
+
+  roomTable.textContent = ''
+  roomTable.visible = true
+
+  for (room in floor_data["rooms"]){
+    addRoom(floor_data["rooms"][room])
+  }
+}
+
+
+
+
+
+
+// Send an add building request
+function addNewRoom(){
+
+  floor_id = selected_building
+  name = newRoomName.value
+  desc = newRoomDesc.value
+
+  // Make request, on sucess get all buildings again
+  url = add_rooms_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"floor_id":floor_id,"name":name, "description":desc}),
+    success: function(result) {
+      sel = selected_building
+      sel2 = selected_floor
+      getBuildings()
+      expandBuilding(sel)
+      expandFloor(sel2)
+    }
+});
+}
+
+// Send a delete buudling request
+function deleteRoom(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_rooms_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      sel = selected_building
+      sel2 = selected_floor
+      getBuildings()
+      expandBuilding(sel)
+      expandFloor(sel2)
+    }
+});
+}
+
+// Expand a building
+function expandRoom(id){
+
+  console.log("HERE")
+  selected_room = id
+  building_data = buildings_dict[selected_building.toString()]
+  for (floor in building_data["floors"]){
+    if (building_data["floors"][floor]["floor_id"] == id){
+      floor_data = building_data["floors"][floor]
+      for (room in floor_data["rooms"]){
+        if (floor_data["rooms"][room]["room_id"] == id){
+          room_data = floor_data["rooms"][room]
+          break
+        }
+      }
+      break;
+    }
+  }
+
+  console.log(room_data)
+
+  rpiTable.textContent = ''
+  rpiTable.visible = true
+
+  for (rpi in room_data["rpis"]){
+    addRpi(room_data["rpis"][rpi])
+  }
 }
