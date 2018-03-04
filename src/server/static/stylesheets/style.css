@@ -147,6 +147,27 @@ html, body {
   padding-bottom: 15px;
 }
 
+.admin-button {
+  background-color: #d5e1df;
+  color: red;
+  border: 0px;
+  font-size: 24px;
+}
+
+
+#admin-floors, #admin-floors-title {
+  visibility: collapse;
+}
+
+
+#admin-rooms, #admin-rooms-title {
+  visibility: collapse;
+}
+
+#admin-rpis, #admin-rpis-title{
+  visibility: collapse;
+}
+
 
 #buildings {
 

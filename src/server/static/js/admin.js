@@ -1,4 +1,5 @@
 // Dom Elements
+// Tables
 var adminpanel = document.getElementById("admin-panel");
 var buildingTable = document.getElementById("admin-buildings").childNodes[3];
 var floorTable = document.getElementById("admin-floors").childNodes[3];
@@ -6,7 +7,12 @@ var roomTable = document.getElementById("admin-rooms").childNodes[3];
 var rpiTable = document.getElementById("admin-rpis").childNodes[3];
 var userTable = document.getElementById("admin-users").childNodes[3];
 
+// Table titles
+var floorTitle = document.getElementById("admin-floors-title")
+var roomTitle = document.getElementById("admin-rooms-title")
+var rpiTitle = document.getElementById("admin-rpis-title")
 
+// Input elements for adding new buildings/floors/rooms/rpis
 var newBuildingName =  document.getElementById("new-building-name");
 var newBuildingDesc =  document.getElementById("new-building-desc");
 
@@ -21,13 +27,14 @@ var newRpiDesc =  document.getElementById("new-rpi-desc");
 
 
 // Api Endpoints
+// Get urls
 var base_url = window.location.hostname
 var buildings_url =  "/api/v1/buildings/get-all"
 var building_url = "/api/v1/buildings/admin-get/"
 var users_url = "/api/v1/users/admin-get-all"
 var rpis_url = "/api/v1/rpis/admin-get-all"
 
-
+// Post urls
 var add_buildings_url = "/api/v1/buildings/admin-add"
 var delete_buildings_url = "/api/v1/buildings/admin-delete"
 
@@ -40,15 +47,17 @@ var delete_rooms_url = "/api/v1/rooms/admin-delete"
 var add_rpis_url = "/api/v1/rpis/admin-add"
 var delete_rpis_url = "/api/v1/rpis/admin-delete"
 
+// Triggers the intial database gets
 getBuildings()
 getUsers()
 
+// Variables used to store current display data
 buildings_dict = {}
 selected_building = null
 selected_floor = null
 selected_room = null
 
-
+// Functions for adding new elements to the DOM
 // Puts the building data in the table
 function addBuilding(resp){
 
@@ -111,7 +120,9 @@ function addBuilding(resp){
 
   // Delete tool
   var b_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("DELETE");
+  b_node.className = "admin-button"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-trash"
   b_node.value = building["id"]
   b_node.onclick=function(){deleteBuilding(this.value)}
   b_node.appendChild(t_node)
@@ -119,7 +130,9 @@ function addBuilding(resp){
 
   // Expand tool
   var b_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("EXPAND");
+  b_node.className = "admin-button"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-bars"
   b_node.value = building["id"]
   b_node.onclick=function(){expandBuilding(this.value)}
   b_node.appendChild(t_node)
@@ -134,7 +147,6 @@ function addBuilding(resp){
   // Add to table
   buildingTable.appendChild(new_building)
 }
-
 
 // Puts the floor data in the table
 function addFloor(resp){
@@ -199,7 +211,9 @@ function addFloor(resp){
 
   // Delete tool
   var f_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("DELETE");
+  f_node.className = "admin-button"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-trash"
   f_node.value = floor["floor_id"]
   f_node.onclick=function(){deleteFloor(this.value)}
   f_node.appendChild(t_node)
@@ -207,7 +221,9 @@ function addFloor(resp){
 
   // Expand tool
   var f_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("EXPAND");
+  f_node.className = "admin-button"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-bars"
   f_node.value = floor["floor_id"]
   f_node.onclick=function(){expandFloor(this.value)}
   f_node.appendChild(t_node)
@@ -223,7 +239,6 @@ function addFloor(resp){
   floorTable.appendChild(new_floor)
 
 }
-
 
 // Puts the room data in the table
 function addRoom(resp){
@@ -274,7 +289,9 @@ function addRoom(resp){
 
   // Delete tool
   var r_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("DELETE");
+  r_node.className = "admin-button"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-trash"
   r_node.value = room["room_id"]
   r_node.onclick=function(){deleteRoom(this.value)}
   r_node.appendChild(t_node)
@@ -282,7 +299,9 @@ function addRoom(resp){
 
   // Expand tool
   var r_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("EXPAND");
+  r_node.className = "admin-button"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-bars"
   r_node.value = room["room_id"]
   r_node.onclick=function(){expandRoom(this.value)}
   r_node.appendChild(t_node)
@@ -297,7 +316,6 @@ function addRoom(resp){
   // Add to table
   roomTable.appendChild(new_room)
 }
-
 
 // Puts the rpi data in the table
 function addRpi(resp){
@@ -362,7 +380,9 @@ function addRpi(resp){
 
   // Delete tool
   var r_node = document.createElement("BUTTON")
-  var t_node = document.createTextNode("DELETE");
+  r_node.className = "admin-button"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-trash"
   r_node.value = rpi["rpi_id"]
   r_node.onclick=function(){deleteRpi(this.value)}
   r_node.appendChild(t_node)
@@ -377,8 +397,41 @@ function addRpi(resp){
   rpiTable.appendChild(new_rpi)
 }
 
+// Puts the user data in the table
+function addUser(resp){
+  user = resp
 
-// Handles a building response
+  // New user div
+  var new_user = document.createElement("tr");
+
+  // Fill ID
+  var u_id = document.createElement("td")
+  var t_node = document.createTextNode(user[0]);
+  u_id.appendChild(t_node)
+  new_user.appendChild(u_id)
+
+  // Fill name
+  var u_name = document.createElement("td")
+  var t_node = document.createTextNode(user[1]);
+  u_name.appendChild(t_node)
+  new_user.appendChild(u_name)
+
+
+  // Add tools
+  var u_tools = document.createElement("td")
+  new_user.appendChild(u_tools)
+
+  // Set class and id
+  new_user.id = "admin-user"+user[0]
+  new_user.className = "admin-user"
+
+  // Add to table
+  userTable.appendChild(new_user)
+}
+
+
+// Functions for handling get responses
+// Handles a buildings response
 function handleBuildings(resp){
 
   buildings_dict = {}
@@ -393,6 +446,21 @@ function handleBuildings(resp){
   }
 }
 
+// Handles a users response
+function handleUsers(resp){
+
+  // Decode JSON
+  data = JSON.parse(resp)
+  users = data["users"]
+
+  // Add each building
+  for (user in users){
+    addUser(users[user])
+  }
+}
+
+
+// Functions for making get requests
 // Gets all data for one building
 function getBuildingData(building_id){
 
@@ -428,52 +496,6 @@ function getBuildings(){
   xmlHttp.send(null);
 }
 
-
-// Puts the user data in the table
-function addUser(resp){
-  user = resp
-
-  // New user div
-  var new_user = document.createElement("tr");
-
-  // Fill ID
-  var u_id = document.createElement("td")
-  var t_node = document.createTextNode(user[0]);
-  u_id.appendChild(t_node)
-  new_user.appendChild(u_id)
-
-  // Fill name
-  var u_name = document.createElement("td")
-  var t_node = document.createTextNode(user[1]);
-  u_name.appendChild(t_node)
-  new_user.appendChild(u_name)
-
-
-  // Add tools
-  var u_tools = document.createElement("td")
-  new_user.appendChild(u_tools)
-
-  // Set class and id
-  new_user.id = "admin-user"+user[0]
-  new_user.className = "admin-user"
-
-  // Add to table
-  userTable.appendChild(new_user)
-}
-
-// Handles a users response
-function handleUsers(resp){
-
-  // Decode JSON
-  data = JSON.parse(resp)
-  users = data["users"]
-
-  // Add each building
-  for (user in users){
-    addUser(users[user])
-  }
-}
-
 // Gets all users
 function getUsers(){
 
@@ -489,6 +511,7 @@ function getUsers(){
 }
 
 
+// Functions for adding new objects to the database
 // Send an add building request
 function addNewBuilding(){
 
@@ -507,42 +530,6 @@ function addNewBuilding(){
 });
 }
 
-// Send a delete buudling request
-function deleteBuilding(id){
-
-  // Make request, on sucess get all buildings again
-  url = delete_buildings_url
-  $.ajax({
-    type: 'POST',
-    url: url,
-    data: JSON.stringify({"id":id}),
-    success: function(result) {
-       getBuildings()
-    }
-});
-}
-
-// Expand a building
-function expandBuilding(id){
-
-
-
-  selected_building = id
-  building_data = buildings_dict[id.toString()]
-
-  floorTable.textContent = '';
-  roomTable.textContent = '';
-  rpiTable.textContent = '';
-  floorTable.visible = true
-
-  for (floor in building_data["floors"]){
-    addFloor(building_data["floors"][floor])
-  }
-
-
-}
-
-
 // Send an add floor request
 function addNewFloor(){
 
@@ -559,50 +546,11 @@ function addNewFloor(){
     success: function(result) {
       sel = selected_building
       getBuildings()
+
       expandBuilding(sel)
     }
-});
+  });
 }
-
-// Send a delete floor request
-function deleteFloor(id){
-
-  // Make request, on sucess get all buildings again
-  url = delete_floors_url
-  $.ajax({
-    type: 'POST',
-    url: url,
-    data: JSON.stringify({"id":id}),
-    success: function(result) {
-      sel = selected_building
-      getBuildings()
-      expandBuilding(sel)
-    }
-});
-}
-
-// Expand a floor
-function expandFloor(id){
-
-  selected_floor = id
-  building_data = buildings_dict[selected_building.toString()]
-
-  for (floor in building_data["floors"]){
-    if (building_data["floors"][floor]["floor_id"] == id){
-      floor_data = building_data["floors"][floor]
-      break;
-    }
-  }
-
-  roomTable.textContent = '';
-  rpiTable.textContent = '';
-  roomTable.visible = true
-
-  for (room in floor_data["rooms"]){
-    addRoom(floor_data["rooms"][room])
-  }
-}
-
 
 // Send an add room request
 function addNewRoom(){
@@ -626,55 +574,6 @@ function addNewRoom(){
     }
 });
 }
-
-// Send a delete room request
-function deleteRoom(id){
-
-  // Make request, on sucess get all buildings again
-  url = delete_rooms_url
-  $.ajax({
-    type: 'POST',
-    url: url,
-    data: JSON.stringify({"id":id}),
-    success: function(result) {
-      sel = selected_building
-      sel2 = selected_floor
-      getBuildings()
-      expandBuilding(sel)
-      expandFloor(sel2)
-    }
-});
-}
-
-// Expand a room
-function expandRoom(id){
-
-  console.log("HERE")
-  selected_room = id
-  building_data = buildings_dict[selected_building.toString()]
-  for (floor in building_data["floors"]){
-    if (building_data["floors"][floor]["floor_id"] == selected_floor){
-      floor_data = building_data["floors"][floor]
-      for (room in floor_data["rooms"]){
-        if (floor_data["rooms"][room]["room_id"] == id){
-          room_data = floor_data["rooms"][room]
-          break
-        }
-      }
-      break;
-    }
-  }
-
-  console.log(room_data)
-
-  rpiTable.textContent = '';
-  rpiTable.visible = true
-
-  for (rpi in room_data["rpis"]){
-    addRpi(room_data["rpis"][rpi])
-  }
-}
-
 
 // Send an add rpi request
 function addNewRpi(){
@@ -701,6 +600,60 @@ function addNewRpi(){
 });
 }
 
+
+// Functions for deleting objects from the database
+// Send a delete buudling request
+// Send a delete building request
+function deleteBuilding(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_buildings_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+       getBuildings()
+    }
+});
+}
+
+// Send a delete floor request
+function deleteFloor(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_floors_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      sel = selected_building
+      getBuildings()
+      expandBuilding(sel)
+    }
+});
+}
+
+// Send a delete room request
+function deleteRoom(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_rooms_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      sel = selected_building
+      sel2 = selected_floor
+      getBuildings()
+      expandBuilding(sel)
+      expandFloor(sel2)
+    }
+});
+}
+
 // Send a delete rpi request
 function deleteRpi(id){
 
@@ -720,4 +673,81 @@ function deleteRpi(id){
       expandRoom(sel3)
     }
 });
+}
+
+
+// Functions for expanding object to new tables
+// Expand a building
+function expandBuilding(id){
+
+  selected_building = id
+  building_data = buildings_dict[id.toString()]
+
+  floorTable.textContent = '';
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
+  floorTable.parentNode.style.visibility = "visible"
+  floorTitle.style.visibility = "visible"
+  floorTitle.innerText = building["name"]
+
+  for (floor in building_data["floors"]){
+    addFloor(building_data["floors"][floor])
+  }
+
+
+}
+
+// Expand a floor
+function expandFloor(id){
+
+  selected_floor = id
+  building_data = buildings_dict[selected_building.toString()]
+
+  for (floor in building_data["floors"]){
+    if (building_data["floors"][floor]["floor_id"] == id){
+      floor_data = building_data["floors"][floor]
+      break;
+    }
+  }
+
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
+  roomTable.parentNode.style.visibility = "visible"
+  roomTitle.style.visibility = "visible"
+  roomTitle.innerText = floor_data["floor_name"]
+
+  for (room in floor_data["rooms"]){
+    addRoom(floor_data["rooms"][room])
+  }
+}
+
+// Expand a room
+function expandRoom(id){
+
+  console.log("HERE")
+  selected_room = id
+  building_data = buildings_dict[selected_building.toString()]
+  for (floor in building_data["floors"]){
+    if (building_data["floors"][floor]["floor_id"] == selected_floor){
+      floor_data = building_data["floors"][floor]
+      for (room in floor_data["rooms"]){
+        if (floor_data["rooms"][room]["room_id"] == id){
+          room_data = floor_data["rooms"][room]
+          break
+        }
+      }
+      break;
+    }
+  }
+
+  console.log(room_data)
+
+  rpiTable.textContent = '';
+  rpiTable.parentNode.style.visibility = "visible"
+  rpiTitle.style.visibility = "visible"
+  rpiTitle.innerText = room_data["room_name"]
+
+  for (rpi in room_data["rpis"]){
+    addRpi(room_data["rpis"][rpi])
+  }
 }
