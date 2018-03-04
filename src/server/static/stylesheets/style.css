@@ -31,7 +31,7 @@ html, body {
 .header_info {
 
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
 
   height: 80%;
   max-height: 80%;
@@ -75,7 +75,7 @@ html, body {
 #contentsbox {
 
   width : 100%;
-  max-width: 1200px;
+  max-width: 1400px;
 
   min-height: 85%;
   height: 85%;
@@ -85,6 +85,68 @@ html, body {
 
   margin: 0 auto;
 }
+
+#admin-panel {
+
+  align-self: center;
+  vertical-align: top;
+  width: 90%;
+  height: 85%;
+
+  overflow: auto;
+
+  padding: 5%;
+
+  align-items: center;
+}
+
+#admin-panel table{
+  width: 100%;
+  margin: 15px;
+  overflow:auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 2px solid black;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#admin-panel thead {
+  width: 100%;
+  font-size: 18pt;
+  border: 2px solid black;
+}
+
+#admin-panel thead {
+  width: 100%;
+  font-size: 14pt;
+  border: 2px solid black;
+}
+
+
+#admin-panel thead th {
+  background-color: #86af49;
+  color: #fff ;
+  border: 2px solid black;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+#admin-panel thead td {
+  background-color: #d5e1df;
+  border: 2px solid black;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+
+#admin-panel tbody td {
+  background-color: #d5e1df;
+  border: 2px solid black;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 
 #buildings {
 

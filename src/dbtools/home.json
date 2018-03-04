@@ -1,0 +1,44 @@
+{
+  "name": "Home",
+  "description": "My home",
+  "floors": [
+    {
+      "name": "Ground Floor",
+      "description": "The ground floor",
+      "rooms": [
+        {
+          "name": "Living room",
+          "description": "The living room",
+          "rpis": [
+            {
+              "name" : "living room pi",
+              "description": "-----"
+            }
+          ]
+        },
+        {
+          "name": "Kitchen",
+          "description": "The kitchen",
+          "rpis": []
+        },
+        {
+          "name": "My room",
+          "description": "My bedroom room",
+          "rpis": []
+        },
+        {
+          "name": "Kennys room",
+          "description": "Kennys bedroom room",
+          "rpis": []
+        },
+        {
+          "name": "Hallway",
+          "description": "The hallway",
+          "rpis": []
+        }
+      ]
+    }
+  ]
+
+
+}

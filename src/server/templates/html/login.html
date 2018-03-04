@@ -1,0 +1,13 @@
+{% extends "html/base.html" %}
+
+{% block contents %}
+  <form action="" method="post">
+    <p><input type=text name=username>
+    <p><input type=password name=password>
+    <p><input type=submit value=Login>
+  </form>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='js/building.js') }}"></script>
+{% endblock %}
