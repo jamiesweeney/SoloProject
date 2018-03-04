@@ -5,6 +5,7 @@ from flask import Flask
 from subprocess import call
 from subprocess import check_output
 import random
+import secrets
 from flask import request,  render_template, json, redirect, Response, url_for
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, confirm_login
 from urllib.parse import urlparse, urljoin
@@ -39,7 +40,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "wp_login"
 
-print (dir(login_manager))
 
 #-- Web pages --#
 @app.route("/")
@@ -116,7 +116,6 @@ def wp_logout():
 
 #-- Public get requests --#
 # Returns all the buildings
-# Returns the list of all buildings
 @app.route("/api/v1/buildings/get-all")
 def getAllBuildings():
 
@@ -290,6 +289,27 @@ def adminGetBuilding(building_id):
         mimetype='application/json'
     )
 
+# Returns admin data for users
+@app.route("/api/v1/users/admin-get-all")
+#@login_required
+def adminGetUsers():
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("users")
+    cur = conn.cursor()
+
+    # Get building data
+    cur.execute("SELECT userID, username FROM users;".format())
+    ans = cur.fetchall()
+    ans = {"users":ans}
+    response = app.response_class(
+        response=json.dumps(ans),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+#-- Admin POST requests --#
 @app.route("/api/v1/buildings/admin-add", methods=['POST'])
 #@login_required
 def adminAddBuilding():
@@ -401,9 +421,10 @@ def adminAddRpi():
     # Get connection and cursor to DB
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
+    content["auth_key"] = secrets.token_bytes(nbytes=255)
 
     # Add building to database
-    cur.executemany("INSERT INTO rpis (roomID, name, description) VALUES (%s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"])])
+    cur.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"], content["auth_key"])])
     ans = cur.fetchall()
 
     conn.commit()
@@ -426,30 +447,39 @@ def adminDelRpis():
     conn.commit()
     return "OK"
 
-# Returns admin data for users
-@app.route("/api/v1/users/admin-get-all")
+@app.route("/api/v1/users/admin-add", methods=['POST'])
 #@login_required
-def adminGetUsers():
+def adminAddUsers():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
     # Get connection and cursor to DB
     conn = aquireSQLConnection("users")
     cur = conn.cursor()
 
-    # Get building data
-    cur.execute("SELECT userID, username FROM users;".format())
+    # Add building to database
+    cur.executemany("INSERT INTO users (username, passhash) VALUES ( %s, %s)", [(content["username"],  sha256_crypt.encrypt(content["password"]))])
     ans = cur.fetchall()
-    ans = {"users":ans}
-    response = app.response_class(
-        response=json.dumps(ans),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
 
-# Returns admin data for RPi auth
-@app.route("/api/v1/rpis/admin-get-all")
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/users/admin-delete", methods=['POST'])
 #@login_required
-def adminGetRPIs():
-    return "Not implemented yet"
+def adminDelUsers():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("users")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.execute("DELETE FROM users WHERE id = {};".format(content["id"]))
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
 
 
 #-- Pi Requests --#
@@ -459,37 +489,35 @@ def addReport():
     content = request.get_json()
 
     # Verify identity
-    auth = content['auth']
-    if (magic_authentication(auth) == False):
-        return "NOT AUTHORIZED"
+    auth = content['auth_key']
+    rpi_id = content['rpi_id']
+
+    conn  = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {}").format(rpi_id)
+    ans = cur.fetchone()
+
+    if (ans[0] != auth):
+        return "AUTH KEY INVALID"
 
     # Get data
-    room_id = content['roomID']
     time_n = content['time']
     devices = content['devices']
     people = content['people']
-
-    # Feed data to linear Regression alg
-    ans =  magic_algorithm(room_id, time_n, devices, people)
-
 
     # Get connection and cursor to DB
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
 
-    cursor.executemany("INSERT INTO reports (roomID, time, devices, people, estimate) VALUES (%s, %s, %s, %s, %s)", [(room_id, time_n, devices, people, ans)])
+    cursor.executemany("INSERT INTO reports (rpiID, time_n, devices, people) VALUES (%s, %s, %s, %s, %s)", [(rpi_id, time_n, devices, people)])
     ans = cur.fetchall()
 
     conn.commit()
     return "OK"
 
 
-#-- Authentication --#
-# Authenticates the RPi requests for data changes
-def magic_authentication(request):
-    return True
-
-
+#-- User login functions / classes --#
 # Authenticates users for admin access
 def doLogin(username, password):
 
@@ -507,7 +535,6 @@ def doLogin(username, password):
         return sha256_crypt.verify(password, ans[0])
     else:
         return False
-
 
 # User model
 class User(UserMixin):
@@ -528,7 +555,6 @@ class User(UserMixin):
     def get_id(self):
         return str(self.id).encode("utf-8").decode("utf-8")
 
-
 # Loads a User object
 @login_manager.user_loader
 def load_user(username):
@@ -548,9 +574,6 @@ def load_user(username):
         # Create user object and return
         return User(username,user_id)
 
-
-
-
 @login_manager.request_loader
 def request_loader(request):
 
@@ -569,7 +592,6 @@ def request_loader(request):
         user = User(ans[1],ans[0])
         return user
 
-
 # Checks if a redirect url is safe to redirect to
 def is_safe_url(next):
     ref_url = urlparse(request.host_url)
@@ -580,8 +602,7 @@ def is_safe_url(next):
 
 
 #-- Database Management --#
-
-# Gets an SQL connection to use for a DB --#
+# Gets an SQL connection to use for a DB
 def aquireSQLConnection(db_name):
 
     # Connect to SQL database using login and ssl-certs

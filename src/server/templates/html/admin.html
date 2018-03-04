@@ -1,126 +1,156 @@
 {% extends "html/base.html" %}
 
+
 {% block contents %}
 <script src="https://www.w3schools.com/lib/w3.js"></script>
-<div id="admin-panel">
-  <h2>Buildings</h2>
-  <table id="admin-buildings">
-    <thead>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(3)')" style="cursor:pointer">Description</th>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(4)')" style="cursor:pointer">#Floors</th>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
-      <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
-      <th style="cursor:pointer">Tools</th>
+<div class= id="admin-panel">
 
-      <tr>
-        <td></td>
-        <td><input id="new-building-name" type="text" name="name" style="height:60%"></td>
-        <td><input id="new-building-desc" type="text" name="description"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><button class="admin-button" onclick="addNewBuilding()"><i class="fa fa-plus"></i></button></td>
-      </tr>
-    </thead>
-    <tbody class="admin-buildings-body">
-    </tbody>
-  </table>
+  <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#tab-buildings">Buildings data</a></li>
+    <li><a data-toggle="pill" href="#tab-users">User data</a></li>
+    <li><a data-toggle="pill" href="#tab-settings">Settings</a></li>
+    <li><a data-toggle="pill" href="#tab-help">Help</a></li>
+  </ul>
 
-  <h2 id="admin-floors-title"></h2>
-  <table id="admin-floors">
-    <thead>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(2)')" style="cursor:pointer">ID</th>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(3)')" style="cursor:pointer">Name</th>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(4)')" style="cursor:pointer">Description</th>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
-      <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
-      <th style="cursor:pointer">Tools</th>
-      <tr>
-        <td></td>
-        <td><input id="new-floor-name" type="text" name="name"></td>
-        <td><input id="new-floor-desc" type="text" name="description"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><button class="admin-button" onclick="addNewFloor()"><i class="fa fa-plus"></i></button></td>
-      </tr>
-    </thead>
-    <tbody class="admin-floors-body">
-    </tbody>
-  </table>
+  <div class="tab-content">
+    <div id="tab-buildings" class="tab-pane fade in active">
+      <h2>Buildings</h2>
+      <table id="admin-buildings">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(3)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(4)')" style="cursor:pointer">#Floors</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
 
-  <h2 id="admin-rooms-title"></h2>
-  <table id="admin-rooms">
-    <thead>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(3)')" style="cursor:pointer">ID</th>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(4)')" style="cursor:pointer">Name</th>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(5)')" style="cursor:pointer">Description</th>
-      <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
-      <th style="cursor:pointer">Tools</th>
-      <tr>
-        <td></td>
-        <td><input id="new-room-name" type="text" name="name"></td>
-        <td><input id="new-room-desc" type="text" name="description"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><button class="admin-button" onclick="addNewRoom()"><i class="fa fa-plus"></i></button></td>
-      </tr>
-    </thead>
-    <tbody class="admin-rooms-body">
-    </tbody>
-  </table>
+          <tr>
+            <td></td>
+            <td><input id="new-building-name" type="text" name="name" style="height:60%"></td>
+            <td><input id="new-building-desc" type="text" name="description"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><button class="admin-button" onclick="addNewBuilding()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-buildings-body">
+        </tbody>
+      </table>
 
-  <h2 id="admin-rpis-title"></h2>
-  <table id="admin-rpis">
-    <thead>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(3)')" style="cursor:pointer">Room ID</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(4)')" style="cursor:pointer">ID</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(5)')" style="cursor:pointer">Name</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(6)')" style="cursor:pointer">Description</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(7)')" style="cursor:pointer">Auth Key</th>
-      <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(8)')" style="cursor:pointer">Last report</th>
-      <th style="cursor:pointer">Tools</th>
+      <h2 id="admin-floors-title"></h2>
+      <table id="admin-floors">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(2)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(3)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(4)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><input id="new-floor-name" type="text" name="name"></td>
+            <td><input id="new-floor-desc" type="text" name="description"></td>
+            <td></td>
+            <td></td>
+            <td><button class="admin-button" onclick="addNewFloor()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-floors-body">
+        </tbody>
+      </table>
 
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><input id="new-rpi-name" type="text" name="name"></td>
-        <td><input id="new-rpi-desc" type="text" name="description"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><button class="admin-button" onclick="addNewRpi()"><i class="fa fa-plus"></i></button></td>
-      </tr>
-    </thead>
-    <tbody class="admin-rpis-body">
-    </tbody>
-  </table>
+      <h2 id="admin-rooms-title"></h2>
+      <table id="admin-rooms">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(3)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(4)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(5)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="new-room-name" type="text" name="name"></td>
+            <td><input id="new-room-desc" type="text" name="description"></td>
+            <td></td>
+            <td><button class="admin-button" onclick="addNewRoom()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-rooms-body">
+        </tbody>
+      </table>
+
+      <h2 id="admin-rpis-title"></h2>
+      <table id="admin-rpis">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(3)')" style="cursor:pointer">Room ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(4)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(5)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(6)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(8)')" style="cursor:pointer">Last report</th>
+          <th style="cursor:pointer">Tools</th>
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="new-rpi-name" type="text" name="name"></td>
+            <td><input id="new-rpi-desc" type="text" name="description"></td>
+            <td></td>
+            <td><button class="admin-button" onclick="addNewRpi()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-rpis-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-users" class="tab-pane fade">
+
+      <h2>Add new user</h2>
+      <div id="new-user-form">
+        <h3>Username:</h3>
+        <input id="new-user-name" type="text" name="name">
+        <h3>Password:</h3>
+        <input id="new-user-pass1" type="text" name="name">
+        <h3>Password (again):</h3>
+        <input id="new-user-pass2" type="text" name="name">
+        <input id="new-user-button" type="submit" value="Add user" onclick="addNewUser()">
+      </div>
 
 
+      <h2>Users</h2>
+      <table id="admin-users">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
+          <th style="cursor:pointer">Tools</th>
+        </thead>
+        <tbody class="admin-users-body">
+        </tbody>
+      </table>
+    </div>
 
-  <h2>Users</h2>
-  <table id="admin-users">
-    <thead>
-      <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
-      <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
-      <th style="cursor:pointer">Tools</th>
-    </thead>
-    <tbody class="admin-users-body">
-    </tbody>
-  </table>
+    <div id="tab-settings" class="tab-pane fade">
+      <p>TODO</p>
+    </div>
 
-
-
+    <div id="tab-help" class="tab-pane fade">
+      <p>TODO</p>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
 
 {% block script %}

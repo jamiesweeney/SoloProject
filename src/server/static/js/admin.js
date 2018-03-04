@@ -25,6 +25,12 @@ var newRoomDesc =  document.getElementById("new-room-desc");
 var newRpiName =  document.getElementById("new-rpi-name");
 var newRpiDesc =  document.getElementById("new-rpi-desc");
 
+var newUserName = document.getElementById("new-user-name");
+var newUserPass1 = document.getElementById("new-user-pass1");
+var newUserPass2 = document.getElementById("new-user-pass2");
+
+
+
 
 // Api Endpoints
 // Get urls
@@ -46,6 +52,9 @@ var delete_rooms_url = "/api/v1/rooms/admin-delete"
 
 var add_rpis_url = "/api/v1/rpis/admin-add"
 var delete_rpis_url = "/api/v1/rpis/admin-delete"
+
+var add_users_url = "/api/v1/users/admin-add"
+var delete_users_url = "/api/v1/users/admin-delete"
 
 // Triggers the intial database gets
 getBuildings()
@@ -151,12 +160,7 @@ function addBuilding(resp){
 // Puts the floor data in the table
 function addFloor(resp){
 
-  console.log(resp)
-
   floor = resp
-
-  console.log(floor["rooms"])
-
 
   // New floor div
   var new_floor = document.createElement("tr");
@@ -320,8 +324,6 @@ function addRoom(resp){
 // Puts the rpi data in the table
 function addRpi(resp){
 
-  console.log(resp)
-
   rpi = resp
 
   // New rpi div
@@ -363,12 +365,6 @@ function addRpi(resp){
   r_description.appendChild(t_node)
   new_rpi.appendChild(r_description)
 
-  // Fill auth key
-  var r_key = document.createElement("td")
-  var t_node = document.createTextNode(rpi["auth_key"]);
-  r_key.appendChild(t_node)
-  new_rpi.appendChild(r_key)
-
   // Fill last report
   var r_rep = document.createElement("td")
   var t_node = document.createTextNode("never");
@@ -387,7 +383,25 @@ function addRpi(resp){
   r_node.onclick=function(){deleteRpi(this.value)}
   r_node.appendChild(t_node)
   r_tools.appendChild(r_node)
+
+  // Download auth tool
+  var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({"id":rpi["rpi_id"], "auth_key": rpi["auth_key"]}));
+  var r_node = document.createElement("BUTTON")
+  r_node.className = "admin-button"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-download"
+  var l_node = document.createElement("a")
+  l_node.href = "data:"+ data
+  l_node.download = rpi["rpi_name"] + ".json"
+  r_node.value = rpi["rpi_id"]
+  //r_node.onclick=function(){downloadRpiAuth(this.value)}
+  l_node.appendChild(t_node)
+  r_node.appendChild(l_node)
+  r_tools.appendChild(r_node)
   new_rpi.appendChild(r_tools)
+
+
+
 
   // Set class and id
   new_rpi.id = "admin-rpi"+rpi["rpi_id"]
@@ -499,6 +513,11 @@ function getBuildings(){
 // Gets all users
 function getUsers(){
 
+  userTable.textContent = '';
+  newUserName.textContent = '';
+  newUserPass1.textContent = '';
+  newUserPass2.textContent = '';
+
   // Get all users, call handleUsers on sucess
   url = users_url
   var xmlHttp = new XMLHttpRequest();
@@ -600,6 +619,32 @@ function addNewRpi(){
 });
 }
 
+// Send an add user request
+function addNewUser(){
+
+  user_name = newUserName.value
+  pass1 = newUserPass1.value
+  pass2 = newUserPass2.value
+
+  // Make sure password is safe
+  if (pass1 != pass2){
+    console.log("Entered passwords do not match, try again!")
+    return
+  }else if (pass1.replace(" ", "") == ""){
+    console.log("Password not secure, try again!")
+  }
+
+  // Make request, on sucess get all users again
+  url = add_users_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"username":user_name,"password":pass1}),
+    success: function(result) {
+      getUsers()
+    }
+});
+}
 
 // Functions for deleting objects from the database
 // Send a delete buudling request
@@ -675,6 +720,21 @@ function deleteRpi(id){
 });
 }
 
+// Send a delete rpi request
+function deleteUser(id){
+
+  // Make request, on sucess get all users again
+  url = delete_users_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      getUsers()
+    }
+});
+}
+
 
 // Functions for expanding object to new tables
 // Expand a building
@@ -724,7 +784,6 @@ function expandFloor(id){
 // Expand a room
 function expandRoom(id){
 
-  console.log("HERE")
   selected_room = id
   building_data = buildings_dict[selected_building.toString()]
   for (floor in building_data["floors"]){
@@ -740,7 +799,6 @@ function expandRoom(id){
     }
   }
 
-  console.log(room_data)
 
   rpiTable.textContent = '';
   rpiTable.parentNode.style.visibility = "visible"
@@ -750,4 +808,31 @@ function expandRoom(id){
   for (rpi in room_data["rpis"]){
     addRpi(room_data["rpis"][rpi])
   }
+}
+
+
+// Downloads the rpi auth data
+function downloadRpiAuth(id){
+
+  building_data = buildings_dict[selected_building.toString()]
+  for (floor in building_data["floors"]){
+    if (building_data["floors"][floor]["floor_id"] == selected_floor){
+      floor_data = building_data["floors"][floor]
+      for (room in floor_data["rooms"]){
+        if (floor_data["rooms"][room]["room_id"] == selected_room){
+          room_data = floor_data["rooms"][room]
+          for (rpi in room_data["rpis"]){
+            if (room_data["rpis"][rpi]["rpi_id"] == id){
+              rpi_data = room_data["rpis"][rpi]
+              break
+            }
+          }
+          break
+        }
+      }
+      break;
+    }
+  }
+
+
 }
