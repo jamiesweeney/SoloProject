@@ -324,7 +324,107 @@ def adminDelBuilding():
     conn.commit()
     return "OK"
 
+@app.route("/api/v1/floors/admin-add", methods=['POST'])
+#@login_required
+def adminAddFloor():
 
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.executemany("INSERT INTO floors (buildingID, name, description) VALUES (%s, %s, %s)", [(str(content["building_id"]), content["name"], content["description"])])
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/floors/admin-delete", methods=['POST'])
+#@login_required
+def adminDelFloor():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.execute("DELETE FROM floors WHERE id = {};".format(content["id"]))
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/rooms/admin-add", methods=['POST'])
+#@login_required
+def adminAddRoom():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.executemany("INSERT INTO rooms (floorID, name, description) VALUES (%s, %s, %s)", [(str(content["floor_id"]), content["name"], content["description"])])
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/rooms/admin-delete", methods=['POST'])
+#@login_required
+def adminDelRoom():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.execute("DELETE FROM rooms WHERE id = {};".format(content["id"]))
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/rpis/admin-add", methods=['POST'])
+#@login_required
+def adminAddRpi():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.executemany("INSERT INTO rpis (roomID, name, description) VALUES (%s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"])])
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
+
+@app.route("/api/v1/rpis/admin-delete", methods=['POST'])
+#@login_required
+def adminDelRpis():
+
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add building to database
+    cur.execute("DELETE FROM rpis WHERE id = {};".format(content["id"]))
+    ans = cur.fetchall()
+
+    conn.commit()
+    return "OK"
 
 # Returns admin data for users
 @app.route("/api/v1/users/admin-get-all")
