@@ -129,7 +129,7 @@ function addBuilding(resp){
 
   // Delete tool
   var b_node = document.createElement("BUTTON")
-  b_node.className = "admin-button"
+  b_node.className = "admin-button-delete"
   var t_node = document.createElement("i")
   t_node.className="fa fa-trash"
   b_node.value = building["id"]
@@ -139,7 +139,7 @@ function addBuilding(resp){
 
   // Expand tool
   var b_node = document.createElement("BUTTON")
-  b_node.className = "admin-button"
+  b_node.className = "admin-button-expand"
   var t_node = document.createElement("i");
   t_node.className="fa fa-bars"
   b_node.value = building["id"]
@@ -215,7 +215,7 @@ function addFloor(resp){
 
   // Delete tool
   var f_node = document.createElement("BUTTON")
-  f_node.className = "admin-button"
+  f_node.className = "admin-button-delete"
   var t_node = document.createElement("i")
   t_node.className="fa fa-trash"
   f_node.value = floor["floor_id"]
@@ -225,7 +225,7 @@ function addFloor(resp){
 
   // Expand tool
   var f_node = document.createElement("BUTTON")
-  f_node.className = "admin-button"
+  f_node.className = "admin-button-expand"
   var t_node = document.createElement("i");
   t_node.className="fa fa-bars"
   f_node.value = floor["floor_id"]
@@ -293,7 +293,7 @@ function addRoom(resp){
 
   // Delete tool
   var r_node = document.createElement("BUTTON")
-  r_node.className = "admin-button"
+  r_node.className = "admin-button-delete"
   var t_node = document.createElement("i")
   t_node.className="fa fa-trash"
   r_node.value = room["room_id"]
@@ -303,7 +303,7 @@ function addRoom(resp){
 
   // Expand tool
   var r_node = document.createElement("BUTTON")
-  r_node.className = "admin-button"
+  r_node.className = "admin-button-expand"
   var t_node = document.createElement("i");
   t_node.className="fa fa-bars"
   r_node.value = room["room_id"]
@@ -376,7 +376,7 @@ function addRpi(resp){
 
   // Delete tool
   var r_node = document.createElement("BUTTON")
-  r_node.className = "admin-button"
+  r_node.className = "admin-button-delete"
   var t_node = document.createElement("i")
   t_node.className="fa fa-trash"
   r_node.value = rpi["rpi_id"]
@@ -387,7 +387,7 @@ function addRpi(resp){
   // Download auth tool
   var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({"id":rpi["rpi_id"], "auth_key": rpi["auth_key"]}));
   var r_node = document.createElement("BUTTON")
-  r_node.className = "admin-button"
+  r_node.className = "admin-button-download"
   var t_node = document.createElement("i")
   t_node.className="fa fa-download"
   var l_node = document.createElement("a")
@@ -399,9 +399,6 @@ function addRpi(resp){
   r_node.appendChild(l_node)
   r_tools.appendChild(r_node)
   new_rpi.appendChild(r_tools)
-
-
-
 
   // Set class and id
   new_rpi.id = "admin-rpi"+rpi["rpi_id"]
@@ -431,8 +428,16 @@ function addUser(resp){
   new_user.appendChild(u_name)
 
 
-  // Add tools
+  // Delete tool
   var u_tools = document.createElement("td")
+  var u_node = document.createElement("BUTTON")
+  u_node.className = "admin-button-delete"
+  var t_node = document.createElement("i")
+  t_node.className="fa fa-trash"
+  u_node.value = user[0]
+  u_node.onclick=function(){deleteUser(this.value)}
+  u_node.appendChild(t_node)
+  u_tools.appendChild(u_node)
   new_user.appendChild(u_tools)
 
   // Set class and id
@@ -651,6 +656,10 @@ function addNewUser(){
 // Send a delete building request
 function deleteBuilding(id){
 
+  if (confirm("Are you sure you want to delete building " + id + " and all references?") == false){
+    return
+  }
+
   // Make request, on sucess get all buildings again
   url = delete_buildings_url
   $.ajax({
@@ -665,6 +674,10 @@ function deleteBuilding(id){
 
 // Send a delete floor request
 function deleteFloor(id){
+
+  if (confirm("Are you sure you want to delete floor " + id + " and all references?") == false){
+    return
+  }
 
   // Make request, on sucess get all buildings again
   url = delete_floors_url
@@ -682,6 +695,10 @@ function deleteFloor(id){
 
 // Send a delete room request
 function deleteRoom(id){
+
+  if (confirm("Are you sure you want to delete room " + id + " and all references?") == false){
+    return
+  }
 
   // Make request, on sucess get all buildings again
   url = delete_rooms_url
@@ -701,6 +718,10 @@ function deleteRoom(id){
 
 // Send a delete rpi request
 function deleteRpi(id){
+
+  if (confirm("Are you sure you want to delete rpi " + id + " and all references?") == false){
+    return
+  }
 
   // Make request, on sucess get all buildings again
   url = delete_rpis_url
@@ -722,6 +743,10 @@ function deleteRpi(id){
 
 // Send a delete rpi request
 function deleteUser(id){
+
+  if (!confirm("Are you sure you want to delete user " + id + " and all references?")){
+    return
+  }
 
   // Make request, on sucess get all users again
   url = delete_users_url

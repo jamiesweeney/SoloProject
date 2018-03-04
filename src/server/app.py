@@ -475,7 +475,7 @@ def adminDelUsers():
     cur = conn.cursor()
 
     # Add building to database
-    cur.execute("DELETE FROM users WHERE id = {};".format(content["id"]))
+    cur.execute("DELETE FROM users WHERE userID = {};".format(content["id"]))
     ans = cur.fetchall()
 
     conn.commit()

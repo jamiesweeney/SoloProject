@@ -224,10 +224,33 @@ tbody td {
   padding-bottom: 15px;
 }
 
-.admin-button {
+
+.admin-button-add {
+  background-color: #d5e1df;
+  color: #86af49;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-expand {
+  background-color: #d5e1df;
+  color: black;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-download {
+  background-color: #d5e1df;
+  color: black;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-delete {
   background-color: #d5e1df;
   color: red;
   border: 0px;
+  font-size: 20pt;
 }
 
 
