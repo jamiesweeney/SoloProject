@@ -171,7 +171,7 @@ def setupTables():
     cursor.execute("CREATE TABLE buildings (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT PRIMARY KEY, description text)")
     cursor.execute("CREATE TABLE floors (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, buildingID int NOT NULL, description text, PRIMARY KEY  (id), FOREIGN KEY (buildingID) REFERENCES buildings(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE rooms (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, floorID int NOT NULL, description text, PRIMARY KEY  (id), FOREIGN KEY (floorID) REFERENCES floors(id) ON DELETE CASCADE)")
-    cursor.execute("CREATE TABLE rpis (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, description text, auth_key varchar(255), PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE rpis (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, description text, auth_key varchar(255) NOT NULL, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE reports (id int NOT NULL AUTO_INCREMENT, rpiID int NOT NULL, time int, people float, devices float, PRIMARY KEY  (id), FOREIGN KEY (rpiID) REFERENCES rpis(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE estimates (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, time int, estimate int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
 

@@ -298,6 +298,7 @@ function addRoom(resp){
   roomTable.appendChild(new_room)
 }
 
+
 // Puts the rpi data in the table
 function addRpi(resp){
 
@@ -351,8 +352,10 @@ function addRpi(resp){
   new_rpi.appendChild(r_key)
 
   // Fill last report
-  var r_key = document.createElement("td")
-  new_rpi.appendChild(r_key)
+  var r_rep = document.createElement("td")
+  var t_node = document.createTextNode("never");
+  r_rep.appendChild(t_node)
+  new_rpi.appendChild(r_rep)
 
   // Add tools
   var r_tools = document.createElement("td")
@@ -373,8 +376,6 @@ function addRpi(resp){
   // Add to table
   rpiTable.appendChild(new_rpi)
 }
-
-
 
 
 // Handles a building response
@@ -412,6 +413,9 @@ function getBuildings(){
 
   // Reset the building table
   buildingTable.textContent = '';
+  floorTable.textContent = '';
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
 
   // Get all buildings, on sucess call getBuildingData
   url = buildings_url
@@ -484,35 +488,6 @@ function getUsers(){
   xmlHttp.send(null);
 }
 
-// 
-//
-// function addRpi(resp){
-//   console.log(resp)
-// }
-//
-// function handleRpis(resp){
-//   // Decode JSON
-//   data = JSON.parse(resp)
-//   rpis = data["rpis"]
-//
-//   // Add each building
-//   for (rpi in rpis){
-//     addRpi(rpis[rpi])
-//   }
-// }
-//
-// function getRpis(){
-//   url = rpis_url
-//   var xmlHttp = new XMLHttpRequest();
-//   xmlHttp.onreadystatechange = function() {
-//       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-//           handleRpis(xmlHttp.responseText);
-//   }
-//   xmlHttp.open("GET", url, true); // true for asynchronous
-//   xmlHttp.send(null);
-// }
-
-
 
 // Send an add building request
 function addNewBuilding(){
@@ -550,10 +525,14 @@ function deleteBuilding(id){
 // Expand a building
 function expandBuilding(id){
 
+
+
   selected_building = id
   building_data = buildings_dict[id.toString()]
 
-  floorTable.textContent = ''
+  floorTable.textContent = '';
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
   floorTable.visible = true
 
   for (floor in building_data["floors"]){
@@ -602,7 +581,7 @@ function deleteFloor(id){
 });
 }
 
-// Expand a building
+// Expand a floor
 function expandFloor(id){
 
   selected_floor = id
@@ -615,7 +594,8 @@ function expandFloor(id){
     }
   }
 
-  roomTable.textContent = ''
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
   roomTable.visible = true
 
   for (room in floor_data["rooms"]){
@@ -624,14 +604,10 @@ function expandFloor(id){
 }
 
 
-
-
-
-
-// Send an add building request
+// Send an add room request
 function addNewRoom(){
 
-  floor_id = selected_building
+  floor_id = selected_floor
   name = newRoomName.value
   desc = newRoomDesc.value
 
@@ -651,7 +627,7 @@ function addNewRoom(){
 });
 }
 
-// Send a delete buudling request
+// Send a delete room request
 function deleteRoom(id){
 
   // Make request, on sucess get all buildings again
@@ -670,14 +646,14 @@ function deleteRoom(id){
 });
 }
 
-// Expand a building
+// Expand a room
 function expandRoom(id){
 
   console.log("HERE")
   selected_room = id
   building_data = buildings_dict[selected_building.toString()]
   for (floor in building_data["floors"]){
-    if (building_data["floors"][floor]["floor_id"] == id){
+    if (building_data["floors"][floor]["floor_id"] == selected_floor){
       floor_data = building_data["floors"][floor]
       for (room in floor_data["rooms"]){
         if (floor_data["rooms"][room]["room_id"] == id){
@@ -691,10 +667,57 @@ function expandRoom(id){
 
   console.log(room_data)
 
-  rpiTable.textContent = ''
+  rpiTable.textContent = '';
   rpiTable.visible = true
 
   for (rpi in room_data["rpis"]){
     addRpi(room_data["rpis"][rpi])
   }
+}
+
+
+// Send an add rpi request
+function addNewRpi(){
+
+  room_id = selected_room
+  name = newRpiName.value
+  desc = newRpiDesc.value
+
+  // Make request, on sucess get all buildings again
+  url = add_rpis_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"room_id":room_id,"name":name, "description":desc}),
+    success: function(result) {
+      sel = selected_building
+      sel2 = selected_floor
+      sel3 = selected_room
+      getBuildings()
+      expandBuilding(sel)
+      expandFloor(sel2)
+      expandRoom(sel3)
+    }
+});
+}
+
+// Send a delete rpi request
+function deleteRpi(id){
+
+  // Make request, on sucess get all buildings again
+  url = delete_rpis_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id}),
+    success: function(result) {
+      sel = selected_building
+      sel2 = selected_floor
+      sel3 = selected_room
+      getBuildings()
+      expandBuilding(sel)
+      expandFloor(sel2)
+      expandRoom(sel3)
+    }
+});
 }
