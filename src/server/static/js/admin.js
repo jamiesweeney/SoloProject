@@ -29,8 +29,10 @@ var newUserName = document.getElementById("new-user-name");
 var newUserPass1 = document.getElementById("new-user-pass1");
 var newUserPass2 = document.getElementById("new-user-pass2");
 
-
-
+var newReadingRoom = document.getElementById("new-reading-room");
+var newReadingStime = document.getElementById("new-reading-stime");
+var newReadingEtime = document.getElementById("new-reading-etime");
+var newReadingValue = document.getElementById("new-reading-value");
 
 // Api Endpoints
 // Get urls
@@ -55,6 +57,8 @@ var delete_rpis_url = "/api/v1/rpis/admin-delete"
 
 var add_users_url = "/api/v1/users/admin-add"
 var delete_users_url = "/api/v1/users/admin-delete"
+
+var add_reading_url = "/api/v1/readings/admin-add"
 
 // Triggers the intial database gets
 getBuildings()
@@ -308,6 +312,16 @@ function addRoom(resp){
   t_node.className="fa fa-bars"
   r_node.value = room["room_id"]
   r_node.onclick=function(){expandRoom(this.value)}
+  r_node.appendChild(t_node)
+  r_tools.appendChild(r_node)
+
+  // Give reading tool
+  var r_node = document.createElement("BUTTON")
+  r_node.className = "admin-button-reading"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-bars"
+  r_node.value = room["room_id"]
+  r_node.onclick=function(){giveReading(this.value)}
   r_node.appendChild(t_node)
   r_tools.appendChild(r_node)
 
@@ -651,6 +665,75 @@ function addNewUser(){
 });
 }
 
+// Send an add reading request
+function addNewReading(){
+
+  roomNo = newReadingRoom.value
+  stime = newReadingStime.value
+  etime = newReadingEtime.value
+  value = newReadingValue.value
+
+  // Check if room exists
+  found = false
+  for (building in buildings_dict){
+    for (floor in buildings_dict[building]["floors"]){
+      for (room in buildings_dict[building]["floors"][floor]["rooms"]){
+        console.log(buildings_dict[building]["floors"][floor]["rooms"][room]["room_id"])
+        console.log(room)
+        if (buildings_dict[building]["floors"][floor]["rooms"][room]["room_id"] == roomNo){
+          found = true
+        }
+      }
+    }
+  }
+  if (found == false){
+    alert("No room found with that id.")
+    return
+  }
+
+  // Convert times to epoch time
+  stime = Date.parse(stime)
+  etime = Date.parse(etime)
+  stime = new Date(stime)
+  etime = new Date(etime)
+  stime = stime.getTime()
+  etime = etime.getTime()
+
+  // Check times are valid
+  if (isNaN(stime) || isNaN(etime)){
+    alert("Times are not valid.")
+    return
+  }
+  if (stime > etime || stime == etime){
+    alert("Start time is after/same as end time.")
+    return
+  }
+
+  // Make sure value is a valid input
+  value = parseInt(value)
+  if (isNaN(value) || value < 0){
+    alert("Value is not valid")
+    return
+  }
+
+  // Make the request
+  url = add_reading_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"room":room, "stime":stime, "etime":etime, "value":value}),
+    success: function(result) {
+      newReadingRoom.value = ""
+      newReadingStime.value = ""
+      newReadingEtime.value = ""
+      newReadingValue.value = ""
+    }
+});
+
+
+
+}
+
 // Functions for deleting objects from the database
 // Send a delete buudling request
 // Send a delete building request
@@ -835,6 +918,18 @@ function expandRoom(id){
   }
 }
 
+
+// Gives a reading for a room
+function giveReading(id, value=null){
+
+  if (value == null){
+    value = prompt("Please enter a reading for room " + id + ".")
+  }
+
+  if (value != null){
+
+  }
+}
 
 // Downloads the rpi auth data
 function downloadRpiAuth(id){

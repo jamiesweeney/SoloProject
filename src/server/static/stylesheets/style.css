@@ -108,7 +108,19 @@ html, body {
   margin: 5%
 }
 
+#tab-upl {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
 #tab-users {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-reading {
   height: 90%;
   width: 90%;
   margin: 5%
@@ -126,7 +138,9 @@ html, body {
   margin: 5%
 }
 
-#new-user-form {
+
+
+#new-user-form, #new-reading-form{
   background-color: #d5e1df;
   align-self: center;
   align-content: center;
@@ -136,7 +150,7 @@ html, body {
 }
 
 
-#new-user-form input{
+#new-user-form input, #new-reading-form input{
   align-self: center;
   align-items: center;
   align-content: center;
@@ -157,7 +171,7 @@ html, body {
     box-sizing: border-box;
 }
 
-#new-user-form input[type=submit] {
+#new-user-form input[type=submit], #new-reading-form input[type=submit]{
     width: 80%;
     height: 40px;
     background-color: #86af49;

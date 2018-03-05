@@ -2,12 +2,16 @@
 
 
 {% block contents %}
-<script src="https://www.w3schools.com/lib/w3.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <div class= id="admin-panel">
 
   <ul class="nav nav-pills">
     <li class="active"><a data-toggle="pill" href="#tab-buildings">Buildings data</a></li>
+    <li><a data-toggle="pill" href="#tab-upl">Upload building </a></li>
     <li><a data-toggle="pill" href="#tab-users">User data</a></li>
+    <li><a data-toggle="pill" href="#tab-reading">Give reading</a></li>
     <li><a data-toggle="pill" href="#tab-settings">Settings</a></li>
     <li><a data-toggle="pill" href="#tab-help">Help</a></li>
   </ul>
@@ -115,6 +119,10 @@
       </table>
     </div>
 
+    <div id="tab-upl" class="tab-pane fade">
+      <p>TODO</p>
+    </div>
+
     <div id="tab-users" class="tab-pane fade">
 
       <h2>Add new user</h2>
@@ -128,7 +136,6 @@
         <input id="new-user-button" type="submit" value="Add user" onclick="addNewUser()">
       </div>
 
-
       <h2>Users</h2>
       <table id="admin-users">
         <thead>
@@ -139,6 +146,22 @@
         <tbody class="admin-users-body">
         </tbody>
       </table>
+    </div>
+
+    <div id="tab-reading" class="tab-pane fade">
+
+      <h2>Give a new reading</h2>
+      <div id="new-reading-form">
+        <h3>Room:</h3>
+        <input id="new-reading-room" type="text" name="room">
+        <h3>Start time:</h3>
+        <input id="new-reading-stime" type="datetime-local" value="" name="stime">
+        <h3>End time:</h3>
+        <input id="new-reading-etime" type="datetime-local" value="" name="etime">
+        <h3>Reading:</h3>
+        <input id="new-reading-value" type="text" name="reading">
+        <input id="new-reading-button" type="submit" value="Add reading" onclick="addNewReading()">
+      </div>
     </div>
 
     <div id="tab-settings" class="tab-pane fade">
