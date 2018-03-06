@@ -48,7 +48,7 @@ login_manager.login_view = "wp_login"
 # Index page - redirects to home
 @app.route("/")
 def wp_index():
-    return redirect("webapp/home", code=302)
+    return redirect(url_for("wp_home", code=302))
 
 # Home page - shows all buildings and links
 @app.route("/webapp/home")
@@ -116,7 +116,7 @@ def wp_login():
         else:
 
             # If details are not valid, then try again
-            return redirect(url_for("wp_login", warning="Details are invalid!"))
+            return redirect(url_for("wp_login"))
 
     # If not a POST request serve the login page
     else:
@@ -127,7 +127,7 @@ def wp_login():
 @login_required     # Important
 def wp_logout():
     logout_user()
-    return redirect("/webapp/home")
+    return redirect(url_for("wp_home"))
 
 
 #-- Public get requests --#
