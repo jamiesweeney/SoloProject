@@ -174,6 +174,13 @@ def setupTables():
     cursor.execute("CREATE TABLE rpis (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, description text, auth_key varchar(255) NOT NULL, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE reports (id int NOT NULL AUTO_INCREMENT, rpiID int NOT NULL, time int, people float, devices float, PRIMARY KEY  (id), FOREIGN KEY (rpiID) REFERENCES rpis(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE estimates (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, time int, estimate int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+    conn.commit()
+
+    conn = aquireSQLConnection("users")
+    cursor = conn.cursor()
+    conn.begin()
+
+    cursor.execute("CREATE TABLE users (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL UNIQUE, passhash varchar(255) NOT NULL)")
 
     conn.commit()
 

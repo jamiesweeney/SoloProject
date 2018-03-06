@@ -728,10 +728,7 @@ function addNewReading(){
       newReadingEtime.value = ""
       newReadingValue.value = ""
     }
-});
-
-
-
+  });
 }
 
 // Functions for deleting objects from the database

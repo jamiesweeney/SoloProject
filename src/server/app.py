@@ -13,9 +13,9 @@ import MySQLdb
 from passlib.hash import sha256_crypt
 import json
 
-app = Flask(__name__)
 
-# config
+#-- Flask app config --#
+app = Flask(__name__)
 app.config.update(SECRET_KEY = os.getenv('SERVER_SECRET'))
 
 
@@ -28,6 +28,7 @@ host = os.getenv('SERVER_DB_HOST')
 user = os.getenv('SERVER_DB_USERNAME')
 password = os.getenv('SERVER_DB_PASSWORD')
 database = os.getenv('SERVER_DB_NAME')
+
 
 #-- Create ssl dictionary object --#
 ssl =   {
@@ -44,30 +45,40 @@ login_manager.login_view = "wp_login"
 
 
 #-- Web pages --#
+# Index page - redirects to home
 @app.route("/")
 def wp_index():
     return redirect("webapp/home", code=302)
 
+# Home page - shows all buildings and links
 @app.route("/webapp/home")
 def wp_home():
     return render_template('/html/home.html')
 
+# Building page - shows a building floor by floor with estimations for each floor
 @app.route("/webapp/building/<int:building_id>")
 def wp_building(building_id):
     return render_template('/html/building.html', building_id=building_id)
 
+# Floor page - shows a floor room by room with estimations for each floor
 @app.route("/webapp/floor/<int:floor_id>")
 def wp_floor(floor_id):
     return render_template('/html/floor.html')
 
+# Room page - shows nothing just now
+# TODO - Implement this page
 @app.route("/webapp/room/<int:room_id>")
 def wp_room(room_id):
     return render_template('/html/room.html')
 
+# Admin page - all the admin tools
 @app.route("/webapp/admin")
+@login_required     # Important
 def wp_admin():
+
     return render_template('/html/admin.html')
 
+# Login page - allows the user to log in, accepts 'next' param or redirects to home
 @app.route("/webapp/login", methods=["GET", "POST"])
 def wp_login():
 
@@ -111,8 +122,9 @@ def wp_login():
     else:
         return render_template("/html/login.html")
 
+# Logout page - allows current user to log out, redirects to home
 @app.route("/webapp/logout")
-@login_required
+@login_required     # Important
 def wp_logout():
     logout_user()
     return redirect("/webapp/home")
@@ -255,7 +267,7 @@ def getRoomEstimate(room_id):
 #-- Admin get requests --#
 # Returns admin data for one building
 @app.route("/api/v1/buildings/admin-get/<int:building_id>")
-#@login_required
+@login_required     # Important
 def adminGetBuilding(building_id):
 
     # Get connection and cursor to DB
@@ -311,7 +323,7 @@ def adminGetBuilding(building_id):
 
 # Returns admin data for users
 @app.route("/api/v1/users/admin-get-all")
-#@login_required
+@login_required     # Important
 def adminGetUsers():
 
     # Get connection and cursor to DB
@@ -333,8 +345,9 @@ def adminGetUsers():
 
 
 #-- Admin POST requests --#
+# Request for adding a new building
 @app.route("/api/v1/buildings/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddBuilding():
 
     # Get building data from JSON
@@ -352,8 +365,9 @@ def adminAddBuilding():
     # Serve success response
     return "OK"
 
+# Request for deleting a building
 @app.route("/api/v1/buildings/admin-delete", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminDelBuilding():
 
     # Get building data from JSON
@@ -371,8 +385,9 @@ def adminDelBuilding():
     # Serve sucess response
     return "OK"
 
+# Request for adding a new floor
 @app.route("/api/v1/floors/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddFloor():
 
     # Get floor data from JSON
@@ -390,8 +405,9 @@ def adminAddFloor():
     # Serve sucess response
     return "OK"
 
+# Request for deleting a floor
 @app.route("/api/v1/floors/admin-delete", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminDelFloor():
 
     # Get floor data from JSON
@@ -409,8 +425,9 @@ def adminDelFloor():
     # Serve sucess response
     return "OK"
 
+# Request for adding a new room
 @app.route("/api/v1/rooms/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddRoom():
 
     # Get room data from JSON
@@ -428,8 +445,9 @@ def adminAddRoom():
     # Serve sucess response
     return "OK"
 
+# Request for deleting a room
 @app.route("/api/v1/rooms/admin-delete", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminDelRoom():
 
     # Get room data from JSON
@@ -447,8 +465,9 @@ def adminDelRoom():
     # Serve sucess response
     return "OK"
 
+# Request for adding a new rpi
 @app.route("/api/v1/rpis/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddRpi():
 
     # Get rpi data from JSON
@@ -469,8 +488,9 @@ def adminAddRpi():
     # Serve success response
     return "OK"
 
+# Request for deleting a rpi
 @app.route("/api/v1/rpis/admin-delete", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminDelRpis():
 
     # Get rpi data from JSON
@@ -488,8 +508,9 @@ def adminDelRpis():
     # Serve sucess response
     return "OK"
 
+# Request for adding a new user
 @app.route("/api/v1/users/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddUsers():
 
     # Get user data from JSON
@@ -507,8 +528,9 @@ def adminAddUsers():
     # Server success response
     return "OK"
 
+# Request for deleting a user
 @app.route("/api/v1/users/admin-delete", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminDelUsers():
 
     # Get user data from JSON
@@ -526,8 +548,9 @@ def adminDelUsers():
     # Return sucess response
     return "OK"
 
+# Request for adding a room reading
 @app.route("/api/v1/readings/admin-add", methods=['POST'])
-#@login_required
+@login_required     # Important
 def adminAddReadings():
 
     # Get user data from JSON
@@ -537,7 +560,7 @@ def adminAddReadings():
     return "OK"
 
 
-#-- Pi Requests --#
+#-- Pi requests --#
 # Accepts data from a pi and adds changes to the database
 @app.route("/api/v1/pi-reports/add", methods = ['POST'])
 def addReport():
@@ -586,7 +609,6 @@ def doLogin(username, password):
     conn = aquireSQLConnection("users")
     cur = conn.cursor()
 
-    print (username)
     cur.execute("SELECT passhash  FROM users AS u WHERE u.username = \'{}\';".format(username))
     ans = cur.fetchone()
     if (ans != None):
@@ -596,10 +618,14 @@ def doLogin(username, password):
 
 # User model
 class User(UserMixin):
+
+    user_dictionary = {}
+
     def __init__(self, name, id, active=True):
         self.name = name
         self.id = id
         self.active = active
+        self.user_dictionary[str(id)] = self
 
     def is_active(self):
         return True
@@ -613,43 +639,20 @@ class User(UserMixin):
     def get_id(self):
         return str(self.id).encode("utf-8").decode("utf-8")
 
+    @classmethod
+    def get(self, user_id):
+        user_id = str(user_id)
+        if (user_id in self.user_dictionary):
+            return self.user_dictionary[user_id]
+        return None
+
 # Loads a User object
 @login_manager.user_loader
-def load_user(username):
+def load_user(user_id):
+    return User.get(user_id)
 
-    # Get connection and cursor to DB
-    conn = aquireSQLConnection("users")
-    cur = conn.cursor()
 
-    # Get user data from database
-    cur.execute("SELECT userID, username FROM users AS u WHERE u.username = \'{}\';".format(username))
-    ans = cur.fetchone()
-
-    if (ans != None):
-        user_id = ans[0]
-        username = ans[1]
-
-        # Create user object and return
-        return User(username,user_id)
-
-@login_manager.request_loader
-def request_loader(request):
-
-    username = request.form['username']
-    password = request.form['password']
-
-    if (doLogin(username, password)):
-        # Get connection and cursor to DB
-        conn = aquireSQLConnection("users")
-        cur = conn.cursor()
-
-        # Get user data from database
-        cur.execute("SELECT userID, username FROM users AS u WHERE u.username = \'{}\';".format(username))
-        ans = cur.fetchone()
-
-        user = User(ans[1],ans[0])
-        return user
-
+#--  URL management --#
 # Checks if a redirect url is safe to redirect to
 def is_safe_url(next):
     ref_url = urlparse(request.host_url)
@@ -659,7 +662,7 @@ def is_safe_url(next):
            next != None
 
 
-#-- Database Management --#
+#-- Database management --#
 # Gets an SQL connection to use for a DB
 def aquireSQLConnection(db_name):
 
@@ -672,7 +675,7 @@ def aquireSQLConnection(db_name):
     return conn
 
 
-#-- Linear Regression --#
+#-- Linear regression --#
 # Takes RPi output data and returns a guess of room occupancy based on linear reg alg.
 def magic_algorithm(room_id, time_n, devices, people):
     return (random.randint(0,100))
