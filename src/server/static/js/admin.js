@@ -640,17 +640,22 @@ function addNewRpi(){
 
 // Send an add user request
 function addNewUser(){
-
   user_name = newUserName.value
   pass1 = newUserPass1.value
   pass2 = newUserPass2.value
 
+  // Make sure username is not blank
+  if (user_name == ""){
+    alert("Username cannot be blank.")
+    return
+  }
+
   // Make sure password is safe
   if (pass1 != pass2){
-    console.log("Entered passwords do not match, try again!")
+    alert("Entered passwords do not match, try again!")
     return
-  }else if (pass1.replace(" ", "") == ""){
-    console.log("Password not secure, try again!")
+  }else if (pass1.replaceAll(" ", "") == ""){
+    alert("Password not secure, try again!")
   }
 
   // Make request, on sucess get all users again
@@ -678,8 +683,6 @@ function addNewReading(){
   for (building in buildings_dict){
     for (floor in buildings_dict[building]["floors"]){
       for (room in buildings_dict[building]["floors"][floor]["rooms"]){
-        console.log(buildings_dict[building]["floors"][floor]["rooms"][room]["room_id"])
-        console.log(room)
         if (buildings_dict[building]["floors"][floor]["rooms"][room]["room_id"] == roomNo){
           found = true
         }
@@ -953,3 +956,9 @@ function downloadRpiAuth(id){
 
 
 }
+
+
+// Implementation of replace all
+String.prototype.replaceAll = function(target, replacement) {
+  return this.split(target).join(replacement);
+};

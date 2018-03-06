@@ -31,7 +31,7 @@ html, body {
 .header_info {
 
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
 
   height: 80%;
   max-height: 80%;
@@ -151,24 +151,15 @@ html, body {
 
 
 #new-user-form input, #new-reading-form input{
-  align-self: center;
-  align-items: center;
-  align-content: center;
+  width: 80%;
+  height: 30px;
   margin-left: 10%;
   margin-right: 10%;
-  width: 80%;
-}
+  display: inline-block;
+  border: 1px solid #ccc;
 
-#new-user-form input[type=text], select {
-    width: 80%;
-    height: 30px;
-    margin-left: 10%;
-    margin-right: 10%;
-    display: inline-block;
-    border: 1px solid #ccc;
-
-    border-radius: 5px;
-    box-sizing: border-box;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 #new-user-form input[type=submit], #new-reading-form input[type=submit]{
