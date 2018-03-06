@@ -563,10 +563,12 @@ function addNewBuilding(){
     url: url,
     data: JSON.stringify({"name":name, "description":desc}),
     success: function(result) {
-       getBuildings()
+      newBuildingName.value = ""
+      newBuildingDesc.value = ""
+      getBuildings()
     }
-});
-}
+  });
+  }
 
 // Send an add floor request
 function addNewFloor(){
@@ -582,6 +584,12 @@ function addNewFloor(){
     url: url,
     data: JSON.stringify({"building_id":building_id,"name":name, "description":desc}),
     success: function(result) {
+
+      newFloorName.value = ""
+      newFloorDesc.value = ""
+
+
+
       sel = selected_building
       getBuildings()
 
@@ -604,13 +612,16 @@ function addNewRoom(){
     url: url,
     data: JSON.stringify({"floor_id":floor_id,"name":name, "description":desc}),
     success: function(result) {
+
+      newRoomName.value = ""
+      newRoomDesc.value = ""
       sel = selected_building
       sel2 = selected_floor
       getBuildings()
       expandBuilding(sel)
       expandFloor(sel2)
     }
-});
+  });
 }
 
 // Send an add rpi request
@@ -627,6 +638,9 @@ function addNewRpi(){
     url: url,
     data: JSON.stringify({"room_id":room_id,"name":name, "description":desc}),
     success: function(result) {
+
+      newRpiName.value = ""
+      newRpiDesc.value = ""
       sel = selected_building
       sel2 = selected_floor
       sel3 = selected_room
@@ -635,7 +649,7 @@ function addNewRpi(){
       expandFloor(sel2)
       expandRoom(sel3)
     }
-});
+  });
 }
 
 // Send an add user request
@@ -665,6 +679,9 @@ function addNewUser(){
     url: url,
     data: JSON.stringify({"username":user_name,"password":pass1}),
     success: function(result) {
+      newUserName.value = ""
+      newUserPass1.value = ""
+      newUserPass2.value = ""
       getUsers()
     }
 });
