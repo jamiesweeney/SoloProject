@@ -556,6 +556,11 @@ function addNewBuilding(){
   name = newBuildingName.value
   desc = newBuildingDesc.value
 
+  if (name == "" || desc == ""){
+    alert("Name and description cannot be blank.")
+    return
+  }
+
   // Make request, on sucess get all buildings again
   url = add_buildings_url
   $.ajax({
@@ -576,6 +581,11 @@ function addNewFloor(){
   building_id = selected_building
   name = newFloorName.value
   desc = newFloorDesc.value
+
+  if (name == "" || desc == ""){
+    alert("Name and description cannot be blank.")
+    return
+  }
 
   // Make request, on sucess get all floors again
   url = add_floors_url
@@ -605,6 +615,11 @@ function addNewRoom(){
   name = newRoomName.value
   desc = newRoomDesc.value
 
+  if (name == "" || desc == ""){
+    alert("Name and description cannot be blank.")
+    return
+  }
+
   // Make request, on sucess get all buildings again
   url = add_rooms_url
   $.ajax({
@@ -630,6 +645,11 @@ function addNewRpi(){
   room_id = selected_room
   name = newRpiName.value
   desc = newRpiDesc.value
+
+  if (name == "" || desc == ""){
+    alert("Name and description cannot be blank.")
+    return
+  }
 
   // Make request, on sucess get all buildings again
   url = add_rpis_url
