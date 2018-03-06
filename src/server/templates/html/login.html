@@ -1,13 +1,20 @@
 {% extends "html/base.html" %}
 
 {% block contents %}
-  <form action="" method="post">
-    <p><input type=text name=username>
-    <p><input type=password name=password>
-    <p><input type=submit value=Login>
-  </form>
+
+<form id="login-user-form" action="" method="post">
+  <h3>Username:</h3>
+  <input id="login-user-name" type="text" name="username">
+  <h3>Password:</h3>
+  <input id="login-user-password" type="password" name="password">
+  <input type="submit" id="login-user-button"  value="Login">
+</form>
+
+<div class="login-warning">
+  <a>{{ warning }}</a>
+</div>
+
 {% endblock %}
 
 {% block script %}
-  <script src="{{ url_for('static', filename='js/building.js') }}"></script>
 {% endblock %}

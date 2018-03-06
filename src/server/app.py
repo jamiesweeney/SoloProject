@@ -116,7 +116,7 @@ def wp_login():
         else:
 
             # If details are not valid, then try again
-            return redirect("/webapp/login")
+            return redirect(url_for("wp_login", warning="Details are invalid!"))
 
     # If not a POST request serve the login page
     else:

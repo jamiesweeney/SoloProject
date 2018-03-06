@@ -12,27 +12,42 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
   </head>
 
   <body>
-    <div class=header>
-      <div class=header_info>
-        <div class=header_title>
+    <div class="header">
+      <div class="header_info">
+        <div class="header_title">
           Room Occupancy Tracking
         </div>
-        <div class=header_links>
-
+        <div class="header_links">
+          <div class="header_link">
+            <a href="/webapp/home">Home</a>
+          </div>
+          <div class="header_link">
+            <a href="/webapp/help">Help</a>
+          </div>
+          {% if current_user.is_authenticated %}
+            <div class="header_link">
+              <a href="/webapp/admin">Admin page</a>
+            </div>
+            <div class="header_link">
+              <a href="/webapp/logout">Log-out</a>
+            </div>
+          {% else %}
+            <div class="header_link">
+              <a href="/webapp/login">Log-in</a>
+            </div>
+          {% endif %}
         </div>
-
       </div>
     </div>
 
-    <div id=contentsbox>
+    <div id="contentsbox">
       {% block contents %}{% endblock %}
     </div>
 
-    <div class=footer>
+    <div class="footer">
     </div>
 
     {% block script %}{% endblock %}
