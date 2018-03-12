@@ -7,6 +7,8 @@
 %
 
 \usepackage[]{algorithm2e}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 
 \begin{document}
 \title{Who's There? Occupancy Prediction with Smart Sensor Boxes}
@@ -191,7 +193,7 @@ We start by splitting the requirements to three seperate components with individ
   \item HTTP Server:
 	A simple HTTP application that can receive sensor report data from the smart sensor boxes. The sever should also be able to perform estimations for locations based on reports and also feature a web application that serves this data to the users. 
 \end{enumerate}
-
+\includegraphics[width=\textwidth]{overalldiag}
 
 
 \section{Components}
