@@ -18,32 +18,42 @@ var building_id = curr_url.slice(-1)[0]
 getFloors()
 
 
-function addReport(report, floor_id){
+function addReport(estimate, floor_id){
 
   // Get floor div
   console.log("floor"+floor_id)
   var floor_div = document.getElementById("floor"+floor_id)
+  console.log(estimate)
 
-  if (report["estimate"] == "NULL"){
+  if (estimate["estimate"] == null){
+    floor_div.totalOccupants = floor_div.totalOccupants
+
+  }else if (isNaN(parseInt(estimate["estimate"]["estimate"]))){
+    console.log((isNaN(parseInt(estimate["estimate"]["estimate"]))))
     floor_div.totalOccupants = floor_div.totalOccupants
   }else{
-    if (isNaN(floor_div.totalOccupants) == true){
-      floor_div.totalOccupants = 0;
+    if (isNaN(floor_div.totalOccupants)){
+      floor_div.totalOccupants = parseInt(estimate["estimate"]["estimate"])
+    }else{
+      floor_div.totalOccupants = floor_div.totalOccupants + parseInt(estimate["estimate"]["estimate"])
     }
-    floor_div.totalOccupants = parseInt(floor_div.totalOccupants) + parseInt(report["estimate"])
   }
 
-  if (floor_div.totalOccupants == 0){
+  oc = floor_div.totalOccupants
+  if (oc == 0){
     floor_div.style.background = "white"
-  }else if (floor_div.totalOccupants <= 50){
+  }else if(oc <= 25) {
     floor_div.style.background = "seagreen"
-  }else if (floor_div.totalOccupants <= 75){
+  }else if(oc <= 50) {
     floor_div.style.background = "orange"
-  }else if (floor_div.totalOccupants <= 100){
+  }else if(oc <= 75) {
     floor_div.style.background = "orangered"
-  }else{
+  }else if(oc > 75) {
     floor_div.style.background = "red"
+  }else {
+    floor_div.style.background = "grey"
   }
+
 
   floorNum = floor_div.childNodes[1]
   floorNum.childNodes[0].textContent = "Total: " + floor_div.totalOccupants
@@ -53,9 +63,7 @@ function handleEstimate(resp, floor_id){
 
   // Decode JSON
   data = JSON.parse(resp)
-  report = data["report"]
-
-  addReport(report, floor_id)
+  addReport(data, floor_id)
 }
 
 function getEstimate(room_id, floor_id){
