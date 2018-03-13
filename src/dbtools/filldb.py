@@ -6,6 +6,8 @@ from subprocess import check_output
 import random
 import time
 import json
+import secrets
+
 import MySQLdb
 from passlib.hash import sha256_crypt
 
@@ -72,7 +74,7 @@ def addRoom(cursor, floor_id, name, desc):
 
 
 def addRPi(cursor, room_id, name, desc):
-    cursor.executemany("INSERT INTO rpis (roomID, name, description) VALUES (%s, %s, %s)", [(room_id, name, desc)])
+    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, secrets.token_bytes(nbytes=255))])
 
 
 #-- Adds a report with specified rpi and report data --#
@@ -174,13 +176,15 @@ def setupTables():
     cursor.execute("CREATE TABLE rpis (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, description text, auth_key varchar(255) NOT NULL, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE reports (id int NOT NULL AUTO_INCREMENT, rpiID int NOT NULL, time int, people float, devices float, PRIMARY KEY  (id), FOREIGN KEY (rpiID) REFERENCES rpis(id) ON DELETE CASCADE)")
     cursor.execute("CREATE TABLE estimates (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, time int, estimate int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE readings (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, timeS int NOT NULL, timeF int NOT NULL, reading int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+
     conn.commit()
 
     conn = aquireSQLConnection("users")
     cursor = conn.cursor()
     conn.begin()
 
-    cursor.execute("CREATE TABLE users (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL UNIQUE, passhash varchar(255) NOT NULL)")
+    #cursor.execute("CREATE TABLE users (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL UNIQUE, passhash varchar(255) NOT NULL)")
 
     conn.commit()
 
@@ -220,8 +224,12 @@ newb = createFromJSON(cur, home)
 conn.commit()
 
 #-- Add some reports --#
-createReportsFromJSON(cur, newb, 1)
-conn.commit()
+while (True):
+    print ("--")
+    createReportsFromJSON(cur, newb, 10)
+    conn.commit()
+    time.sleep(10)
+
 
 
 
