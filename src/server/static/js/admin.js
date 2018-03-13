@@ -339,7 +339,7 @@ function addRoom(resp){
 function addRpi(resp){
 
   rpi = resp
-
+  console.log(resp)
   // New rpi div
   var new_rpi = document.createElement("tr");
 
@@ -381,7 +381,12 @@ function addRpi(resp){
 
   // Fill last report
   var r_rep = document.createElement("td")
-  var t_node = document.createTextNode("never");
+  var time_r = rpi["last_report"]
+
+  r_date = new Date(0)
+  r_date.setUTCSeconds(time_r)
+  rep_str = ((r_date.getMonth() + 1) + "/" + r_date.getDate() + "/" + r_date.getFullYear() + " " + r_date.getHours() + ":" + r_date.getMinutes() + ":" + r_date.getSeconds())
+  var t_node = document.createTextNode(rep_str);
   r_rep.appendChild(t_node)
   new_rpi.appendChild(r_rep)
 
@@ -711,6 +716,7 @@ function addNewUser(){
 function addNewReading(){
 
   roomNo = newReadingRoom.value
+  console.log(roomNo)
   stime = newReadingStime.value
   etime = newReadingEtime.value
   value = newReadingValue.value
@@ -736,9 +742,13 @@ function addNewReading(){
   etime = Date.parse(etime)
   stime = new Date(stime)
   etime = new Date(etime)
-  stime = stime.getTime()
-  etime = etime.getTime()
+  stime = stime.getTime()/1000
+  etime = etime.getTime()/1000
 
+  console.log(stime)
+  console.log(etime)
+
+  console.log(JSON.stringify({"room":roomNo, "stime":stime, "etime":etime, "value":value}))
   // Check times are valid
   if (isNaN(stime) || isNaN(etime)){
     alert("Times are not valid.")
@@ -761,7 +771,7 @@ function addNewReading(){
   $.ajax({
     type: 'POST',
     url: url,
-    data: JSON.stringify({"room":room, "stime":stime, "etime":etime, "value":value}),
+    data: JSON.stringify({"room":roomNo, "stime":stime, "etime":etime, "value":value}),
     success: function(result) {
       newReadingRoom.value = ""
       newReadingStime.value = ""
@@ -949,7 +959,7 @@ function expandRoom(id){
   rpiTable.parentNode.style.visibility = "visible"
   rpiTitle.style.visibility = "visible"
   rpiTitle.innerText = room_data["room_name"]
-
+  console.log(room_data)
   for (rpi in room_data["rpis"]){
     addRpi(room_data["rpis"][rpi])
   }
