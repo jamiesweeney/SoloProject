@@ -12,7 +12,10 @@ from urllib.parse import urlparse, urljoin
 import MySQLdb
 from passlib.hash import sha256_crypt
 import json
-
+from sklearn import linear_model
+import pickle
+import numpy as np
+import time
 
 #-- Flask app config --#
 app = Flask(__name__)
@@ -194,7 +197,7 @@ def getFloor(floor_id):
     cur = conn.cursor()
 
     # Get room data for rooms on floor
-    cur.execute("SELECT floorID, id, name,s description FROM rooms AS r WHERE r.floorID = {};".format(floor_id))
+    cur.execute("SELECT floorID, id, name, description FROM rooms AS r WHERE r.floorID = {};".format(floor_id))
     ans = cur.fetchall()
 
     # Create floor JSON object
@@ -214,7 +217,6 @@ def getFloor(floor_id):
 
 # Returns the information for one room
 @app.route("/api/v1/rooms/get/<int:room_id>")
-#TODO - Fix this
 def getRoom(room_id):
 
     # Get connection and cursor to DB
@@ -222,15 +224,15 @@ def getRoom(room_id):
     cur = conn.cursor()
 
     # Get
-    cur.execute("SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20;".format(room_id))
+    cur.execute("SELECT * FROM estimates AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20;".format(room_id))
     ans = cur.fetchall()
 
-    reports = []
-    for report in ans:
-        info = {"room_id": report[0], "report_id": report[1], "time": report[2], "devices" : report[3], "people" : report[4], "estimate" : report[5]}
-        reports.append(info)
+    estimates = []
+    for estimate in ans:
+        info = {"room_id": room_id, "time": estimate[2], "estimate" : estimate[3]}
+        estimates.append(info)
 
-    data = {"reports": reports}
+    data = {"estimates": estimates}
 
     response = app.response_class(
         response=json.dumps(data),
@@ -241,21 +243,20 @@ def getRoom(room_id):
 
 # Returns current prediction for one room
 @app.route("/api/v1/rooms/get_estimate/<int:room_id>")
-#TODO - Fix this
 def getRoomEstimate(room_id):
 
     # Get connection and cursor to DB
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
 
-    cur.execute("SELECT * FROM reports AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1;".format(room_id))
+    cur.execute("SELECT * FROM estimates AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1;".format(room_id))
     ans = cur.fetchone()
 
-    report = ans
-    info = {"room_id": report[0], "time": report[2], "estimate" : report[5]}
-
-    data = {"report": info}
-
+    if (ans != None):
+        info = {"room_id": room_id, "time": ans[2], "estimate" : ans[3]}
+        data = {"estimate": info}
+    else:
+        data = {"estimate": None}
     response = app.response_class(
         response=json.dumps(data),
         status=200,
@@ -307,6 +308,13 @@ def adminGetBuilding(building_id):
             for rpi in rpis:
                 rpi_info = {"building_id": building_id, "floor_id": floor_id, "room_id": room_id, "rpi_id": rpi[1], "rpi_name": rpi[0], "rpi_desc": rpi[2], "auth_key": rpi[3]}
 
+                cur.execute("SELECT time FROM reports AS r WHERE r.rpiID = {} ORDER BY r.time DESC LIMIT 1;".format(rpi[1]))
+                ans = cur.fetchone()
+                if (ans != None):
+                    rpi_info["last_report"] = ans[0]
+                else:
+                    rpi_info["last_report"] = None
+
                 # Add rpi to room
                 room_info["rpis"].append(rpi_info)
             # Add room to floor
@@ -343,6 +351,12 @@ def adminGetUsers():
     )
     return response
 
+# Returns admin data for users
+@app.route("/api/v1/do-estimates")
+@login_required     # Important
+def adminDoEstimates():
+    makePredictions()
+    return "OK"
 
 #-- Admin POST requests --#
 # Request for adding a new building
@@ -552,10 +566,24 @@ def adminDelUsers():
 @app.route("/api/v1/readings/admin-add", methods=['POST'])
 @login_required     # Important
 def adminAddReadings():
+    print ("--Adding a reading")
 
     # Get user data from JSON
     content = json.loads(str(request.get_data().decode("utf-8")))
 
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Add reading to database
+    print (content)
+    print ("///////////////////////////////")
+
+    cur.executemany("INSERT INTO readings (roomID, timeS, timeF, reading) VALUES (%s, %s, %s, %s)", [(content["room"],content["stime"],content["etime"],content["value"])])
+    ans = cur.fetchall()
+    conn.commit()
+
+    generateTrainingData(content)
     # Server success response
     return "OK"
 
@@ -677,8 +705,212 @@ def aquireSQLConnection(db_name):
 
 #-- Linear regression --#
 # Takes RPi output data and returns a guess of room occupancy based on linear reg alg.
-def magic_algorithm(room_id, time_n, devices, people):
-    return (random.randint(0,100))
+
+def generateTrainingData(reading):
+    print ("--Generating test data")
+
+    # Get all rpis in room
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM rpis AS r WHERE r.roomID = {};".format(int(reading['room'])))
+    ans = cur.fetchall()
+
+    print ("---------------------------------------")
+    print (ans)
+
+    # Get all reports from rpis
+    reports = []
+    for rpi in ans[0]:
+        cur = conn.cursor()
+        print ("SELECT * FROM reports AS r WHERE r.rpiID = {} AND r.time > {} AND r.time < {};".format(rpi, reading["stime"], reading["etime"]))
+        cur.execute("SELECT * FROM reports AS r WHERE r.rpiID = {} AND r.time > {} AND r.time < {};".format(rpi, reading["stime"], reading["etime"]))
+        reps = cur.fetchall()
+        reports.append(reps)
+
+    # Generate test data
+    data = {}
+    data["value"] = reading["value"]
+    data["room"] = reading["room"]
+    data["reports"] = reports
+
+    applyTrainingData(data)
+
+def applyTrainingData(data):
+    print ("--Applying test data")
+    print (data)
+
+    value = data["value"]
+    reports = data["reports"]
+
+    if reports == [()]:
+        print ("--No reports to use")
+        conn = aquireSQLConnection("reports")
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM reports")
+        print(cur.fetchall())
+
+        return
+
+    # Read regression algorithms from file
+    try:
+        with open('regression_devices.pickle', 'rb') as f:
+            dev_reg = pickle.load(f)
+    except:
+        dev_reg = linear_model.SGDRegressor(loss="huber", epsilon=0.075)
+    try:
+        with open('regression_people.pickle', 'rb') as f:
+            peo_reg = pickle.load(f)
+    except:
+        peo_reg = linear_model.SGDRegressor(loss="huber", epsilon=0.075)
+
+    # Iterate over reports and update regression algorithms
+    for rpirs in reports:
+        for report in rpirs:
+            print ("adding report :")
+            print ("\t" + str(report))
+            people = report[3]
+            devices = report[4]
+
+            if (people != None):
+                print ("updated people regression")
+                peo_reg.partial_fit(np.array(people), np.array(value).reshape(-1,1))
+
+            if (devices != None):
+                print ("updated device regression")
+                dev_reg.partial_fit(np.array(devices), np.array(value).reshape(-1,1))
+
+
+    # Save modified regression algorithm to file
+    with open('regression_devices.pickle', 'wb') as f:
+        pickle.dump(dev_reg, f, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('regression_people.pickle', 'wb') as f:
+        pickle.dump(peo_reg, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    return
+
+
+def makePredictions():
+
+    # Get list of all rooms
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    # Get all rooms
+    cur.execute("SELECT id FROM rooms;")
+    ans = cur.fetchall()
+
+    print ("making predictions on rooms: ")
+    print (str(ans))
+
+    # Make predictions for each
+    for room in ans:
+        makeRoomPrediction(room[0])
+
+
+def makeRoomPrediction(room):
+
+    print("predicting room " + str(room))
+
+    # Get all rpis in room
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM rpis AS r WHERE r.roomID = {};".format(room))
+    ans = cur.fetchall()
+
+    time_l = time.time() - 300
+    # Get all reports from rpis
+    reports = []
+    if (ans == ()):
+        print ("no rpis")
+        return
+
+    for rpi in ans[0]:
+        cur = conn.cursor()
+        print ("SELECT * FROM reports AS r WHERE r.rpiID = {} AND r.time > {};".format(rpi, int(time_l)))
+        cur.execute("SELECT * FROM reports AS r WHERE r.rpiID = {} AND r.time > {};".format(rpi, int(time_l)))
+        reports.append(cur.fetchall())
+
+
+    print (reports)
+    if (reports == []):
+        print ("no reports")
+        return
+
+    # Get regression algorithms
+    try:
+        with open('regression_devices.pickle', 'rb') as f:
+            dev_reg = pickle.load(f)
+    except:
+        print ("No device regression algorithm found!")
+        return
+    try:
+        with open('regression_people.pickle', 'rb') as f:
+            peo_reg = pickle.load(f)
+    except:
+        print ("No people regression algorithm found!")
+        return
+
+    # Take average of people and devices
+    averages = []
+    for rpi in reports:
+        total_people = None
+        people_count = 0
+        total_devices = None
+        device_count = 0
+        for report in rpi:
+            print (report)
+            if (report[3] != None):
+                people_count += 1
+                if total_people == None:
+                    total_people = report[3]
+                else:
+                    total_people += report[3]
+            if (report[4] != None):
+                device_count += 1
+                if total_devices== None:
+                    total_devices = report[4]
+                else:
+                    total_devices += report[4]
+        if (total_people != None):
+            total_people = total_people/people_count
+        if (total_devices != None):
+            total_devices = total_devices/people_count
+        averages.append([total_people, total_devices])
+
+    # Perform prediction for each average
+    ppredictions = []
+    dpredictions = []
+    for average in averages:
+
+        print ("-----")
+        print (averages)
+        # Perform linear regression for people
+        prediction = peo_reg.predict(average[0])
+        ppredictions.append(prediction)
+
+        # Perform linear regression for devices
+        prediction = dev_reg.predict(average[1])
+        dpredictions.append(prediction)
+
+    # Take average of types of predictions
+    print(ppredictions)
+    print(dpredictions)
+
+    pprediction = np.average(ppredictions)
+    dprediction = np.average(dpredictions)
+
+    # Take average of final predictions
+    prediction = np.average([pprediction, dprediction])
+
+    # Write to database
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.executemany("INSERT INTO estimates (roomID,time,estimate) VALUES (%s, %s, %s)", [(room,time.time(),prediction,)])
+    ans = cur.fetchall()
+    conn.commit()
+
+    return
 
 
 if __name__ == "__main__":
