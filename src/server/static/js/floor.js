@@ -3,7 +3,7 @@
 var roomContainer = document.getElementById("rooms");
 
 // Api Endpoints
-var base_url = window.location.hostname 
+var base_url = window.location.hostname
 var building_url = "/api/v1/buildings/get/"
 var floor_url = "/api/v1/floors/get/"
 var est_url = "/api/v1/rooms/get_estimate/"
@@ -18,32 +18,37 @@ var floor_id = curr_url.slice(-1)[0]
 getRooms(floor_id)
 
 
-function addReport(report, room_id){
-
+function addEstimate(estimate, room_id){
 
   // Get room div
   console.log("room"+room_id)
   var room_div = document.getElementById("room"+room_id)
+  console.log(estimate["estimate"])
 
-  if (report["estimate"] == "NULL"){
-    room_div.totalOccupants = room_div.totalOccupants
+  if (estimate["estimate"] == null){
+    room_div.totalOccupants = "???"
+  }else if (isNaN(parseInt(estimate["estimate"]["estimate"]))){
+    console.log((isNaN(parseInt(estimate["estimate"]["estimate"]))))
+    room_div.totalOccupants = "???"
   }else{
-    if (isNaN(room_div.totalOccupants) == true){
-      room_div.totalOccupants = 0;
-    }
-    room_div.totalOccupants = parseInt(room_div.totalOccupants) + parseInt(report["estimate"])
+    room_div.totalOccupants = parseInt(estimate["estimate"]["estimate"])
   }
 
-  if (room_div.totalOccupants == 0){
+  oc = room_div.totalOccupants
+  console.log(oc)
+
+  if (oc == 0){
     room_div.style.background = "white"
-  }else if (room_div.totalOccupants <= 25){
+  }else if(oc <= 25) {
     room_div.style.background = "seagreen"
-  }else if (room_div.totalOccupants <= 50){
+  }else if(oc <= 50) {
     room_div.style.background = "orange"
-  }else if (room_div.totalOccupants <= 75){
+  }else if(oc <= 75) {
     room_div.style.background = "orangered"
-  }else{
+  }else if(oc > 75) {
     room_div.style.background = "red"
+  }else {
+    room_div.style.background = "grey"
   }
 
   roomNum = room_div.childNodes[1]
@@ -54,9 +59,9 @@ function handleEstimate(resp, room_id){
 
   // Decode JSON
   data = JSON.parse(resp)
-  report = data["report"]
+  estimate = data
 
-  addReport(report, room_id)
+  addEstimate(estimate, room_id)
 }
 
 function getEstimate(room_id){
