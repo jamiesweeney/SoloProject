@@ -218,7 +218,7 @@ setupTables()
 
 #-- Add home --#
 home = {}
-with open('home.json') as data_file:
+with open('../server/buildings/home.json') as data_file:
     home = json.load(data_file)
 newb = createFromJSON(cur, home)
 conn.commit()

@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from flask import Flask
 from subprocess import call
+from flask_apscheduler import APScheduler
 from subprocess import check_output
 import random
 import secrets
@@ -229,16 +230,23 @@ def getRoom(room_id):
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
 
-    # Get
-    cur.execute("SELECT * FROM estimates AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 20;".format(room_id))
+    # Get room name and description
+    cur.execute("SELECT name,description FROM rooms AS r WHERE r.id = {};".format(room_id))
+    ans = cur.fetchall()
+
+    time_c = time.time() - 86400
+
+    data = {"room":ans[0]}
+    # Get estimates from past 24 hours
+    cur.execute("SELECT estimate,time FROM estimates AS r WHERE r.roomID = {} AND r.time > {} ORDER BY r.time DESC;".format(room_id, time_c))
     ans = cur.fetchall()
 
     estimates = []
     for estimate in ans:
-        info = {"room_id": room_id, "time": estimate[2], "estimate" : estimate[3]}
+        info = {"time": estimate[1], "estimate" : estimate[0]}
         estimates.append(info)
 
-    data = {"estimates": estimates}
+    data["estimates"] = estimates
 
     response = app.response_class(
         response=json.dumps(data),
@@ -915,8 +923,9 @@ def makeRoomPrediction(room):
     cur.execute("SELECT id FROM rpis AS r WHERE r.roomID = {};".format(room))
     ans = cur.fetchall()
 
-    time_l = time.time() - 300
-    # Get all reports from rpis
+
+    # Get all reports from rpis from past 5 mins
+    time_l = time.time() - 300000
     reports = []
     if (ans == ()):
         print ("no rpis")
@@ -980,19 +989,20 @@ def makeRoomPrediction(room):
     dpredictions = []
     for average in averages:
 
-        print ("-----")
-        print (averages)
         # Perform linear regression for people
-        prediction = peo_reg.predict(average[0])
-        ppredictions.append(prediction)
+        if (average[0] != None):
+            prediction = peo_reg.predict(average[0])
+            ppredictions.append(prediction)
 
         # Perform linear regression for devices
-        prediction = dev_reg.predict(average[1])
-        dpredictions.append(prediction)
+        if (average[1] != None):
+            prediction = dev_reg.predict(average[1])
+            dpredictions.append(prediction)
 
     # Take average of types of predictions
-    print(ppredictions)
-    print(dpredictions)
+
+    if (ppredictions == [] and dpredictions == []):
+        return
 
     pprediction = np.average(ppredictions)
     dprediction = np.average(dpredictions)
@@ -1004,7 +1014,9 @@ def makeRoomPrediction(room):
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
 
-    cur.executemany("INSERT INTO estimates (roomID,time,estimate) VALUES (%s, %s, %s)", [(room,time.time(),prediction,)])
+    print ("###### - ")
+
+    cur.executemany("INSERT INTO estimates (roomID,time,estimate) VALUES (%s, %s, %s)", [(room,int(time.time()),prediction,)])
     ans = cur.fetchall()
     conn.commit()
 
@@ -1023,5 +1035,25 @@ def setDatabaseName(name):
     database = name
 
 
+
+class Config(object):
+    JOBS = [
+        {
+            'id': 'estimate-job',
+            'func': 'app:makePredictions',
+            'args': (),
+            'trigger': 'interval',
+            'seconds': 30
+        }
+    ]
+
+    SCHEDULER_API_ENABLED = True
+
+
 if __name__ == "__main__":
+
+    app.config.from_object(Config())
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
     app.run(host='0.0.0.0', threaded=True)

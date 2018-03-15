@@ -546,6 +546,29 @@ justify-content: center;
 align-items: center;
 }
 
+
+#room_info {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+  margin: 5%;
+  width: 90%;
+  text-align: center;
+
+}
+
+#room_estimates {
+  background-color: #d5e1df;
+  margin: 5%;
+  width: 90%;
+
+}
+
+
+
 .footer {
   background-color: darkslategrey;
   width : 100%;
@@ -553,6 +576,11 @@ align-items: center;
   bottom : 0px;
   position: fixed;
 }
+
+
+
+
+
 
 
 
