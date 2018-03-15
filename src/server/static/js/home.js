@@ -19,18 +19,33 @@ function addBuilding(building){
   new_building.id = "building"
 
   // Image div
-  var img = document.createElement("img")
-  img.id = "building_img"
-  img.src= buildingImgDir + "default.jpg"
-  img.width = 160
-  img.height = 160
+  var img = document.createElement("div")
+  img.className = "building_img"
+  var imgi = document.createElement("img")
+  imgi.src= buildingImgDir + "default.jpg"
+img.appendChild(imgi)
   new_building.appendChild(img)
 
-  // Name para
-  var name = document.createElement("p")
+  // Name
+  var named = document.createElement("div")
+  named.className = "building_info"
+  var name = document.createElement("h2")
   var t_node = document.createTextNode(building["building_name"]);
   name.appendChild(t_node)
-  new_building.appendChild(name)
+  named.append(name)
+  new_building.appendChild(named)
+
+  // Description
+  var descd = document.createElement("div")
+  descd.className = "building_info"
+  var desc = document.createElement("p")
+  var t_node = document.createTextNode(building["building_desc"]);
+  desc.appendChild(t_node)
+  descd.append(desc)
+  new_building.appendChild(descd)
+
+
+
 
   // Add link
   new_building.addEventListener('click', function(){

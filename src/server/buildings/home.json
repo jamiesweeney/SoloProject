@@ -19,22 +19,42 @@
         {
           "name": "Kitchen",
           "description": "The kitchen",
-          "rpis": []
+          "rpis": [
+            {
+              "name" : "living room pi",
+              "description": "-----"
+            }
+          ]
         },
         {
           "name": "My room",
           "description": "My bedroom room",
-          "rpis": []
+          "rpis": [
+            {
+              "name" : "living room pi",
+              "description": "-----"
+            }
+          ]
         },
         {
           "name": "Kennys room",
           "description": "Kennys bedroom room",
-          "rpis": []
+          "rpis": [
+            {
+              "name" : "living room pi",
+              "description": "-----"
+            }
+          ]
         },
         {
           "name": "Hallway",
           "description": "The hallway",
-          "rpis": []
+          "rpis": [
+            {
+              "name" : "living room pi",
+              "description": "-----"
+            }
+          ]
         }
       ]
     }

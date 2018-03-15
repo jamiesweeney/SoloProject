@@ -16,6 +16,8 @@ from sklearn import linear_model
 import pickle
 import numpy as np
 import time
+import glob
+
 
 #-- Flask app config --#
 app = Flask(__name__)
@@ -47,7 +49,8 @@ login_manager.init_app(app)
 login_manager.login_view = "wp_login"
 
 
-#-- Web pages --#
+#-- Public Web pages --#
+
 # Index page - redirects to home
 @app.route("/")
 def wp_index():
@@ -73,13 +76,6 @@ def wp_floor(floor_id):
 @app.route("/webapp/room/<int:room_id>")
 def wp_room(room_id):
     return render_template('/html/room.html')
-
-# Admin page - all the admin tools
-@app.route("/webapp/admin")
-@login_required     # Important
-def wp_admin():
-
-    return render_template('/html/admin.html')
 
 # Login page - allows the user to log in, accepts 'next' param or redirects to home
 @app.route("/webapp/login", methods=["GET", "POST"])
@@ -124,6 +120,16 @@ def wp_login():
     # If not a POST request serve the login page
     else:
         return render_template("/html/login.html")
+
+
+#-- Admin Web pages --#
+
+# Admin page - all the admin tools
+@app.route("/webapp/admin")
+@login_required     # Important
+def wp_admin():
+
+    return render_template('/html/admin.html')
 
 # Logout page - allows current user to log out, redirects to home
 @app.route("/webapp/logout")
@@ -357,6 +363,7 @@ def adminGetUsers():
 def adminDoEstimates():
     makePredictions()
     return "OK"
+
 
 #-- Admin POST requests --#
 # Request for adding a new building
@@ -694,6 +701,9 @@ def is_safe_url(next):
 # Gets an SQL connection to use for a DB
 def aquireSQLConnection(db_name):
 
+    if (app.config["TESTING"]):
+        db_name = "tesing" + db_name
+
     # Connect to SQL database using login and ssl-certs
     conn = MySQLdb.connect(host=host,
                          user=user,
@@ -701,6 +711,94 @@ def aquireSQLConnection(db_name):
                          db=db_name,
                          ssl=ssl)
     return conn
+
+
+
+
+def deleteTables():
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cursor = conn.cursor()
+
+    done = False
+    while not done:
+        done = True
+        cursor.execute("show tables;")
+        ans = cursor.fetchall()[::-1]
+        for t in ans:
+            try:
+                cursor.execute("drop table {};".format(t[0]))
+            except:
+                done = False
+    conn.commit()
+
+
+def createTables():
+
+    # Get cursor for report database
+    conn = aquireSQLConnection("reports")
+    cursor = conn.cursor()
+    conn.begin()
+
+    cursor.execute("CREATE TABLE buildings (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT PRIMARY KEY, description text)")
+    cursor.execute("CREATE TABLE floors (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, buildingID int NOT NULL, description text, PRIMARY KEY  (id), FOREIGN KEY (buildingID) REFERENCES buildings(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE rooms (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, floorID int NOT NULL, description text, PRIMARY KEY  (id), FOREIGN KEY (floorID) REFERENCES floors(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE rpis (name varchar(255) NOT NULL, id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, description text, auth_key varchar(255) NOT NULL, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE reports (id int NOT NULL AUTO_INCREMENT, rpiID int NOT NULL, time int, people float, devices float, PRIMARY KEY  (id), FOREIGN KEY (rpiID) REFERENCES rpis(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE estimates (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, time int, estimate int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+    cursor.execute("CREATE TABLE readings (id int NOT NULL AUTO_INCREMENT, roomID int NOT NULL, timeS int NOT NULL, timeF int NOT NULL, reading int, PRIMARY KEY  (id), FOREIGN KEY (roomID) REFERENCES rooms(id) ON DELETE CASCADE)")
+
+    conn.commit()
+
+
+
+# Adds building data from JSON to the DB, returns modified JSON with IDs
+def createFromJSON(cursor, building):
+
+    # Add building and save new id in JSON dict
+    addBuilding(cursor, building["name"], building["description"])
+    cursor.execute("SELECT id FROM buildings AS b WHERE b.name = \'{}\';".format(building["name"]))
+    ans = cursor.fetchone()
+    building_id = ans[0]
+    building["id"] = building_id
+
+    # For each floor, add to DB and save new id to JSON dict
+    for floor in building["floors"]:
+        addFloor(cursor, building_id, floor["name"], floor["description"])
+        cursor.execute("SELECT id FROM floors AS f WHERE f.buildingID = {} AND f.name = \'{}\';".format(building_id, floor["name"]))
+        ans = cursor.fetchone()
+        floor_id = ans[0]
+        floor["id"] = floor_id
+
+        # For each room, add to DB and save new id to JSON dict
+        for room in floor["rooms"]:
+            addRoom(cursor, floor_id, room["name"], room["description"])
+            cursor.execute("SELECT id FROM rooms AS r WHERE r.floorID = {} AND r.name = \'{}\';".format(floor_id, room["name"]))
+            ans = cursor.fetchone()
+            room_id = ans[0]
+            room["id"] = room_id
+
+            for rpi in room["rpis"]:
+                addRPi(cursor, room_id, rpi["name"], rpi["description"])
+                cursor.execute("SELECT id,auth_key FROM rpis AS r WHERE r.roomID = {} AND r.name = \'{}\';".format(room_id, rpi["name"]))
+                ans = cursor.fetchone()
+                rpi_id = ans[0]
+                rpi_auth = ans[1]
+                rpi["id"] = rpi_id
+                rpi["auth_key"] = rpi_auth
+
+def restoreFromFile():
+    for filename in glob.iglob('../buildings/*.json'):
+         with open(filename) as data_file:
+             build = json.load(data_file)
+         newb = createFromJSON(cur, build)
+         conn.commit()
+
+
+
+
+
 
 
 #-- Linear regression --#
@@ -911,6 +1009,18 @@ def makeRoomPrediction(room):
     conn.commit()
 
     return
+
+
+
+#-- Auxilary code for testing --#
+
+def getDatabaseName():
+    return database
+
+
+def setDatabaseName(name):
+    global database
+    database = name
 
 
 if __name__ == "__main__":
