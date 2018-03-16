@@ -28,10 +28,37 @@ function addRoomData(data){
   var t_node = document.createTextNode(data[1]);
   desc.appendChild(t_node)
   room_desc_div.appendChild(desc)
+
+
+
 }
 
 
 function addEstimateData(data){
+
+  console.log(data)
+  // room curent estimate
+  var desc = document.createElement("p" )
+  if (data == []){
+    var t_node = document.createTextNode("Current estimate: ???");
+    desc.appendChild(t_node)
+    room_desc_div.appendChild(desc)
+    var desc = document.createElement("p" )
+    var t_node = document.createTextNode("No info in last 24 hours.");
+    desc.appendChild(t_node)
+    room_desc_div.appendChild(desc)
+    return
+  }
+
+  var t_node = document.createTextNode("Current estimate: " + data[0]["estimate"]);
+  desc.appendChild(t_node)
+  room_desc_div.appendChild(desc)
+  var desc = document.createElement("p")
+  e_time = new Date(0)
+  e_time.setUTCSeconds(data[0]["time"])
+  var t_node = document.createTextNode("Last report : " + e_time.toUTCString());
+  desc.appendChild(t_node)
+  room_desc_div.appendChild(desc)
 
   datap = []
   for (estimate in data){
