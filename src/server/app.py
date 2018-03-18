@@ -394,6 +394,27 @@ def adminAddBuilding():
     # Serve success response
     return "OK"
 
+# Request for adding a new building from JSON
+@app.route("/api/v1/buildings/admin-add-json", methods=['POST'])
+@login_required     # Important
+def adminAddBuildingJSON():
+
+    # Get building data from JSON
+    content = json.loads((request.get_data().decode("utf-8")))
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    content = json.loads(content)
+
+    createFromJSON(cur, content)
+    conn.commit()
+
+    # Serve success response
+    return "OK"
+
+
+
 # Request for deleting a building
 @app.route("/api/v1/buildings/admin-delete", methods=['POST'])
 @login_required     # Important
@@ -720,8 +741,21 @@ def aquireSQLConnection(db_name):
                          ssl=ssl)
     return conn
 
+# Adds a building with specified name and description
+def addBuilding(cursor, name, desc):
+    cursor.executemany("INSERT INTO buildings (name, description) VALUES (%s, %s)", [(name, desc)])
 
+# Adds a floor with specified building, name and description
+def addFloor(cursor, building_id, name, desc):
+    cursor.executemany("INSERT INTO floors (buildingID, name, description) VALUES (%s, %s, %s)", [(building_id, name, desc)])
 
+# Adds a room with specified floor, name and description
+def addRoom(cursor, floor_id, name, desc):
+    cursor.executemany("INSERT INTO rooms (floorID, name, description) VALUES (%s, %s, %s)", [(floor_id, name, desc)])
+
+# Adds a rpi with specified rpi, name and description
+def addRPi(cursor, room_id, name, desc):
+    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, secrets.token_bytes(nbytes=255))])
 
 def deleteTables():
 
@@ -741,7 +775,6 @@ def deleteTables():
                 done = False
     conn.commit()
 
-
 def createTables():
 
     # Get cursor for report database
@@ -759,10 +792,11 @@ def createTables():
 
     conn.commit()
 
-
-
 # Adds building data from JSON to the DB, returns modified JSON with IDs
 def createFromJSON(cursor, building):
+
+    print (building)
+    print (type(building))
 
     # Add building and save new id in JSON dict
     addBuilding(cursor, building["name"], building["description"])
@@ -925,7 +959,7 @@ def makeRoomPrediction(room):
 
 
     # Get all reports from rpis from past 5 mins
-    time_l = time.time() - 300000
+    time_l = time.time() - 300
     reports = []
     if (ans == ()):
         print ("no rpis")
@@ -938,7 +972,6 @@ def makeRoomPrediction(room):
         reports.append(cur.fetchall())
 
 
-    print (reports)
     if (reports == []):
         print ("no reports")
         return
@@ -965,7 +998,6 @@ def makeRoomPrediction(room):
         total_devices = None
         device_count = 0
         for report in rpi:
-            print (report)
             if (report[3] != None):
                 people_count += 1
                 if total_people == None:

@@ -208,7 +208,7 @@ img {
 
 
 /* Input forms */
-#login-user-form, #new-user-form, #new-reading-form{
+#login-user-form, #new-user-form, #new-reading-form, #new-building-form{
   background-color: #d5e1df;
   align-self: center;
   align-content: center;
@@ -229,7 +229,18 @@ img {
   box-sizing: border-box;
 }
 
-#login-user-form input[type=submit], #new-user-form input[type=submit], #new-reading-form input[type=submit]{
+#new-building-form textarea{
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#login-user-form input[type=submit], #new-user-form input[type=submit], #new-reading-form input[type=submit], #new-building-form input[type=submit]{
     width: 80%;
     height: 40px;
     background-color: #86af49;

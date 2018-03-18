@@ -25,6 +25,8 @@ var newRoomDesc =  document.getElementById("new-room-desc");
 var newRpiName =  document.getElementById("new-rpi-name");
 var newRpiDesc =  document.getElementById("new-rpi-desc");
 
+var newBuildingJSON =   document.getElementById("new-building-data");
+
 var newUserName = document.getElementById("new-user-name");
 var newUserPass1 = document.getElementById("new-user-pass1");
 var newUserPass2 = document.getElementById("new-user-pass2");
@@ -44,6 +46,7 @@ var rpis_url = "/api/v1/rpis/admin-get-all"
 
 // Post urls
 var add_buildings_url = "/api/v1/buildings/admin-add"
+var add_buildings_json_url = "/api/v1/buildings/admin-add-json"
 var delete_buildings_url = "/api/v1/buildings/admin-delete"
 
 var add_floors_url = "/api/v1/floors/admin-add"
@@ -74,7 +77,7 @@ selected_room = null
 // Puts the building data in the table
 function addBuilding(resp){
 
-
+  console.log(resp)
   building = JSON.parse(resp)
   buildings_dict[building["id"]] = building
 
@@ -579,6 +582,26 @@ function addNewBuilding(){
     }
   });
   }
+
+function addNewBuildingFromJSON(){
+
+  data = newBuildingJSON.value
+  console.log(data)
+
+  jdata = JSON.stringify(data)
+
+  // Make request, on sucess get all buildings again
+  url = add_buildings_json_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: jdata,
+    success: function(result) {
+      newBuildingJSON.value = ""
+      getBuildings()
+    }
+  });
+}
 
 // Send an add floor request
 function addNewFloor(){
