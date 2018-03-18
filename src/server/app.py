@@ -1075,7 +1075,7 @@ class Config(object):
             'func': 'app:makePredictions',
             'args': (),
             'trigger': 'interval',
-            'seconds': 30
+            'seconds': 60
         }
     ]
 
