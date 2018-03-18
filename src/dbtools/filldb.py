@@ -87,7 +87,7 @@ def createFromJSON(cursor, building):
 
     # Add building and save new id in JSON dict
     addBuilding(cursor, building["name"], building["description"])
-    cursor.execute("SELECT id FROM buildings AS b WHERE b.name = \'{}\';".format(building["name"]))
+    cursor.execute("SELECT id FROM buildings AS b WHERE b.name = \"{}\";".format(building["name"]))
     ans = cursor.fetchone()
     building_id = ans[0]
     building["id"] = building_id
@@ -95,7 +95,7 @@ def createFromJSON(cursor, building):
     # For each floor, add to DB and save new id to JSON dict
     for floor in building["floors"]:
         addFloor(cursor, building_id, floor["name"], floor["description"])
-        cursor.execute("SELECT id FROM floors AS f WHERE f.buildingID = {} AND f.name = \'{}\';".format(building_id, floor["name"]))
+        cursor.execute("SELECT id FROM floors AS f WHERE f.buildingID = {} AND f.name = \"{}\";".format(building_id, floor["name"]))
         ans = cursor.fetchone()
         floor_id = ans[0]
         floor["id"] = floor_id
@@ -103,14 +103,14 @@ def createFromJSON(cursor, building):
         # For each room, add to DB and save new id to JSON dict
         for room in floor["rooms"]:
             addRoom(cursor, floor_id, room["name"], room["description"])
-            cursor.execute("SELECT id FROM rooms AS r WHERE r.floorID = {} AND r.name = \'{}\';".format(floor_id, room["name"]))
+            cursor.execute("SELECT id FROM rooms AS r WHERE r.floorID = {} AND r.name = \"{}\";".format(floor_id, room["name"]))
             ans = cursor.fetchone()
             room_id = ans[0]
             room["id"] = room_id
 
             for rpi in room["rpis"]:
                 addRPi(cursor, room_id, rpi["name"], rpi["description"])
-                cursor.execute("SELECT id,auth_key FROM rpis AS r WHERE r.roomID = {} AND r.name = \'{}\';".format(room_id, rpi["name"]))
+                cursor.execute("SELECT id,auth_key FROM rpis AS r WHERE r.roomID = {} AND r.name = \"{}\";".format(room_id, rpi["name"]))
                 ans = cursor.fetchone()
                 rpi_id = ans[0]
                 rpi_auth = ans[1]
@@ -224,11 +224,11 @@ newb = createFromJSON(cur, home)
 conn.commit()
 
 #-- Add some reports --#
-while (True):
-    print ("--")
-    createReportsFromJSON(cur, newb, 10)
-    conn.commit()
-    time.sleep(10)
+# while (True):
+#     print ("--")
+#     createReportsFromJSON(cur, newb, 10)
+#     conn.commit()
+#     time.sleep(10)
 
 
 
@@ -249,7 +249,7 @@ while (True):
 #conn.commit()
 #
 # # Get user data from database
-# cur.execute("SELECT userID, username FROM users AS u WHERE u.username = \'{}\';".format("Jamie"))
+# cur.execute("SELECT userID, username FROM users AS u WHERE u.username = \"{}\";".format("Jamie"))
 # ans = cur.fetchone()
 # user_id = ans[0]
 # username = ans[1]

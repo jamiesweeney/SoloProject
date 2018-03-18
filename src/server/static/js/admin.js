@@ -47,15 +47,19 @@ var rpis_url = "/api/v1/rpis/admin-get-all"
 // Post urls
 var add_buildings_url = "/api/v1/buildings/admin-add"
 var add_buildings_json_url = "/api/v1/buildings/admin-add-json"
+var edit_buildings_url = "/api/v1/buildings/admin-edit"
 var delete_buildings_url = "/api/v1/buildings/admin-delete"
 
 var add_floors_url = "/api/v1/floors/admin-add"
+var edit_floors_url = "/api/v1/floors/admin-edit"
 var delete_floors_url = "/api/v1/floors/admin-delete"
 
 var add_rooms_url = "/api/v1/rooms/admin-add"
+var edit_room_url = "/api/v1/rooms/admin-edit"
 var delete_rooms_url = "/api/v1/rooms/admin-delete"
 
 var add_rpis_url = "/api/v1/rpis/admin-add"
+var edit_rpis_url = "/api/v1/rpis/admin-edit"
 var delete_rpis_url = "/api/v1/rpis/admin-delete"
 
 var add_users_url = "/api/v1/users/admin-add"
@@ -154,6 +158,15 @@ function addBuilding(resp){
   b_node.appendChild(t_node)
   b_tools.appendChild(b_node)
 
+  // Edit tool
+  var b_node = document.createElement("BUTTON")
+  b_node.className = "admin-button-edit"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-edit"
+  b_node.value = building["id"]
+  b_node.onclick=function(){editBuilding(this.value)}
+  b_node.appendChild(t_node)
+  b_tools.appendChild(b_node)
 
   new_building.appendChild(b_tools)
   // Set class and id
@@ -240,6 +253,17 @@ function addFloor(resp){
   f_node.appendChild(t_node)
   f_tools.appendChild(f_node)
 
+  // Edit tool
+  var f_node = document.createElement("BUTTON")
+  f_node.className = "admin-button-edit"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-edit"
+  f_node.value = floor["floor_id"]
+  f_node.onclick=function(){console.log("clicked");a = editFloor(this.value);console.log("called")}
+  f_node.appendChild(t_node)
+  f_tools.appendChild(f_node)
+  console.log(f_node.onclick)
+
   new_floor.appendChild(f_tools)
 
   // Set class and id
@@ -254,6 +278,7 @@ function addFloor(resp){
 // Puts the room data in the table
 function addRoom(resp){
 
+  console.log("asdasdasdad")
   room = resp
 
   // New floor div
@@ -318,6 +343,16 @@ function addRoom(resp){
   r_node.appendChild(t_node)
   r_tools.appendChild(r_node)
 
+  // Edit tool
+  var b_node = document.createElement("BUTTON")
+  b_node.className = "admin-button-edit"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-edit"
+  b_node.value = room["room_id"]
+  b_node.onclick=function(){editRoom(this.value)}
+  b_node.appendChild(t_node)
+  r_tools.appendChild(b_node)
+
   new_room.appendChild(r_tools)
 
   // Set class and id
@@ -376,9 +411,14 @@ function addRpi(resp){
   var r_rep = document.createElement("td")
   var time_r = rpi["last_report"]
 
-  r_date = new Date(0)
-  r_date.setUTCSeconds(time_r)
-  rep_str = ((r_date.getMonth() + 1) + "/" + r_date.getDate() + "/" + r_date.getFullYear() + " " + r_date.getHours() + ":" + r_date.getMinutes() + ":" + r_date.getSeconds())
+  if (time_r != null){
+    r_date = new Date(0)
+    r_date.setUTCSeconds(time_r)
+    rep_str = ((r_date.getMonth() + 1) + "/" + r_date.getDate() + "/" + r_date.getFullYear() + " " + r_date.getHours() + ":" + r_date.getMinutes())
+  } else {
+    rep_str = "Never"
+  }
+
   var t_node = document.createTextNode(rep_str);
   r_rep.appendChild(t_node)
   new_rpi.appendChild(r_rep)
@@ -411,6 +451,18 @@ function addRpi(resp){
   r_node.appendChild(l_node)
   r_tools.appendChild(r_node)
   new_rpi.appendChild(r_tools)
+
+  // Edit tool
+  var b_node = document.createElement("BUTTON")
+  b_node.className = "admin-button-edit"
+  var t_node = document.createElement("i");
+  t_node.className="fa fa-edit"
+  b_node.value = rpi["rpi_id"]
+  b_node.onclick=function(){editRpi(this.value)}
+  b_node.appendChild(t_node)
+  r_tools.appendChild(b_node)
+
+  console.log(b_node)
 
   // Set class and id
   new_rpi.id = "admin-rpi"+rpi["rpi_id"]
@@ -812,7 +864,7 @@ function deleteBuilding(id){
     success: function(result) {
        getBuildings()
     }
-});
+  });
 }
 
 // Send a delete floor request
@@ -908,19 +960,46 @@ function deleteUser(id){
 // Expand a building
 function expandBuilding(id){
 
+  if (id == selected_building){
+    console.log("asdasdasd")
+    contractBuilding(id)
+    return
+  }
+
+  // Set selected building and reset selected floor and room
   selected_building = id
+
   building_data = buildings_dict[id.toString()]
 
+  // Reset tables
   floorTable.textContent = '';
   roomTable.textContent = '';
   rpiTable.textContent = '';
+
+  // Reset titles
+  floorTitle.textContent = '';
+  roomTitle.textContent = '';
+  rpiTitle.textContent = '';
+
+  // Hide tables
+  roomTable.parentNode.style.visibility = "hidden"
+  rpiTable.parentNode.style.visibility = "hidden"
+
+  roomTable.style.visibility = "hidden"
+  rpiTable.style.visibility = "hidden"
+
+
   floorTable.parentNode.style.visibility = "visible"
   floorTitle.style.visibility = "visible"
-  floorTitle.innerText = building["name"]
+  floorTitle.innerText = building_data["name"]
+
+  console.log(building_data)
 
   for (floor in building_data["floors"]){
     addFloor(building_data["floors"][floor])
   }
+
+
 
 
 }
@@ -928,8 +1007,19 @@ function expandBuilding(id){
 // Expand a floor
 function expandFloor(id){
 
+  if (id == selected_floor){
+    contractFloor(id)
+    return
+  }
+
   selected_floor = id
   building_data = buildings_dict[selected_building.toString()]
+
+  // Reset tables
+  rpiTable.textContent = '';
+
+  // Reset titles
+  rpiTitle.textContent = '';
 
   for (floor in building_data["floors"]){
     if (building_data["floors"][floor]["floor_id"] == id){
@@ -940,17 +1030,36 @@ function expandFloor(id){
 
   roomTable.textContent = '';
   rpiTable.textContent = '';
+
+
   roomTable.parentNode.style.visibility = "visible"
+  roomTable.style.visibility = "visible"
+
   roomTitle.style.visibility = "visible"
   roomTitle.innerText = floor_data["floor_name"]
 
+
+  console.log(floor_data)
+
   for (room in floor_data["rooms"]){
+    console.log(room)
     addRoom(floor_data["rooms"][room])
   }
 }
 
 // Expand a room
 function expandRoom(id){
+
+  if (id == selected_room){
+    contractRoom(id)
+    return
+  }
+
+  // Reset tables
+  rpiTable.textContent = '';
+
+  // Reset titles
+  rpiTitle.textContent = '';
 
   selected_room = id
   building_data = buildings_dict[selected_building.toString()]
@@ -967,15 +1076,273 @@ function expandRoom(id){
     }
   }
 
-
-  rpiTable.textContent = '';
+  rpiTable.textContent = ''
   rpiTable.parentNode.style.visibility = "visible"
+  rpiTable.style.visibility = "visible"
+
   rpiTitle.style.visibility = "visible"
   rpiTitle.innerText = room_data["room_name"]
+
   console.log(room_data)
   for (rpi in room_data["rpis"]){
     addRpi(room_data["rpis"][rpi])
   }
+}
+
+
+// Functions for contracting tables
+// Contract a building
+function contractBuilding(id){
+
+  selected_building = null
+  selected_floor = null
+  selected_room = null
+
+  floorTable.textContent = '';
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
+
+  floorTitle.textContent = '';
+  roomTitle.textContent = '';
+  rpiTitle.textContent = '';
+
+  floorTable.parentNode.style.visibility = "hidden"
+  roomTable.parentNode.style.visibility = "hidden"
+  rpiTable.parentNode.style.visibility = "hidden"
+
+}
+
+// Contract a floor
+function contractFloor(id){
+
+  selected_floor = null
+  selected_room = null
+
+  roomTable.textContent = '';
+  rpiTable.textContent = '';
+
+  roomTitle.textContent = '';
+  rpiTitle.textContent = '';
+
+  roomTable.parentNode.style.visibility = "hidden"
+  rpiTable.parentNode.style.visibility = "hidden"
+}
+
+// Contract a room
+function contractRoom(id){
+  selected_room = null
+
+  rpiTable.textContent = '';
+  rpiTitle.textContent = '';
+  rpiTable.parentNode.style.visibility = "hidden"
+}
+
+
+// Functions for editing data
+// Edit a building
+function editBuilding(id){
+
+  console.log("here")
+  // Get row
+  row_name = "admin-building"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[1]
+  desc_cell = row.childNodes[2]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get current values
+  c_name = name_cell.innerText
+  c_desc = desc_cell.innerText
+
+  // Make into text box
+  name_cell.innerHTML = "<input id=\"edit-building-name\" type=\"text\" name=\"name\">"
+  desc_cell.innerHTML = "<input id=\"edit-building-desc\" type=\"text\" name=\"desc\">"
+
+  // Add current name and description
+  name_cell.childNodes[0].value = c_name
+  desc_cell.childNodes[0].value = c_desc
+
+  edit_btn.onclick=function(){sendEditBuilding(this.value)}
+}
+
+function sendEditBuilding(id){
+
+  // Get row
+  row_name = "admin-building"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[1].childNodes[0]
+  desc_cell = row.childNodes[2].childNodes[0]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get new values
+  nname = name_cell.value
+  ndesc = desc_cell.value
+
+  // Make request, on sucess get all buildings again
+  url = edit_buildings_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id, "name":nname, "description":ndesc}),
+    success: function(result) {
+       getBuildings()
+    }
+  });
+}
+
+
+// Edit a floor
+function editFloor(id){
+
+  console.log("here")
+  // Get row
+  row_name = "admin-floor"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[2]
+  desc_cell = row.childNodes[3]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get current values
+  c_name = name_cell.innerText
+  c_desc = desc_cell.innerText
+
+  // Make into text box
+  name_cell.innerHTML = "<input id=\"edit-floor-name\" type=\"text\" name=\"name\">"
+  desc_cell.innerHTML = "<input id=\"edit-floor-desc\" type=\"text\" name=\"desc\">"
+
+  // Add current name and description
+  name_cell.childNodes[0].value = c_name
+  desc_cell.childNodes[0].value = c_desc
+
+  edit_btn.onclick=function(){sendEditFloor(this.value)}
+}
+
+function sendEditFloor(id){
+
+  // Get row
+  row_name = "admin-floor"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[2].childNodes[0]
+  desc_cell = row.childNodes[3].childNodes[0]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get new values
+  nname = name_cell.value
+  ndesc = desc_cell.value
+
+  // Make request, on sucess get all buildings again
+  url = edit_floors_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id, "name":nname, "description":ndesc}),
+    success: function(result) {
+       getBuildings()
+    }
+  });
+}
+
+// Edit a room
+function editRoom(id){
+
+  console.log("here")
+  // Get row
+  row_name = "admin-room"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[3]
+  desc_cell = row.childNodes[4]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get current values
+  c_name = name_cell.innerText
+  c_desc = desc_cell.innerText
+
+  // Make into text box
+  name_cell.innerHTML = "<input id=\"edit-room-name\" type=\"text\" name=\"name\">"
+  desc_cell.innerHTML = "<input id=\"edit-room-desc\" type=\"text\" name=\"desc\">"
+
+  // Add current name and description
+  name_cell.childNodes[0].value = c_name
+  desc_cell.childNodes[0].value = c_desc
+
+  edit_btn.onclick=function(){sendEditRoom(this.value)}
+}
+
+function sendEditRoom(id){
+
+  console.log("here")
+  // Get row
+  row_name = "admin-room"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[3].childNodes[0]
+  desc_cell = row.childNodes[4].childNodes[0]
+  edit_btn = row.childNodes[6].childNodes[2]
+
+  // Get new values
+  nname = name_cell.value
+  ndesc = desc_cell.value
+
+  // Make request, on sucess get all buildings again
+  url = edit_room_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id, "name":nname, "description":ndesc}),
+    success: function(result) {
+       getBuildings()
+    }
+  });
+}
+
+
+// Edit a room
+function editRpi(id){
+
+  // Get row
+  row_name = "admin-rpi"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[4]
+  desc_cell = row.childNodes[5]
+  edit_btn = row.childNodes[7].childNodes[2]
+
+  // Get current values
+  c_name = name_cell.innerText
+  c_desc = desc_cell.innerText
+
+  // Make into text box
+  name_cell.innerHTML = "<input id=\"edit-rpi-name\" type=\"text\" name=\"name\">"
+  desc_cell.innerHTML = "<input id=\"edit-rpi-desc\" type=\"text\" name=\"desc\">"
+
+  // Add current name and description
+  name_cell.childNodes[0].value = c_name
+  desc_cell.childNodes[0].value = c_desc
+
+  edit_btn.onclick=function(){sendEditRpi(this.value)}
+}
+
+function sendEditRpi(id){
+
+  // Get row
+  row_name = "admin-rpi"+id
+  row = document.getElementById(row_name)
+  name_cell = row.childNodes[4].childNodes[0]
+  desc_cell = row.childNodes[5].childNodes[0]
+  edit_btn = row.childNodes[7].childNodes[2]
+
+  // Get new values
+  nname = name_cell.value
+  ndesc = desc_cell.value
+
+  // Make request, on sucess get all buildings again
+  url = edit_rpis_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"id":id, "name":nname, "description":ndesc}),
+    success: function(result) {
+       getBuildings()
+    }
+  });
 }
 
 

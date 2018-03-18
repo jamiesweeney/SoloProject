@@ -265,11 +265,13 @@ def getRoomEstimate(room_id):
 
     time_c = time.time() - 86400
 
-    cur.execute("SELECT estimate FROM estimates AS r WHERE r.roomID = {} AND r.time > {} ORDER BY r.time DESC LIMIT 1;".format(room_id, time_c))
+    cur.execute("SELECT estimate FROM estimates AS e WHERE e.roomID = {} AND e.time > {} ORDER BY e.time DESC LIMIT 1;".format(room_id, time_c))
     ans = cur.fetchone()
 
+    print(ans)
+
     if (ans != None):
-        info = {"room_id": room_id, "time": ans[2], "estimate" : ans[3]}
+        info = {"estimate" : ans}
         data = {"estimate": info}
     else:
         data = {"estimate": None}
@@ -416,6 +418,23 @@ def adminAddBuildingJSON():
     return "OK"
 
 
+# Request for editing a building
+@app.route("/api/v1/buildings/admin-edit", methods=['POST'])
+@login_required     # Important
+def adminEditBuilding():
+
+    # Get building data from JSON
+    content = json.loads((request.get_data().decode("utf-8")))
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    editBuilding(cur, content["id"], content["name"], content["description"])
+    conn.commit()
+
+    # Serve success response
+    return "OK"
+
 
 # Request for deleting a building
 @app.route("/api/v1/buildings/admin-delete", methods=['POST'])
@@ -455,6 +474,23 @@ def adminAddFloor():
     conn.commit()
 
     # Serve sucess response
+    return "OK"
+
+# Request for editing a floor
+@app.route("/api/v1/floors/admin-edit", methods=['POST'])
+@login_required     # Important
+def adminEditFloor():
+
+    # Get building data from JSON
+    content = json.loads((request.get_data().decode("utf-8")))
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    editFloor(cur, content["id"], content["name"], content["description"])
+    conn.commit()
+
+    # Serve success response
     return "OK"
 
 # Request for deleting a floor
@@ -497,6 +533,23 @@ def adminAddRoom():
     # Serve sucess response
     return "OK"
 
+# Request for editing a floor
+@app.route("/api/v1/rooms/admin-edit", methods=['POST'])
+@login_required     # Important
+def adminEditRoom():
+
+    # Get building data from JSON
+    content = json.loads((request.get_data().decode("utf-8")))
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    editRoom(cur, content["id"], content["name"], content["description"])
+    conn.commit()
+
+    # Serve success response
+    return "OK"
+
 # Request for deleting a room
 @app.route("/api/v1/rooms/admin-delete", methods=['POST'])
 @login_required     # Important
@@ -535,6 +588,23 @@ def adminAddRpi():
     # Add rpi to database
     cur.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"], content["auth_key"])])
     ans = cur.fetchall()
+    conn.commit()
+
+    # Serve success response
+    return "OK"
+
+# Request for editing a floor
+@app.route("/api/v1/rpis/admin-edit", methods=['POST'])
+@login_required     # Important
+def adminEditRpi():
+
+    # Get building data from JSON
+    content = json.loads((request.get_data().decode("utf-8")))
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    editRPi(cur, content["id"], content["name"], content["description"])
     conn.commit()
 
     # Serve success response
@@ -747,17 +817,37 @@ def aquireSQLConnection(db_name):
 def addBuilding(cursor, name, desc):
     cursor.executemany("INSERT INTO buildings (name, description) VALUES (%s, %s)", [(name, desc)])
 
+# Edits a building with new name and description
+def editBuilding(cursor, bid, name, desc):
+    cursor.executemany("UPDATE buildings SET name=%s , description=%s WHERE id = %s;", [(name, desc, bid)])
+
+
 # Adds a floor with specified building, name and description
 def addFloor(cursor, building_id, name, desc):
     cursor.executemany("INSERT INTO floors (buildingID, name, description) VALUES (%s, %s, %s)", [(building_id, name, desc)])
+
+# Edits a floor with new name and description
+def editFloor(cursor, fid, name, desc):
+    cursor.executemany("UPDATE floors SET name=%s , description=%s WHERE id = %s;", [(name, desc, fid)])
 
 # Adds a room with specified floor, name and description
 def addRoom(cursor, floor_id, name, desc):
     cursor.executemany("INSERT INTO rooms (floorID, name, description) VALUES (%s, %s, %s)", [(floor_id, name, desc)])
 
+# Edits a room with new name and description
+def editRoom(cursor, rid, name, desc):
+    cursor.executemany("UPDATE rooms SET name=%s , description=%s WHERE id = %s;", [(name, desc, rid)])
+
+
 # Adds a rpi with specified rpi, name and description
 def addRPi(cursor, room_id, name, desc):
     cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, secrets.token_bytes(nbytes=255))])
+
+
+# Edits a rpi with new name and description
+def editRPi(cursor, rid, name, desc):
+    cursor.executemany("UPDATE rpis SET name=%s , description=%s WHERE id = %s;", [(name, desc, rid)])
+
 
 def deleteTables():
 

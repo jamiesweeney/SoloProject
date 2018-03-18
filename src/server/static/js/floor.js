@@ -13,6 +13,7 @@ var room_page = "/webapp/room/"
 var curr_url = window.location.href.split("/")
 var floor_id = curr_url.slice(-1)[0]
 
+var room_count = 0
 
 // Get room data for floor
 getRooms(floor_id)
@@ -80,6 +81,8 @@ function getEstimate(room_id){
 
 function addRoom(room){
 
+  room_count = room_count + 1
+
   // New building div
   var new_room = document.createElement("div");
   new_room.id = "room"+room["room_id"]
@@ -111,6 +114,15 @@ function addRoom(room){
 
   // Add to box
   roomContainer.appendChild(new_room)
+
+  // If an odd number of rooms, add space in between
+  if (room_count % 2 == 1){
+    var room_space = document.createElement("div")
+    room_space.className = "roomSpace"
+
+    // Add to box
+    roomContainer.appendChild(room_space)
+  }
 
   // Get room estimate
   getEstimate(room["room_id"])

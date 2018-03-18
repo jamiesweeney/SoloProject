@@ -16,14 +16,14 @@ function addBuilding(building){
 
   // New building div
   var new_building = document.createElement("div");
-  new_building.id = "building"
+  new_building.className = "building"
 
   // Image div
   var img = document.createElement("div")
   img.className = "building_img"
   var imgi = document.createElement("img")
   imgi.src= buildingImgDir + "default.jpg"
-img.appendChild(imgi)
+  img.appendChild(imgi)
   new_building.appendChild(img)
 
   // Name
