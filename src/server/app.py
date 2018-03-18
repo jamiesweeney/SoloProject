@@ -263,7 +263,9 @@ def getRoomEstimate(room_id):
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
 
-    cur.execute("SELECT * FROM estimates AS r WHERE r.roomID = {} ORDER BY r.time DESC LIMIT 1;".format(room_id))
+    time_c = time.time() - 86400
+
+    cur.execute("SELECT estimate FROM estimates AS r WHERE r.roomID = {} AND r.time > {} ORDER BY r.time DESC LIMIT 1;".format(room_id, time_c))
     ans = cur.fetchone()
 
     if (ans != None):
