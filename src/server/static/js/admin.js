@@ -318,16 +318,6 @@ function addRoom(resp){
   r_node.appendChild(t_node)
   r_tools.appendChild(r_node)
 
-  // Give reading tool
-  var r_node = document.createElement("BUTTON")
-  r_node.className = "admin-button-reading"
-  var t_node = document.createElement("i");
-  t_node.className="fa fa-bars"
-  r_node.value = room["room_id"]
-  r_node.onclick=function(){giveReading(this.value)}
-  r_node.appendChild(t_node)
-  r_tools.appendChild(r_node)
-
   new_room.appendChild(r_tools)
 
   // Set class and id
@@ -897,7 +887,7 @@ function deleteRpi(id){
 // Send a delete rpi request
 function deleteUser(id){
 
-  if (!confirm("Are you sure you want to delete user " + id + " and all references?")){
+  if (!confirm("Are you sure you want to delete user " + id + "?")){
     return
   }
 
