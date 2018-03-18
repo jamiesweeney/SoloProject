@@ -26,8 +26,7 @@ function addReport(estimate, floor_id){
   console.log(estimate)
 
   if (estimate["estimate"] == null){
-    floor_div.totalOccupants = floor_div.totalOccupants
-
+    floor_div.totalOccupants = "???"
   }else if (isNaN(parseInt(estimate["estimate"]["estimate"]))){
     console.log((isNaN(parseInt(estimate["estimate"]["estimate"]))))
     floor_div.totalOccupants = floor_div.totalOccupants
