@@ -36,11 +36,9 @@ function addRoomData(data){
 
 function addEstimateData(data){
 
-  console.log(data)
   // room curent estimate
   var desc = document.createElement("p" )
   if (data.length == 0){
-    console.log(data)
     var t_node = document.createTextNode("Current estimate: ???");
     desc.appendChild(t_node)
     room_desc_div.appendChild(desc)

@@ -99,7 +99,6 @@ selected_room = null
 // Puts the building data in the table
 function addBuilding(resp){
 
-  console.log(resp)
   building = JSON.parse(resp)
   buildings_dict[building["id"]] = building
 
@@ -277,10 +276,9 @@ function addFloor(resp){
   var t_node = document.createElement("i");
   t_node.className="fa fa-edit"
   f_node.value = floor["floor_id"]
-  f_node.onclick=function(){console.log("clicked");a = editFloor(this.value);console.log("called")}
+  f_node.onclick=function(){editFloor(this.value)}
   f_node.appendChild(t_node)
   f_tools.appendChild(f_node)
-  console.log(f_node.onclick)
 
   new_floor.appendChild(f_tools)
 
@@ -296,7 +294,6 @@ function addFloor(resp){
 // Puts the room data in the table
 function addRoom(resp){
 
-  console.log("asdasdasdad")
   room = resp
 
   // New floor div
@@ -385,7 +382,6 @@ function addRoom(resp){
 function addRpi(resp){
 
   rpi = resp
-  console.log(resp)
   // New rpi div
   var new_rpi = document.createElement("tr");
 
@@ -480,7 +476,6 @@ function addRpi(resp){
   b_node.appendChild(t_node)
   r_tools.appendChild(b_node)
 
-  console.log(b_node)
 
   // Set class and id
   new_rpi.id = "admin-rpi"+rpi["rpi_id"]
@@ -646,7 +641,7 @@ function addNewBuilding(){
 function addNewBuildingFromJSON(){
 
   data = newBuildingJSON.value
-  console.log(data)
+
 
   jdata = JSON.stringify(data)
 
@@ -800,7 +795,7 @@ function addNewUser(){
 function addNewReading(){
 
   roomNo = newReadingRoom.value
-  console.log(roomNo)
+
   stime = newReadingStime.value
   etime = newReadingEtime.value
   value = newReadingValue.value
@@ -829,10 +824,6 @@ function addNewReading(){
   stime = stime.getTime()/1000
   etime = etime.getTime()/1000
 
-  console.log(stime)
-  console.log(etime)
-
-  console.log(JSON.stringify({"room":roomNo, "stime":stime, "etime":etime, "value":value}))
   // Check times are valid
   if (isNaN(stime) || isNaN(etime)){
     alert("Times are not valid.")
@@ -980,7 +971,6 @@ function deleteUser(id){
 function expandBuilding(id){
 
   if (id == selected_building){
-    console.log("asdasdasd")
     contractBuilding(id)
     return
   }
@@ -1012,7 +1002,6 @@ function expandBuilding(id){
   floorTitle.style.visibility = "visible"
   floorTitle.innerText = building_data["name"]
 
-  console.log(building_data)
 
   for (floor in building_data["floors"]){
     addFloor(building_data["floors"][floor])
@@ -1058,10 +1047,8 @@ function expandFloor(id){
   roomTitle.innerText = floor_data["floor_name"]
 
 
-  console.log(floor_data)
 
   for (room in floor_data["rooms"]){
-    console.log(room)
     addRoom(floor_data["rooms"][room])
   }
 }
@@ -1102,7 +1089,6 @@ function expandRoom(id){
   rpiTitle.style.visibility = "visible"
   rpiTitle.innerText = room_data["room_name"]
 
-  console.log(room_data)
   for (rpi in room_data["rpis"]){
     addRpi(room_data["rpis"][rpi])
   }
@@ -1161,7 +1147,6 @@ function contractRoom(id){
 // Edit a building
 function editBuilding(id){
 
-  console.log("here")
   // Get row
   row_name = "admin-building"+id
   row = document.getElementById(row_name)
@@ -1213,7 +1198,6 @@ function sendEditBuilding(id){
 // Edit a floor
 function editFloor(id){
 
-  console.log("here")
   // Get row
   row_name = "admin-floor"+id
   row = document.getElementById(row_name)
@@ -1264,7 +1248,6 @@ function sendEditFloor(id){
 // Edit a room
 function editRoom(id){
 
-  console.log("here")
   // Get row
   row_name = "admin-room"+id
   row = document.getElementById(row_name)
@@ -1289,7 +1272,6 @@ function editRoom(id){
 
 function sendEditRoom(id){
 
-  console.log("here")
   // Get row
   row_name = "admin-room"+id
   row = document.getElementById(row_name)
@@ -1435,7 +1417,6 @@ function addSettings(setting){
   }else{
     estimateStatus.innerHTML += "OFF"
   }
-  console.log(estimateStatus)
 }
 
 

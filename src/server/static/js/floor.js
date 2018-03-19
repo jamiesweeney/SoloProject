@@ -22,22 +22,18 @@ getRooms(floor_id)
 function addEstimate(estimate, room_id){
 
   // Get room div
-  console.log("room"+room_id)
   var room_div = document.getElementById("room"+room_id)
-  console.log(estimate["estimate"])
 
   if (estimate["estimate"] == null){
     room_div.totalOccupants = "???"
   }else if (isNaN(parseInt(estimate["estimate"]["estimate"]))){
-    console.log((isNaN(parseInt(estimate["estimate"]["estimate"]))))
     room_div.totalOccupants = "???"
   }else{
     room_div.totalOccupants = parseInt(estimate["estimate"]["estimate"])
   }
 
   oc = room_div.totalOccupants
-  console.log(oc)
-
+  
   if (oc == 0){
     room_div.style.background = "white"
   }else if(oc <= 25) {

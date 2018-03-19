@@ -21,14 +21,11 @@ getFloors()
 function addReport(estimate, floor_id){
 
   // Get floor div
-  console.log("floor"+floor_id)
   var floor_div = document.getElementById("floor"+floor_id)
-  console.log(estimate)
 
   if (estimate["estimate"] == null){
-    floor_div.totalOccupants = "???"
+    floor_div.totalOccupants = floor_div.totalOccupants
   }else if (isNaN(parseInt(estimate["estimate"]["estimate"]))){
-    console.log((isNaN(parseInt(estimate["estimate"]["estimate"]))))
     floor_div.totalOccupants = floor_div.totalOccupants
   }else{
     if (isNaN(floor_div.totalOccupants)){
@@ -67,9 +64,7 @@ function handleEstimate(resp, floor_id){
 
 function getEstimate(room_id, floor_id){
 
-
   url = est_url + room_id
-  console.log(url)
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() {
       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
