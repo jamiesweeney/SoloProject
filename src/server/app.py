@@ -72,11 +72,15 @@ def wp_building(building_id):
 def wp_floor(floor_id):
     return render_template('/html/floor.html')
 
-# Room page - shows nothing just now
-# TODO - Implement this page
+# Room page - shows predictions over time
 @app.route("/webapp/room/<int:room_id>")
 def wp_room(room_id):
     return render_template('/html/room.html')
+
+# Help page
+@app.route("/webapp/help")
+def wp_help():
+    return render_template('/html/help.html')
 
 # Login page - allows the user to log in, accepts 'next' param or redirects to home
 @app.route("/webapp/login", methods=["GET", "POST"])

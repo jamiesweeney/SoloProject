@@ -1,0 +1,56 @@
+{% extends "html/base.html" %}
+
+{% block contents %}
+  <div id="help_info">
+    <h3>Overview</h3>
+    <p>Welcome the the peoplecount.cf!</p>
+    <p>
+      This site provides a front-end for users to interact with my room occupancy prediction system designed and implemented for
+      my level 4 solo project.
+    </p>
+    <p>
+      Smart sensor boxes (based on Raspberry Pis) communicate information on their surroundings to this site, which uses machine learning to make predictions
+      on the occupancy of these areas. The predictions produced are available through a HTTP API, which this site and potentially others can use to serve
+      occupancy predictions to interested parties.
+    </p>
+    <br />
+
+    <h3>Building and prediction information</h3>
+    <p>
+      From the home page, you can see all the available buildings, clicking on one will take you to a floor-by-floor breakdown of that building.
+      The colour of each floor represents the total average occupancy per room, with a total amount also being given.
+    </p>
+    <p>
+      You can also see a room-by-room breakdown by clicking on a specific floor.
+      The colour of each room represents the total occupancy per room, with a number also being given.
+    </p>
+    <p>
+      Clicking on a room will take you to a page for that room that shows:
+      <ul>
+        <li>The room name/description.</li>
+        <li>The current prediction and the time created.</li>
+        <li>All predictions for this room over the past 24 hours.</li>
+      </ul>
+    </p>
+    <br />
+
+    <h3>Users</h3>
+    <p>
+      Most people using this system <b>will not</b> require a login, as the public API endpoints are exposed without authentication requirements.
+      Admins, however, will be given a username and password that will grant access to the admin panel and any admin API endpoints.
+      To log in and logout, user the navigation buttons found in any page header.
+    </p>
+    <p>
+      Once logged in, visit the admin panel and read the help section to familiarise yourself with the admin tools.
+    </p>
+    <br />
+
+
+    <p>
+      The source code and documentation for the entire project, including smart sensor box functionality will be available <a href="https://github.com/Jamie-UoG/SoloProject">here</a> after project completion.
+    </p>
+    <br />
+
+
+  </div>
+{% endblock %}

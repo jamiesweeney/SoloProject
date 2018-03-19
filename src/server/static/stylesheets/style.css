@@ -602,6 +602,19 @@ align-items: center;
 }
 
 
+#help_info {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: left;
+  align-items: left;
+  margin-bottom: 30px;
+  padding: 15px;
+  margin: 5%;
+  width: 90%;
+  text-align: left;
+}
+
+
 
 .footer {
   background-color: darkslategrey;
