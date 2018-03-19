@@ -8,7 +8,7 @@
 <div class= id="admin-panel">
 
   <ul id="admin-nav-pills"class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#tab-buildings">Buildings data</a></li>
+    <li class="active"><a data-toggle="pill" href="#tab-buildings">Building data</a></li>
     <li><a data-toggle="pill" href="#tab-upl">Upload building </a></li>
     <li><a data-toggle="pill" href="#tab-users">User data</a></li>
     <li><a data-toggle="pill" href="#tab-reading">Give reading</a></li>
@@ -174,28 +174,126 @@
       <div id="settings-form">
 
         <h3>Estimate jobs:</h3>
-        <h4 id="estimate-status"><h4>
+        <p id="estimate-status"></p>
         <input id="start-estimates-button" type="submit" value="START" onclick="startEstimates()">
         <input id="stop-estimates-button" type="submit" value="STOP" onclick="stopEstimates()">
+        <br /><br /><br />
 
         <h3>Clear building data:</h3>
-        <h4>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.<h4>
+        <p>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.</p>
         <input id="clear-buildings-button" type="submit" value="CLEAR" onclick="clearBuildings()">
+        <br /><br /><br />
 
         <h3>Reset building data:</h3>
-        <h4>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.<h4>
-        <h4>The database will then be repopulated with building configurations that are saved to file.<h4>
+        <p>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.</p>
+        <p>The database will then be repopulated with building configurations that are saved to file.</p>
         <input id="reset-estimates-button" type="submit" value="RESET" onclick="resetBuildings()">
+        <br /><br /><br />
+
+
 
         <h3>Reset user data:</h3>
-        <h4>This will remove all users, a single admin user will then be created with on-file configuration.<h4>
+        <p>This will remove all users, a single admin user will then be created with on-file configuration.</p>
+        <p>Please note that if you are not logged in as the default admin user then you will not be admin authorised after resetting.</p>
         <input id="reset-users-button" type="submit" value="RESET" onclick="resetUsers()">
+        <br /><br /><br />
 
       </div>
     </div>
-
     <div id="tab-help" class="tab-pane fade">
-      <p>TODO</p>
+      <h2>Help</h2>
+      <div id="admin-help">
+
+        <h3>Overview</h3>
+        <p>
+          Welcome the the room occupancy prediction admin page.
+          Use the tabs above to navigate through the admin panel.
+        </p>
+        <br />
+
+        <h3>Building data</h3>
+        <p>In this section you can view all the building, floor, room and RPi data stored in the database.</p>
+        <p>You can create a new building, floor, room or RPi by filling in the relevant text boxes with a name and description
+          and clicking the <i class="fa fa-plus" style="color: #86af49; border: 0px; font-size: 20pt;"></i> icon.
+        </p>
+        <p>You can edit an expand a building, floor or room to see it's contents by clicking the <i class="fa fa-bars" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon which will create a new table underneath with the contents, to close this table just click the icon again.
+        </p>
+        <p>You can edit an existing building, floor, room or RPi by clicking the <i class="fa fa-edit" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon and changing the name / description. When your changes are made, click the <i class="fa fa-edit" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon again to save the changes to the database.
+        </p>
+        <p>To download the authentication details for a RPi contents by clicking the <i class="fa fa-download" style="color: #337ab7; border: 0px; font-size: 20pt;"></i>
+          icon which will create a new JSON file and initiate download.
+        </p>
+        <br />
+
+        <h3>Upload building</h3>
+        <p>
+          In this section you can upload a building to the database in JSON format. An example input is shown below:
+        </p>
+        <!-- Indentation to remain -->
+        <!-- 'pre' maintains whitepace -->
+        <pre>
+{
+  "name" : "Example building",
+  "description" : "This is a pretend building, used for example purposes.",
+  "floors" : [
+    {
+      "name" : "Example floor 0",
+      "description" : "Example building's ground floor.",
+      "rooms" : [
+        {
+          "name" : "Example room 0",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : [
+            {
+              "name" : "Example rpi 0",
+              "description" : "The only ground floor rpi in the example building."
+            }
+          ]
+        },
+        {
+          "name" : "Example room 1",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : []
+        }
+      ]
+    }
+  ]
+}</pre>
+        <p>
+          Please ensure that all JSON is formatted correctly as helpful debug messages will <b>not</b> be given.
+        </p>
+        <br />
+
+        <h3>User data</h3>
+        <p>In this section you can view all the admin users stored in the database.</p>
+        <p>You can create a new user with a given name and password by filling in the add new user form.</p>
+        <p>Passwords must be greater than 4 characters long and cannot be whitespace.</p>
+        <p>Use the <i class="fa fa-trash" style="color: red; border: 0px; font-size: 20pt;"></i> icon to delete any existing users.</p>
+        <br />
+
+        <h3>Give reading</h3>
+        <p>In this section you can submit a real occupancy reading to the database for a specific room.</p>
+        <p>The reading is then taken and applied to the prediction algorithm to make the results more accurate.</p>
+        <p>When inserting a new reading, please make sure that:</p>
+        <ul>
+          <li> The room number correctly corresponds to the room of interest. </li>
+          <li> The start and end times are complete and are consecutive. </li>
+          <li> The reading given is a valid integer i.e '15' not 'fifteen' or '15.0'. </li>
+        </ul>
+        </p>
+        <br />
+
+        <h3>Settings</h3>
+        <p>This section contains various buttons that allow admins to perform high level functions.</p>
+        <p>To start or stop estimates being produced, use the buttons under the 'Estimate jobs' section.</p>
+        <p>To clear all buildings, floors, rooms, rpis, reports and estimates from the database, use the button under the 'Clear building data' section.</p>
+        <p>Similarly the button under the 'Reset building data' section will clear the data and then repopulate the database with on-file JSON data.</p>
+        <p>We can do the same thing for database information on admin users by clicking the button in the 'Reset user data' section.</p>
+        <br />
+      </div>
     </div>
   </div>
 </div>

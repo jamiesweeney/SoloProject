@@ -776,8 +776,9 @@ function addNewUser(){
   if (pass1 != pass2){
     alert("Entered passwords do not match, try again!")
     return
-  }else if (pass1.replaceAll(" ", "") == ""){
+  }else if (pass1.replaceAll(" ", "") == "" | pass1.length <= 4){
     alert("Password not secure, try again!")
+    return
   }
 
   // Make request, on sucess get all users again

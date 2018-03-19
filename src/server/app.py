@@ -458,7 +458,7 @@ def adminAddBuildingJSON():
 
     content = json.loads(content)
 
-    createFromJSON(cur, content)
+    createBuildingFromJSON(cur, content)
     conn.commit()
 
     # Serve success response

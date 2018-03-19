@@ -6,7 +6,7 @@ var floorContainer = document.getElementById("floors");
 var base_url = window.location.hostname
 var building_url = "/api/v1/buildings/get/"
 var floor_url = "/api/v1/floors/get/"
-var est_url = "/api/v1/rooms/get_estimate/"
+var est_url = "/api/v1/rooms/get-estimate/"
 
 var floors_page = "/webapp/floor/"
 

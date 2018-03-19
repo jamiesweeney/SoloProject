@@ -206,8 +206,18 @@ img {
 }
 
 
+#admin-help {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+
 /* Input forms */
-#login-user-form, #new-user-form, #new-reading-form, #new-building-form{
+#login-user-form, #new-user-form, #new-reading-form, #new-building-form, #settings-form{
   background-color: #d5e1df;
   align-self: center;
   align-content: center;
@@ -228,6 +238,26 @@ img {
   box-sizing: border-box;
 }
 
+#settings-form input{
+  width: 40%;
+  height: 40px;
+  margin-left: 5%;
+  margin-right: 5%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  background-color: #f44336;
+  color: white;
+  cursor: pointer;
+
+  float: left;
+
+
+}
+
 #new-building-form textarea{
   width: 80%;
   margin-left: 10%;
@@ -238,6 +268,9 @@ img {
   border-radius: 5px;
   box-sizing: border-box;
 }
+
+
+
 
 #login-user-form input[type=submit], #new-user-form input[type=submit], #new-reading-form input[type=submit], #new-building-form input[type=submit]{
     width: 80%;
@@ -258,6 +291,8 @@ img {
   font-size: 14px;
   color: red;
 }
+
+
 
 
 
