@@ -110,3 +110,9 @@ function getRoomData(room_id){
   xmlHttp.open("GET", url, true); // true for asynchronous
   xmlHttp.send(null);
 }
+
+
+// Timer for refreshing page every minute
+setTimeout(function() {
+  location.reload();
+}, 60000);

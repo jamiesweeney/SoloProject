@@ -33,7 +33,7 @@ function addEstimate(estimate, room_id){
   }
 
   oc = room_div.totalOccupants
-  
+
   if (oc == 0){
     room_div.style.background = "white"
   }else if(oc <= 25) {
@@ -149,3 +149,8 @@ function getRooms(floor_id){
   xmlHttp.open("GET", url, true); // true for asynchronous
   xmlHttp.send(null);
 }
+
+// Timer for refreshing page every minute
+setTimeout(function() {
+  location.reload();
+}, 60000);
