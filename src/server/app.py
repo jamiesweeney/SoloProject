@@ -256,7 +256,7 @@ def getRoom(room_id):
     return response
 
 # Returns current prediction for one room
-@app.route("/api/v1/rooms/get_estimate/<int:room_id>")
+@app.route("/api/v1/rooms/get-estimate/<int:room_id>")
 def getRoomEstimate(room_id):
 
     # Get connection and cursor to DB
@@ -281,6 +281,32 @@ def getRoomEstimate(room_id):
         mimetype='application/json'
     )
     return response
+
+# Returns all predictions for one room
+@app.route("/api/v1/rooms/get-all-estimates/<int:room_id>")
+def getRoomAllEstimates(room_id):
+
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+
+    cur.execute("SELECT estimate,time FROM estimates AS r WHERE r.roomID = {} ORDER BY r.time DESC;".format(room_id))
+    ans = cur.fetchall()
+
+    print(ans)
+
+    if (ans != None):
+        info = {"estimate" : ans}
+        data = {"estimate": info}
+    else:
+        data = {"estimate": None}
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 
 
 #-- Admin get requests --#
@@ -369,12 +395,33 @@ def adminGetUsers():
     )
     return response
 
-# Returns admin data for users
-@app.route("/api/v1/do-estimates")
+# Request for getting estimation option
+@app.route("/api/v1/estimate/get")
 @login_required     # Important
-def adminDoEstimates():
-    makePredictions()
-    return "OK"
+def adminGetEstimate():
+
+    # Get next run time for job
+    try:
+        job = scheduler.get_job("estimate-job")
+        stat = job.next_run_time
+    except:
+        stat = None
+
+    # Convert to boolean
+    if (stat == None):
+        stat = False
+    else:
+        stat = True
+
+    # Server JSON response
+    ans = {"status":stat}
+    response = app.response_class(
+        response=json.dumps(ans),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 
 
 #-- Admin POST requests --#
@@ -693,6 +740,26 @@ def adminAddReadings():
 
     generateTrainingData(content)
     # Server success response
+    return "OK"
+
+
+# Request for setting estimation option
+@app.route("/api/v1/estimate/set", methods=['POST'])
+@login_required     # Important
+def adminSetEstimate():
+
+    # Get data from JSON
+    content = json.loads(str(request.get_data().decode("utf-8")))
+
+    # Get estimate job
+    job = scheduler.get_job("estimate-job")
+
+    # Set status
+    if (content["status"]):
+        job.resume()
+    else:
+        job.pause()
+
     return "OK"
 
 
@@ -1020,7 +1087,6 @@ def applyTrainingData(data):
 
     return
 
-
 def makePredictions():
 
     # Get list of all rooms
@@ -1037,7 +1103,6 @@ def makePredictions():
     # Make predictions for each
     for room in ans:
         makeRoomPrediction(room[0])
-
 
 def makeRoomPrediction(room):
 
@@ -1145,6 +1210,10 @@ def makeRoomPrediction(room):
     conn.commit()
 
     return
+
+def predictionSwitch():
+    print (scheduler)
+    print (self.scheduler)
 
 
 

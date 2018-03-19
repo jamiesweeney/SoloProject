@@ -36,6 +36,11 @@ var newReadingStime = document.getElementById("new-reading-stime");
 var newReadingEtime = document.getElementById("new-reading-etime");
 var newReadingValue = document.getElementById("new-reading-value");
 
+var estimateStatus = document.getElementById("estimate-status");
+
+
+
+
 // Api Endpoints
 // Get urls
 var base_url = window.location.hostname
@@ -67,9 +72,15 @@ var delete_users_url = "/api/v1/users/admin-delete"
 
 var add_reading_url = "/api/v1/readings/admin-add"
 
+var estimate_get_url = "/api/v1/estimate/get"
+var estimate_set_url = "/api/v1/estimate/set"
+
+
+
 // Triggers the intial database gets
 getBuildings()
 getUsers()
+getSettings()
 
 // Variables used to store current display data
 buildings_dict = {}
@@ -1383,6 +1394,72 @@ function downloadRpiAuth(id){
 
 
 }
+
+
+
+
+
+// Gets the settings
+function getSettings(){
+
+  // Get estimate setting
+  url = estimate_get_url
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() {
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+          addSettings(xmlHttp.responseText);
+  }
+  xmlHttp.open("GET", url, true); // true for asynchronous
+  xmlHttp.send(null);
+}
+
+// Add the settings to the page
+function addSettings(setting){
+  // Decode JSON
+  data = JSON.parse(setting)
+  bool = data["status"]
+
+
+  estimateStatus.innerText = "Estimate job is:  "
+
+  if (bool == true){
+    estimateStatus.innerHTML += "ON"
+  }else{
+    estimateStatus.innerHTML += "OFF"
+  }
+  console.log(estimateStatus)
+}
+
+
+function startEstimates(){
+
+  // Make request, on sucess get all buildings again
+  url = estimate_set_url
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: JSON.stringify({"status":true}),
+    success: function(result) {
+       getSettings()
+    }
+  });
+}
+
+
+
+function stopEstimates(){
+
+    // Make request, on sucess get all buildings again
+    url = estimate_set_url
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify({"status":false}),
+      success: function(result) {
+         getSettings()
+      }
+    });
+  }
 
 
 // Implementation of replace all
