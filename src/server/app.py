@@ -737,6 +737,13 @@ def adminDelUsers():
     ans = cur.fetchall()
     conn.commit()
 
+    cur.execute("SELECT id FROM users;")
+    ans = cur.fetchall()
+    print (ans)
+    if (ans == ()):
+        restoreUserFromFile()
+
+
     # Return sucess response
     return "OK"
 
