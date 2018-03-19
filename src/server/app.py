@@ -6,7 +6,6 @@ from subprocess import call
 from flask_apscheduler import APScheduler
 from subprocess import check_output
 import random
-import secrets
 from flask import request,  render_template, json, redirect, Response, url_for
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, confirm_login
 from urllib.parse import urlparse, urljoin
@@ -653,7 +652,7 @@ def adminAddRpi():
     cur = conn.cursor()
 
     # Generate a secure key of size 255 bytes for authentication
-    content["auth_key"] = secrets.token_bytes(nbytes=255)
+    content["auth_key"] = os.urandom(255)
 
     # Add rpi to database
     cur.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"], content["auth_key"])])
@@ -949,7 +948,7 @@ def editRoom(cursor, rid, name, desc):
 
 # Adds a rpi with specified rpi, name and description
 def addRPi(cursor, room_id, name, desc):
-    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, secrets.token_bytes(nbytes=255))])
+    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, os.urandom(255))])
 
 # Edits a rpi with new name and description
 def editRPi(cursor, rid, name, desc):
