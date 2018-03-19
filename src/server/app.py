@@ -95,7 +95,7 @@ def wp_login():
             cur = conn.cursor()
 
             # Get user data from database
-            cur.execute("SELECT userID FROM users AS u WHERE u.username = \'{}\';".format(username))
+            cur.execute("SELECT id FROM users AS u WHERE u.username = \"{}\";".format(username))
             ans = cur.fetchone()
 
             # Create user object
@@ -383,7 +383,7 @@ def adminGetUsers():
     cur = conn.cursor()
 
     # Gets user data
-    cur.execute("SELECT userID, username FROM users;".format())
+    cur.execute("SELECT id, username FROM users;".format())
     ans = cur.fetchall()
 
     # Server JSON response
@@ -482,7 +482,6 @@ def adminEditBuilding():
     # Serve success response
     return "OK"
 
-
 # Request for deleting a building
 @app.route("/api/v1/buildings/admin-delete", methods=['POST'])
 @login_required     # Important
@@ -502,6 +501,26 @@ def adminDelBuilding():
 
     # Serve sucess response
     return "OK"
+
+# Request for clearing the building database
+@app.route("/api/v1/buildings/admin-clear", methods=['PUT'])
+@login_required     # Important
+def adminClearBuildings():
+
+    deleteBuildingTables()
+    return "OK"
+
+# Request for resetting building database
+@app.route("/api/v1/buildings/admin-reset", methods=['PUT'])
+@login_required     # Important
+def adminResetBuildings():
+
+    deleteBuildingTables()
+    createBuildingTables()
+    restoreBuildingFromFile()
+    return "OK"
+
+
 
 # Request for adding a new floor
 @app.route("/api/v1/floors/admin-add", methods=['POST'])
@@ -710,12 +729,23 @@ def adminDelUsers():
     cur = conn.cursor()
 
     # Delete user to database
-    cur.execute("DELETE FROM users WHERE userID = {};".format(content["id"]))
+    cur.execute("DELETE FROM users WHERE id = {};".format(content["id"]))
     ans = cur.fetchall()
     conn.commit()
 
     # Return sucess response
     return "OK"
+
+# Request for resetting user database
+@app.route("/api/v1/users/admin-reset", methods=['PUT'])
+@login_required     # Important
+def adminResetUsers():
+
+    deleteUsersTables()
+    createUsersTables()
+    restoreUserFromFile()
+    return "OK"
+
 
 # Request for adding a room reading
 @app.route("/api/v1/readings/admin-add", methods=['POST'])
@@ -812,7 +842,7 @@ def doLogin(username, password):
     conn = aquireSQLConnection("users")
     cur = conn.cursor()
 
-    cur.execute("SELECT passhash  FROM users AS u WHERE u.username = \'{}\';".format(username))
+    cur.execute("SELECT passhash  FROM users AS u WHERE u.username = \"{}\";".format(username))
     ans = cur.fetchone()
     if (ans != None):
         return sha256_crypt.verify(password, ans[0])
@@ -910,13 +940,18 @@ def editRoom(cursor, rid, name, desc):
 def addRPi(cursor, room_id, name, desc):
     cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, secrets.token_bytes(nbytes=255))])
 
-
 # Edits a rpi with new name and description
 def editRPi(cursor, rid, name, desc):
     cursor.executemany("UPDATE rpis SET name=%s , description=%s WHERE id = %s;", [(name, desc, rid)])
 
 
-def deleteTables():
+# Adds a user to the user database
+def addUser(cursor, username, password):
+    new_password =  sha256_crypt.encrypt(password)
+    cursor.executemany("INSERT INTO users (username, passhash) VALUES (%s, %s)", [(username, new_password)])
+
+
+def deleteBuildingTables():
 
     # Get connection and cursor to DB
     conn = aquireSQLConnection("reports")
@@ -934,7 +969,7 @@ def deleteTables():
                 done = False
     conn.commit()
 
-def createTables():
+def createBuildingTables():
 
     # Get cursor for report database
     conn = aquireSQLConnection("reports")
@@ -952,14 +987,14 @@ def createTables():
     conn.commit()
 
 # Adds building data from JSON to the DB, returns modified JSON with IDs
-def createFromJSON(cursor, building):
+def createBuildingFromJSON(cursor, building):
 
     print (building)
     print (type(building))
 
     # Add building and save new id in JSON dict
     addBuilding(cursor, building["name"], building["description"])
-    cursor.execute("SELECT id FROM buildings AS b WHERE b.name = \'{}\';".format(building["name"]))
+    cursor.execute("SELECT id FROM buildings AS b WHERE b.name = \"{}\";".format(building["name"]))
     ans = cursor.fetchone()
     building_id = ans[0]
     building["id"] = building_id
@@ -967,7 +1002,7 @@ def createFromJSON(cursor, building):
     # For each floor, add to DB and save new id to JSON dict
     for floor in building["floors"]:
         addFloor(cursor, building_id, floor["name"], floor["description"])
-        cursor.execute("SELECT id FROM floors AS f WHERE f.buildingID = {} AND f.name = \'{}\';".format(building_id, floor["name"]))
+        cursor.execute("SELECT id FROM floors AS f WHERE f.buildingID = {} AND f.name = \"{}\";".format(building_id, floor["name"]))
         ans = cursor.fetchone()
         floor_id = ans[0]
         floor["id"] = floor_id
@@ -975,30 +1010,72 @@ def createFromJSON(cursor, building):
         # For each room, add to DB and save new id to JSON dict
         for room in floor["rooms"]:
             addRoom(cursor, floor_id, room["name"], room["description"])
-            cursor.execute("SELECT id FROM rooms AS r WHERE r.floorID = {} AND r.name = \'{}\';".format(floor_id, room["name"]))
+            cursor.execute("SELECT id FROM rooms AS r WHERE r.floorID = {} AND r.name = \"{}\";".format(floor_id, room["name"]))
             ans = cursor.fetchone()
             room_id = ans[0]
             room["id"] = room_id
 
             for rpi in room["rpis"]:
                 addRPi(cursor, room_id, rpi["name"], rpi["description"])
-                cursor.execute("SELECT id,auth_key FROM rpis AS r WHERE r.roomID = {} AND r.name = \'{}\';".format(room_id, rpi["name"]))
+                cursor.execute("SELECT id,auth_key FROM rpis AS r WHERE r.roomID = {} AND r.name = \"{}\";".format(room_id, rpi["name"]))
                 ans = cursor.fetchone()
                 rpi_id = ans[0]
                 rpi_auth = ans[1]
                 rpi["id"] = rpi_id
                 rpi["auth_key"] = rpi_auth
 
-def restoreFromFile():
-    for filename in glob.iglob('../buildings/*.json'):
+def restoreBuildingFromFile():
+    conn = aquireSQLConnection("reports")
+    cur = conn.cursor()
+    for filename in glob.iglob('buildings/*.json'):
          with open(filename) as data_file:
              build = json.load(data_file)
-         newb = createFromJSON(cur, build)
+         newb = createBuildingFromJSON(cur, build)
          conn.commit()
 
 
 
+def deleteUsersTables():
 
+    # Get connection and cursor to DB
+    conn = aquireSQLConnection("users")
+    cursor = conn.cursor()
+
+    done = False
+    while not done:
+        done = True
+        cursor.execute("show tables;")
+        ans = cursor.fetchall()[::-1]
+        for t in ans:
+            try:
+                cursor.execute("drop table {};".format(t[0]))
+            except:
+                done = False
+    conn.commit()
+
+def createUsersTables():
+
+    # Get cursor for report database
+    conn = aquireSQLConnection("users")
+    cursor = conn.cursor()
+    conn.begin()
+
+    cursor.execute("CREATE TABLE users (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL UNIQUE, passhash varchar(255) NOT NULL)")
+    conn.commit()
+
+# Adds building data from JSON to the DB, returns modified JSON with IDs
+def restoreUserFromFile():
+
+    # Get cursor for report database
+    conn = aquireSQLConnection("users")
+    cursor = conn.cursor()
+    conn.begin()
+
+    with open("users/admin.json") as data_file:
+        user = json.load(data_file)
+
+    addUser(cursor, user["username"],user["password"])
+    conn.commit()
 
 
 

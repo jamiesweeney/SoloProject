@@ -76,6 +76,13 @@ var estimate_get_url = "/api/v1/estimate/get"
 var estimate_set_url = "/api/v1/estimate/set"
 
 
+var users_reset_url = "/api/v1/estimate/set"
+
+var buildings_clear_url = "/api/v1/buildings/admin-clear"
+var buildings_reset_url = "/api/v1/buildings/admin-reset"
+
+var users_reset_url = "/api/v1/users/admin-reset"
+
 
 // Triggers the intial database gets
 getBuildings()
@@ -1445,8 +1452,6 @@ function startEstimates(){
   });
 }
 
-
-
 function stopEstimates(){
 
     // Make request, on sucess get all buildings again
@@ -1460,6 +1465,49 @@ function stopEstimates(){
       }
     });
   }
+
+function clearBuildings(){
+
+  // Make request, on sucess get all buildings again
+  url = buildings_clear_url
+  $.ajax({
+    type: 'PUT',
+    url: url,
+    success: function(result) {
+      getBuildings()
+    }
+  });
+}
+
+function resetBuildings(){
+
+  // Make request, on sucess get all buildings again
+  url = buildings_reset_url
+  $.ajax({
+    type: 'PUT',
+    url: url,
+    success: function(result) {
+      getBuildings()
+    }
+  });
+}
+
+
+function resetUsers(){
+
+    // Make request, on sucess get all buildings again
+    url = users_reset_url
+    $.ajax({
+      type: 'PUT',
+      url: url,
+      success: function(result) {
+         getUsers()
+      }
+    });
+  }
+
+
+
 
 
 // Implementation of replace all

@@ -170,12 +170,26 @@
     </div>
 
     <div id="tab-settings" class="tab-pane fade">
-      <h2>Settings</h2>
+      <h2>Settings/Tools</h2>
       <div id="settings-form">
+
         <h3>Estimate jobs:</h3>
         <h4 id="estimate-status"><h4>
         <input id="start-estimates-button" type="submit" value="START" onclick="startEstimates()">
         <input id="stop-estimates-button" type="submit" value="STOP" onclick="stopEstimates()">
+
+        <h3>Clear building data:</h3>
+        <h4>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.<h4>
+        <input id="clear-buildings-button" type="submit" value="CLEAR" onclick="clearBuildings()">
+
+        <h3>Reset building data:</h3>
+        <h4>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.<h4>
+        <h4>The database will then be repopulated with building configurations that are saved to file.<h4>
+        <input id="reset-estimates-button" type="submit" value="RESET" onclick="resetBuildings()">
+
+        <h3>Reset user data:</h3>
+        <h4>This will remove all users, a single admin user will then be created with on-file configuration.<h4>
+        <input id="reset-users-button" type="submit" value="RESET" onclick="resetUsers()">
 
       </div>
     </div>
