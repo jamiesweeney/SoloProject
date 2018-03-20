@@ -87,8 +87,19 @@ There are many problems to overcome when using a PIR sensor for this purpose, mo
 Although it will be impossible to obtain a precise estimation by a PIR sensor alone, with the correct implementation, the sensor could be used alongside other components to provide a valid prediction.
 
 \subsection{Image / Video}
+The field of computer vision first emerged in the 1960s and has been developing steadily ever since with large abouts of research being done for a number. With endless applications from manufacturing to self-driving vehicles, it’s not surprising that there is a wide variety of methods available to us, specifically much research has been done on object detection and recognition. 
+
+Primitive solutions to object detection might include matching edges from input imagery to predefined templates or a taking and analysing a histogram of oriented gradients (HOG). 
+
+In recent years, more complex designs have been produced, often in combination with machine learning algorithms and a training dataset which has been shown to be effective in a variety of object detection problem areas. 
+
+Although more complex techniques are tempting, it is important to bear in mind the technical restraints put in place by using a microcontroller; computer vision techniques are notorious for being process intentensive and many require the use of optimised graphical processors to achieve realistic processing times. Fortunately modern digital cameras are extremely advanced and cheap, high quality and compatible digital cameras are readily available, specifically the Raspberry Pi 3 Model B+ features a CSI camera port and a separate camera module. The camera module costs around £20, has an 8-megapixel sensor and is capable of recording in 1080p30 and 720p60 which is most definetely enough for our needs.
+
+To conclude, it seems that computer vision could play a vital role in the final design and is definetely due consideration.
 
 \subsection{Audio}
+
+
 
 \subsection{Other}
 
@@ -256,17 +267,6 @@ The detection methods supported are:
 }
 }
 \;
-\nl $\textbf{void}~scanBluetoothLowEnergy(\textbf{Int}~T_{cycle}, \textbf{Int}~T_{timeout}, \textbf{Int}~T_{decay}, \textbf{Map}~output)$ \;
-\nl \Begin{
-\nl \While {$T_{timeout} > T_{now}$}{
-\nl $scan(T_{cycle}, T_{decay})$\;
-\nl \While {$scanning$}{
-\nl $discovery \gets new\textunderscore discovery$\;
-\nl $handleDiscovery(T_{decay}, discovery, output)$\;
-}
-}
-}
-\;
 \nl $\textbf{void}~handleDiscovery(\textbf{Int}~T_{decay}, \textbf{Map}~discovery, \textbf{Map}~output)$ \;
 \nl \Begin{
 \nl $addr \gets discovery['address']$\;
@@ -321,7 +321,6 @@ The detection methods supported are:
 \nl $cm\textunderscore output \gets 0$\;
 
 \nl $scanBluetooth(T_{bcycle}, T_{timeout}, T_{decay},bt\textunderscore output)$\;
-\nl $scanBluetoothLowEnergy(T_{bcycle}, T_{timeout}, T_{decay},bt\textunderscore output)$\;
 \nl $scanCamera(T_{ccycle},T_{timeout}, cm\textunderscore output)$\;
 
 \nl \While {$T_{timeout} > T_{now}$}{
