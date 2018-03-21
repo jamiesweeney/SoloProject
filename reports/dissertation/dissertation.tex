@@ -36,64 +36,67 @@ style file l4proj.cls
 
 
 \section{Context}
-The “internet of things”, or the IoT is a term used to describe a wide network of connected devices, ranging from supercomputers to “smart appliances”. Since the term was first coined in 1999 [1], the IoT has come a long way with new applications being discovered consistently [source needed], with a predicted market of £6.5 trillion) by 2020 \cite{test}.
+The “Internet of Things”, or IoT is a term used to describe the expanding network of devices of many types,  ranging from supercomputers to household appliances that contain embedded computer systems, making them capable of communication with other IoT devices. These devices aim to bring technology to every corner of our lives, bringing the idea of interconnected smart homes, workplaces, cities and more to reality.
 
-One key area of study has been developing occupation detection that would allow IoT devices to be more aware of the occupation status of their surroundings. This is a crucial step to implementing smart homes, workplaces and campuses that are responsive and can meet their demands at any given time.
+Since the term was first used in 1999\cite{c-iot-term} the IoT has come a long way,  with the number of internet connected devices rapidly increasing\cite{c-devices}, and although nobody seems to agree on global market predictions, many predict massive growth\cite{c-iot-market1}\cite{c-iot-market2}\cite{c-iot-market3}.
 
-Advanced examples are already taking form, with the University of Glasgow investing €1bn towards developing a smart campus and the city of Barcelona making major overhauls to many public services in an attempt to bring the idea of a smart city to reality.
-Goals
-The aim of this project is to design and construct low budget ‘smart sensor boxes’, capable of predicting human occupation in a room. To do this we use the popular brand of microprocessors ‘Raspberry Pis’ in addition to a variety of sensors and other techniques.
+One key area of study has been developing occupancy detection systems that would allow IoT devices to be more aware of the occupancy status of their surroundings. This is a crucial step to implementing smart homes, workplaces and campuses that are responsive and can meet their demands at any given time.
 
-In addition to the smart sensor boxes, we will design and implement a centralised hub capable of receiving, storing and serving information produced by a series of RPi boxes. This hub should also provide functionality for system-wide maintenance and configuration, to make setup and operation efficient and flexible.
+Advanced examples of this are already taking concrete form, with the University of Glasgow investing €1bn towards developing a smart campus\cite{c-iot-uog} and the city of Barcelona making major overhauls to many public services in an attempt to bring the idea of a smart city to reality\cite{c-iot-bar}.
+
 
 
 \section{Motivations}
 The motivations for this project are wide, with smart sensors being applicable in a broad variety of ways. We will discuss the primary motivations for this project, which are understandably more relatable and accessible to myself, in addition to a number of secondary motivations that are considered due to close similarity.
 
 \subsection{Primary Motivation}
-To narrow our field of focus, we choose a main motivation to consider when producing the smart sensor boxes. We consider the following scenario: University administration decide they wish to upgrade buildings with ‘smart sensor boxes’ with the overall goal being that student or other staff member can find current/past occupancy information on certain areas remotely. For example library group study areas could be listed online with an indication of their current use, allowing students who plan on visiting to check availability beforehand.
+To narrow our field of focus, we choose a main motivation to consider when producing the smart sensor boxes. We consider the following scenario: University administration decide they wish to upgrade buildings with ‘smart sensor boxes’ with the overall goal being that students or other staff members can find occupancy information on certain areas remotely. For example library group study areas could be listed online with an indication of their current use, allowing students who plan on visiting to check availability beforehand.
 The University of Glasgow library currently provides a similar feature, displaying computer use breakdown by floor, available from monitors within the library.
 
-In addition the system should be built to be easily extendable, and capable of operating as a part of a larger IoT network.
+In addition the system should be built to be easily extendable, and capable of operating as a part of a larger IoT network. This is critical as there are many potential uses for such a system operating on a larger network of IoT devices. One example would be querying the system for occupancy information on a room and adjusting ventilation and heating based on the number of occupants, a effective system would bring potential for large savings in electricity and heating \cite{c-heating} while requiring very little human intervention or overhead costs.
 
 \subsection{Secondary Motivations}
-Although we focus on a university implementation of occupancy prediction, we can imagine a similar design could be incorporated into many different areas. Schools, workplaces and public buildings could benefit from installing smart sensor functionality, allowing not only occupancy information to the user, but also providing more in-depth analysis of overall occupation to any interested administrators.
+Although we focus on a university implementation of occupancy prediction, we can imagine a similar design could be incorporated into many different areas. Schools, workplaces and public buildings could all benefit from installing smart sensor functionality, allowing not only occupancy information to end users, but also providing more in-depth analysis of overall occupation to any interested administrators.
 
-An example of this would be public buildings that allow local councils to analyse the usage of public service, allowing them to make more informed decisions on funding, maintenance, staffing and other key elements of successful operation.
+For example, smart public buildings could allow local councils to analyse the usage of various public services, allowing them to make more informed decisions on funding, maintenance, staffing and other key elements of operation.
 
-Smart sensor data would come in useful for many other functions, perhaps one of the most useful being used as supplementary information to existing systems. For example automated heating, ventilation, lighting and other system functions could benefit from the additional knowledge and perhaps function more independently as a result.
-
-To list a few more: Security systems, home-automation, public transport, gyms, dining locations and other areas of leisure.
+To list a few more: Security systems, home-automation, public transport, gyms, dining locations and other areas of leisure. We can see that this problem is applicable to many areas of life and has the potential to shape cities and communites by providing accurate and reliable information that is used network-wide by many parties.
 
 
+\section{Goals}
+In short, the aim of this project is to design and construct low budget ‘smart sensor boxes’, capable of predicting human occupation in a room. To do this we use the popular brand of microprocessors ‘Raspberry Pis’ in addition to a variety of sensors and other techniques.
+
+In addition to the smart sensor boxes, we will design and implement a centralised hub capable of receiving, storing and serving information produced by a series of RPi boxes. This hub should also provide functionality for system-wide maintenance and configuration, to make setup and operation efficient and flexible.
+
+This system should be built to be easily extendable, and capable of operating as part of the IoT network. This is critical as there are many potential uses for such a system operating on a larger network of IoT devices. 
 
 %==============================================================================
 \chapter{Background Analysis}
-We start by researching and reviewing past studies conducted in similar fields, given that the subject matter is broad and widely applicable, we find many studies available. Many employing sensors 
+We start by researching and reviewing past studies conducted in similar fields, given that the subject matter is broad and widely applicable, we find many studies available. Many employ sensors and machine learning techniques to achieve meaningful results.
 
 
 \section{Human Detection}
-Sensors are a key element in almost every real-world computing application, especially those concerned with the detection of humans e.g automatic doors. Without them a computing device would have little to no information on its surroundings, and would be extremely ineffective. For this reason, sensors will be a primary component of the smart boxes.
+Sensors are a key element in almost every real-world computing application, especially those concerned with the detection of humans e.g automatic doors. Without them a computing device would have little to no information on its surroundings, and would be extremely ineffective for real-time interactive functionality. For this reason, sensors will be a primary component of the smart boxes.
 
 Background research on previously conducted studies gives us a comprehensive list of applicable sensor, and their specific advantages and disadvantages.
 
 \subsection{Infrared Light}
-Infrared light is the electromagnetic radiation emitted by all objects with a temperature above 0°K, giving the feeling of heat. The wavelength of IR light spans from 700 nm to 1 mm, existing just outside of the range of human vision. PIR sensors feature a “sensor face” that can detect a change in the average amount of IR light hitting the surface, the sensor then outputs a signal indicating this change, with a low voltage indicating low change, and a higher voltage indicating a greater change.
+Infrared light is the electromagnetic radiation emitted by all objects with a temperature above 0°K, giving the feeling of heat. The wavelength of IR light spans from 700 nm to 1 mm, existing just outside of the range of human vision\cite{c-inred}. PIR sensors feature a “sensor face” that can detect a change in the average amount of IR light hitting the surface, the sensor then outputs a signal indicating this change, with a low voltage indicating low change, and a higher voltage indicating a greater change\cite{c-pir}.
 
-They are most commonly used in PIR-based motion detectors such as automatic lighting systems. Generally the purpose of a PIR sensor is to detect the presence of humans at a binary level i.e true or false. However it has been shown that with suitable positioning and utilisation of machine learning techniques, a PIR sensor can be used to predict the number of occupants in a room within a small range to fair accuracy.
+They are most commonly used in PIR-based motion detectors such as automatic lighting systems. Generally the purpose of a PIR sensor is to detect the presence of humans at a binary level i.e true or false. However it has been shown that with suitable positioning and utilisation of machine learning techniques, a single PIR sensor can be used to predict the number of occupants in a room within a small range to fair accuracy\cite{c-pir-study}.
 
-There are many problems to overcome when using a PIR sensor for this purpose, most importantly, the positioning of the sensor; PIR sensors are prone to interference from occluding objects i.e blocking one another from the sensor. As a result of this, the most ideal position would be the ceiling of the room, however this may not prove as practical for other aspects of performance.
+There are many problems to overcome when using a PIR sensor for this purpose, most importantly, the positioning of the sensor; PIR sensors are prone to interference from occluding objects i.e blocking one another from the sensor. As a result of this, the most ideal position would be the ceiling of the room, however this may not prove as practical for other aspects such as maintenance\cite{c-pir-study}.
 
-Although it will be impossible to obtain a precise estimation by a PIR sensor alone, with the correct implementation, the sensor could be used alongside other components to provide a valid prediction.
+Although it will be difficult to obtain a precise estimation by a PIR sensor alone, with the correct implementation, the sensor could potentially be used alongside other components to achieve a valid predictions.
 
 \subsection{Digital Images}
-The field of computer vision first emerged in the 1960s and has been developing steadily ever since with large abouts of research being done for a number. With endless applications from manufacturing to self-driving vehicles, it’s not surprising that there is a wide variety of methods available to us, specifically much research has been done on object detection and recognition. 
+The field of computer vision first emerged in the 1960s and has been developing steadily ever since with large abouts of research being done for a number of different problems. With endless applications from manufacturing to self-driving vehicles, it’s not surprising that there is a variety of methods available to us, specifically much research has been done on object detection and recognition. 
 
 Primitive solutions to object detection might include matching edges from input imagery to predefined templates or a taking and analysing a histogram of oriented gradients (HOG). 
 
 In recent years, more complex designs have been produced, often in combination with machine learning algorithms and a training dataset which has been shown to be effective in a variety of object detection problem areas. 
 
-Although more complex techniques are tempting, it is important to bear in mind the technical restraints put in place by using a microcontroller; computer vision techniques are notorious for being process intentensive and many require the use of optimised graphical processors to achieve realistic processing times. Fortunately modern digital cameras are extremely advanced and cheap, high quality and compatible digital cameras are readily available, specifically the Raspberry Pi 3 Model B+ features a CSI camera port and a separate camera module. The camera module costs around £20, has an 8-megapixel sensor and is capable of recording in 1080p30 and 720p60 which is most definetely enough for our needs.
+Although more complex techniques are tempting, it is important to bear in mind the technical restraints put in place by using a microcontroller; computer vision techniques are notorious for being process intentensive and many require the use of optimised graphical processors to achieve realistic processing times. Fortunately modern digital cameras are extremely advanced and cheap, high quality and compatible digital cameras are readily available, specifically the Raspberry Pi 3 Model B+ features a CSI camera port and a separate camera module. The camera module costs around £20, has an 8-megapixel sensor and is capable of recording in 1080p30 and 720p60\cite{c-picamera} which is most definetely enough for our needs.
 
 To conclude, it seems that computer vision could play a vital role in the final design and is definetely due consideration.
 
@@ -103,9 +106,9 @@ As humans, audio plays a crutial role in understanding our evironment and commun
 
 We find that this is not quite as promising as previously thought, although a fair amount of research has been done on audio analyis by machine for high level tasks such as human detection, we have yet to see an implementation that can perform anywhere near the level of humans for such tasks. Most sucessful applications of audio analysis have been in speech recognition, for example speech to text functionality which has impoved the accessability of many computer systems and applications.
 
-We find that there a few key problems facing predicting human occupancy using audio, one of them being the fact that noise the environment is constantly disturbing audio detections with noise, from a variety of sources. Another key problem is occlusion by humans, much progress has been made over the past few decades concerning the analysis of a single human voice, however little has been made in developing to solutions that would be applicable to mass human detection.
+We find that there a few key problems facing predicting human occupancy using audio, one of them being the fact that noise the environment is constantly disturbing audio detections with noise, from a variety of sources. Much progress has been made over the past few decades concerning the analysis of a single human voice, however little has been made in developing to solutions that would be applicable to mass human detection.
 
-Although audio analyis clearly has the potential to be a major componenet in a smart sensor boxes, our findings suggest that the field needs a lot more development before machine can be used for human detection at the same level as humans. Although disappointing, it is not too surprising as it is thought that most of our high level understanding of audio is a product of complex brain processes or transformations not simply the pysical sensations experienced. 
+Although audio analyis clearly has the potential to be a major componenet in a smart sensor boxes, our findings suggest that the field needs a lot more development before audio analysis can give meaninful occupancy predictions.
 
 \subsection{Other}
 \subsubsection{Luminosity}
@@ -412,7 +415,7 @@ Similarly, we use the module “bluepy” to scan for Bluetooth Low Energy devic
 This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions.
 
 \subsection{Centralised Storage}
-We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end t, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
+We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end to end, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
 
 For added protection against database corruption or loss of data, we can enable automatic backups through the Google Cloud console which would allow us to restore lost data from previous copies of the database.
  
