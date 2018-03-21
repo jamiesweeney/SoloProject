@@ -72,12 +72,12 @@ To list a few more: Security systems, home-automation, public transport, gyms, d
 We start by researching and reviewing past studies conducted in similar fields, given that the subject matter is broad and widely applicable, we find many studies available. Many employing sensors 
 
 
-\section{Sensor Research}
+\section{Human Detection}
 Sensors are a key element in almost every real-world computing application, especially those concerned with the detection of humans e.g automatic doors. Without them a computing device would have little to no information on its surroundings, and would be extremely ineffective. For this reason, sensors will be a primary component of the smart boxes.
 
 Background research on previously conducted studies gives us a comprehensive list of applicable sensor, and their specific advantages and disadvantages.
 
-\subsection{Passive Infrared Sensors}
+\subsection{Infrared Light}
 Infrared light is the electromagnetic radiation emitted by all objects with a temperature above 0°K, giving the feeling of heat. The wavelength of IR light spans from 700 nm to 1 mm, existing just outside of the range of human vision. PIR sensors feature a “sensor face” that can detect a change in the average amount of IR light hitting the surface, the sensor then outputs a signal indicating this change, with a low voltage indicating low change, and a higher voltage indicating a greater change.
 
 They are most commonly used in PIR-based motion detectors such as automatic lighting systems. Generally the purpose of a PIR sensor is to detect the presence of humans at a binary level i.e true or false. However it has been shown that with suitable positioning and utilisation of machine learning techniques, a PIR sensor can be used to predict the number of occupants in a room within a small range to fair accuracy.
@@ -86,7 +86,7 @@ There are many problems to overcome when using a PIR sensor for this purpose, mo
 
 Although it will be impossible to obtain a precise estimation by a PIR sensor alone, with the correct implementation, the sensor could be used alongside other components to provide a valid prediction.
 
-\subsection{Image / Video}
+\subsection{Digital Images}
 The field of computer vision first emerged in the 1960s and has been developing steadily ever since with large abouts of research being done for a number. With endless applications from manufacturing to self-driving vehicles, it’s not surprising that there is a wide variety of methods available to us, specifically much research has been done on object detection and recognition. 
 
 Primitive solutions to object detection might include matching edges from input imagery to predefined templates or a taking and analysing a histogram of oriented gradients (HOG). 
@@ -99,10 +99,41 @@ To conclude, it seems that computer vision could play a vital role in the final 
 
 \subsection{Audio}
 
+As humans, audio plays a crutial role in understanding our evironment and communicating with each another, as a result we are able to detect human voices with almost absolute certainty. This close relationship suggests that it is a promising area of study in relation to human detection, i.e we use it sucessfully, therefore machine may be able to do the same. 
 
+We find that this is not quite as promising as previously thought, although a fair amount of research has been done on audio analyis by machine for high level tasks such as human detection, we have yet to see an implementation that can perform anywhere near the level of humans for such tasks. Most sucessful applications of audio analysis have been in speech recognition, for example speech to text functionality which has impoved the accessability of many computer systems and applications.
+
+We find that there a few key problems facing predicting human occupancy using audio, one of them being the fact that noise the environment is constantly disturbing audio detections with noise, from a variety of sources. Another key problem is occlusion by humans, much progress has been made over the past few decades concerning the analysis of a single human voice, however little has been made in developing to solutions that would be applicable to mass human detection.
+
+Although audio analyis clearly has the potential to be a major componenet in a smart sensor boxes, our findings suggest that the field needs a lot more development before machine can be used for human detection at the same level as humans. Although disappointing, it is not too surprising as it is thought that most of our high level understanding of audio is a product of complex brain processes or transformations not simply the pysical sensations experienced. 
 
 \subsection{Other}
+\subsubsection{Luminosity}
+Luminosity sensors contain photodiodes which convert light to electric energy, allowing them to effectively measure the lighting level of there surrounding. The typical luminosity range of an office or classroom is between 0 and 500 lux, which is well within the standard sensor range of 0 to 40,000 lux . A commonplace example of an application of these sensors would be street lights which turn on and off. Not much information could be found on cases of luminosity sensors being used for human occupancy prediction, but we find that a cheap and easily available luminosity sensor would be able to provide an indication of occupancy, as a dark room would suggest that there are no occupants. We must also consider the possible interferences that may affect the luminosity of the room, or the reading produced by the sensor. Sunlight shining through a window onto the sensor would greatly increase its reading, and could give an inaccurate reading of the room lighting as a whole.
+\subsubsection{Temperature}
+Another sign of human occupancy could be room temperature, as occupants naturally heat the air through emission of body heat. However the standard precision of an appropriate temperature sensor is usually 0.5°C, which it too low to be useful in determining exact temperature reading. The temperature change undergone when a group of people enter the room is unlikely be high enough to be properly detected by the sensor and be a guaranteed indication of human occupancy. This is especially true when the room temperature is subject to external factors, for example sun shining through the window will cause the room temperature to increase rapidly. We find that it would be too difficult to separate such an event from temperature rises that indicate human activity, so it follows that temperature sensors would be of little use for this problem.
+\subsubsection{CO2 and humidity}
+In an unregulated air system, human occupants would also give rise to CO2 and humidity levels through breathing, a higher number of occupants would see that the change in CO2 and humidity would be faster meaning the rate of change could give us a fairly accurate prediction. However for this very reason, building air must be properly regulated to ensure that it is safe for human occupancy, therefore any measurements we took would be expected to be within a fairly small range and would be highly influenced by external factors such as air conditioning, open windows and air flows.
 
+
+\section{Device Detection}
+Although the aim of this system is to detect human occupancy, everyday more and more people are using smartphones or similar electronic wireless devices for almost every aspect of life. It is estimted that ****\% of adults in the UK own a smartphone, and with most of these people using their devices everywhere they go, it is reasonable to say that the number of wireless devices in a specific area would be very highly correlated with the number of human occupants. We must also consider the possability of rooms containing wireless devices that are not relative to the human occupants, for example lab computers may contain Bluetooth functionality that would distory the human to device ratio, however typical workplace machines operate using wired communication, as it is more practical for a stationary machine.
+
+Over the years, smartphone development has brought about faster and more robust wireless protocols and methods. Since many of these protocols are the same ones used by microcontrollers, it is reasonable to think we may also be able to get an estimation of wireless devices nearby using similar techniques to human detection.
+
+Although this system would greatly benifit from being able to detect all devices in the nearby area, obviously this is not technically feasible with any device, since many users would choose to not broadcast their devices and many protocols are not built with device broadcasting in mind, for example communicating on 3G will not let all other nearby 3G devices know the location such as bluetooth communication might.
+
+The only feasible device detection method we can see is using Bluetooth and Bluetooth Low Energy device scanning, which will recieve alerts from nearby devices that have broadcasting enabled. Although not every bluetooth device will broadcast it's location in response to a device scan, the ratio of devices that respond should be relatively constant for similar audiences. 
+ 
+
+\section{Exitsting products}
+During our background analysis we find that similar systems have been implemented before for both research and real-world production use.
+
+"Meshlium", a product of the IoT provider Libelium, attempts to detect WiFi and Bluetooth communications in the nearby area to obtain a number of devices. It is estimated to detect up to 95\% of nearby wireless devices operating on these protocols.
+
+Another IoT solutions provider "Retail Sensing" have developed a CCTV based people counting system which utilises computer vision techniques with CCTV cameras recordings from cities, shopping centres etc. to predict human occupancy by area to up to 98\%.
+
+Unfortunatelty since these systems are a product costing money, the intellectual propery is protected and technical specifications are vague and mostly refer to "our processing algorithms" or something equally uninformative. However we can at least see that these products are feasible and obtain a general overview of how they work which will be a useful reference during the design stage.
 
 %==============================================================================
 \chapter{Requirements}
@@ -240,7 +271,7 @@ Figure \ref{fig:overalldiag} Shows a simple high level diagram of the system des
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{overalldiag}
-\caption{Hight level design of system.}
+\caption{High level design of system.}
 \label{fig:overalldiag}
 \end{figure}
 
@@ -342,6 +373,17 @@ The detection methods supported are:
 \subsection{Centralised Storage}
 \begin{itemize}	
   \item Show ER diagram.
+Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{ERdiagram}
+\caption{ER diagram of database design.}
+\label{fig:ERdiagram}
+\end{figure}
+
+
+
+
   \item Discuss relations.
   \item storing passwords as hash
 \end{itemize}
@@ -359,8 +401,38 @@ The detection methods supported are:
 \section{High Level Summary}
 \section{Components}
 \subsection{Smart Sensor Boxes}
+The smart sensor boxes were implemented using the popular brand of microprocessors “Raspberry Pi”, the RPis were a great choice for a smart sensor box such as this due to the fact that it is compatible with a wide variety of sensors and have relatively powerful computation ability. Specifically we use the most recent version, “Raspberry Pi 3 Model B” which features inbuilt WiFi and Bluetooth adapters, as well as a dedicated RPi camera port.
+
+The RPi camera port allows us to take still images at a resolution of 5 megapixels, using the Python module “picamera”.
+Once captured, still images are then passed as argument through a terminal command to an implementation of the object detection algorithm “You Only Look Once”. An original implementation “darknet” was chosen, however the RPi inbuilt GPU is not very powerful and was taking 400 seconds per still image. To mediate this we switched to a darknet version that was optimised of ARM processors, which brought the total time taken down to 40 seconds. This would have been sufficient, however it was found that by using a less configuration files package,  “tiny-YOLO”, we could improve the time further to 4 seconds, with relatively little difference in accuracy.
+
+Since the RPi 3B also has an inbuilt bluetooth adapter, we can use the Python module “bluez” to constantly perform a scan for bluetooth devices that are broadcasting nearby.
+Similarly, we use the module “bluepy” to scan for Bluetooth Low Energy devices.
+
+This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions.
+
 \subsection{Centralised Storage}
+We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end t, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
+
+For added protection against database corruption or loss of data, we can enable automatic backups through the Google Cloud console which would allow us to restore lost data from previous copies of the database.
+ 
+
 \subsection{HTTP Server}
+
+In order to quickly develop and deploy a web server, we use the Python microframework “Flask” which requires very little setup or configuration. 
+
+To access the central storage instance, we create a user for the server and add the IP to authorised network list. Then we can use the Python module "MySQLdb" which provides an interface for python to call mysql. In order to keep communication secure we must also store the SSL certificates with the application so they are accessible by MySQLdb.
+
+The server must also allow admin functionality, this requires us to use some method of authentication for any admin users. We use the “Flask-login” builtin functionality to implement a simple username/password system with new user registration restricted to admin users. Endpoints that require authentication can now simply be wrapped with "@login\_required" which will ensure that any responses not authenticated will be require to provide login details. After logging in, authentication data is stored in session cookies that are safe from tamper.
+
+Although suitable for development of web applications, Flask alone is not sufficient for deploying applications to a production environment due to the fact that it scales poorly. To use our Flask application in a production environment, we need to use "mod\_wsgi" package which will host our application, making it suitable for realistic usage.
+
+The production environment is installed on a Google Cloud compute engine which serves the webpage, to serve this to the public we obtain the domain "peoplecount.cf" and route DNS for that domain to the static IP address of the instance. Web pages are served through the url scheme "peoplecount.cf/webapp/..." and all API endpoints follow the scheme  "peoplecount.cf/api/...". An example of both of these would be "peoplecount.cf/webapp/home" and "peoplecount.cf/api/buildings/get-all".
+
+Since the data our application will be sending and receiving must be secure, we must ensure that our application serves and receives data through HTTP over TLS (HTTPS), which will ensure that the data is end-to-end encrypted and safe from interception.
+
+To make sure that HTTPS is enforced, we set up a redirect from any HTTP requests to the HTTPS equivalent.
+
 
 
 %==============================================================================
