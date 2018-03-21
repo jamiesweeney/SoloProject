@@ -120,7 +120,7 @@ In an unregulated air system, human occupants would also give rise to CO2 and hu
 
 
 \section{Device Detection}
-Although the aim of this system is to detect human occupancy, everyday more and more people are using smartphones or similar electronic wireless devices for almost every aspect of life. It is estimted that ****\% of adults in the UK own a smartphone, and with most of these people using their devices everywhere they go, it is reasonable to say that the number of wireless devices in a specific area would be very highly correlated with the number of human occupants. We must also consider the possability of rooms containing wireless devices that are not relative to the human occupants, for example lab computers may contain Bluetooth functionality that would distory the human to device ratio, however typical workplace machines operate using wired communication, as it is more practical for a stationary machine.
+Although the aim of this system is to detect human occupancy, everyday more and more people are using smartphones or similar electronic wireless devices for almost every aspect of life. It is estimted that 81\% of adults in the UK own a smartphone (as of 2016)\cite{c-phones}, and with most of these people using their devices everywhere they go, it is reasonable to say that the number of wireless devices in a specific area would be very highly correlated with the number of human occupants. We must also consider the possibility of rooms containing wireless devices that are not relative to the human occupants, for example lab computers may contain Bluetooth functionality that would distort the human to device ratio, however typical workplace machines operate using wired communication, as it is more practical for a stationary machine.
 
 Over the years, smartphone development has brought about faster and more robust wireless protocols and methods. Since many of these protocols are the same ones used by microcontrollers, it is reasonable to think we may also be able to get an estimation of wireless devices nearby using similar techniques to human detection.
 
@@ -130,48 +130,74 @@ The only feasible device detection method we can see is using Bluetooth and Blue
  
 
 \section{Exitsting products}
-During our background analysis we find that similar systems have been implemented before for both research and real-world production use.
+During our background analysis we find that similar systems have been implemented before for real-world production use.
 
-"Meshlium", a product of the IoT provider Libelium, attempts to detect WiFi and Bluetooth communications in the nearby area to obtain a number of devices. It is estimated to detect up to 95\% of nearby wireless devices operating on these protocols.
+"Meshlium", a product of the IoT provider Libelium, attempts to detect WiFi and Bluetooth communications in the nearby area to obtain a number of devices. It is estimated to detect up to 95\% of nearby wireless devices operating on these protocols\cite{c-meshlium}.
 
-Another IoT solutions provider "Retail Sensing" have developed a CCTV based people counting system which utilises computer vision techniques with CCTV cameras recordings from cities, shopping centres etc. to predict human occupancy by area to up to 98\%.
+Another IoT solutions provider "Retail Sensing" have developed a CCTV based people counting system which utilises computer vision techniques with CCTV cameras recordings from cities, shopping centres etc. to predict human occupancy by area to up to 98\%\cite{c-sensing}.
 
-Unfortunatelty since these systems are a product costing money, the intellectual propery is protected and technical specifications are vague and mostly refer to "our processing algorithms" or something equally uninformative. However we can at least see that these products are feasible and obtain a general overview of how they work which will be a useful reference during the design stage.
+Unfortunatelty since these systems are a product costing money, the intellectual propery is protected and technical specifications are vague and mostly refer to "our processing algorithms". However we can at least see that these products are feasible and obtain a general overview of how they work which will be a useful reference during the design stage.
 
 %==============================================================================
 \chapter{Requirements}
 
 \section{Functional Requirements}
 
-\subsection{Sensor data collection}
+We begin by defining 6 functional requirements (A-F) for the final system and their associated sub-requirements. The order of requirments should give an indication of the data flow, starting at the sensors and ending with the end user.
+
+\subsection{Sensor data collection (A)}
 The smart sensor boxes should be capable of collecting data from connected sensors for a specified period of time. The connected sensors we should support are:
 \begin{enumerate}
   \item Bluetooth device scanning.
   \item Bluetooth Low Energy device scanning.
-  \item Camera
+  \item Camera (still images)
 \end{enumerate}
 However the final system should be easily extendible so that new sensors can be added without too much cost.
 
-\subsection{Reporting}
-The smart sensor boxes should be capable of periodically compiling the sensor data into a report and sending it to a centralised storage location.
+\subsection{Sensor data processing (B)}
+In addition to data collection, the smart sensor boxes should be capable of performing some form of post-processing on the sensor data. For each implemented sensor, we choose an appropriate processing technique that can be applied. For Bluetooth and Bluetooth LE devices, we should:
 
-\subsection{Estimation}
-The system should be able to analyse these "Smart Box" reports, to give an estimation of occupancy for each location with reports.
+\begin{enumerate}
+  \item Bluetooth and Bluetooth LE devices.
+  \begin{enumerate}
+    \item Log any bluetooth reponses received to file.
+    \item Anonymise device addresses for ethical reasons (only if required).
+    \item Collate results from both sensors.
+    \item Remove duplicate results where possible.
+    \item Retain results for a given period after detection.
+    \item Attempt to smooth out connection strength values for each device.
+  \end{enumerate}
+  \item Camera
+  \begin{enumerate}
+    \item Log any images taken to file.
+    \item Apply an object recognition algorithm to the still image.
+    \item Log any object recognition output images to file.
+    \item Parse output for number of humans found.
+  \end{enumerate}
+\end{enumerate}
 
-In order to improve the estimation results, there should be some way of manual readings to be submitted and stored. These readings should then be used in combination with related smart sensor reports to tune the estimation process and producess more accurate results.
+\subsection{Reporting (C)}
+The smart sensor boxes should be able to:
+\begin{enumerate}
+  \item Smooth the output of camera post-processing results to obtain an more reliable metric for a given time.
+  \item Collect all devices from device post-processing that are still valid (within decay time range).
+  \item Comple a report from: the smoothed people number, the number of devices, the current time, any report meta-data required.
+  \item Send this report securely to an external component for furthur use.
+  \item Log any reports that are given to file.
+\end{enumerate}
 
-\subsection{Data serving}
-The report data produced should be made available to authorised users and applications.
-The estimations produced should be made available to any potential end users and applications.
+\subsection{Estimating occupancy (D)}
+The system should be able to use smart box reports, to give an estimation of occupancy for each location with reports.
+\begin{enumerate}
+  \item Generate some form of regression model for each sensor type.
+  \item Train each model using a combination of smart box reports values and true readings for the associated room and time range.
+  \item We should be able to continue to train the models on and off, so they can continually improve throughout service.
+  \item Use future reports to generate occupancy estimates using an average of all recent report data for each smart sensor box.
+  \item The system should be capable of making estimated with missing report values to ensure that not all sensors are essential for every smart box node.
+  \item The system should also be able to use reports from multiple smart sensor boxes in the same area, and take an average of the seperate estimations.
+\end{enumerate}
 
-In addition, authorised users should be able to insert new, delete or amend information on:
-\begin{itemize}  
-  \item Buildings, floors, rooms.
-  \item Smart boxes.
-  \item Admin users.
-\end{itemize}
-
-\subsection{Data storage}
+\subsection{Data storage (E)}
 The system must be capable of storing data about: 
 \begin{enumerate}
   \item Buildings, floors, rooms.
@@ -211,48 +237,75 @@ The system must be capable of storing data about:
   \item Admin users.
 \begin{enumerate} 
   \item Username.
-  \item Hashed password.
+  \item Hashed password (it is unsecure to store plain passwords for many reasons).
 \end{enumerate}
+\end{enumerate}
+
+
+\subsection{Data serving (F)}
+\begin{enumerate} 
+  \item We should provide public available REST API endpoints that allow access to data on:
+  \begin{enumerate}
+    \item Buildings.
+    \item Floors.
+    \item Rooms.
+    \item Room estimates.
+  \end{enumerate}
+  \item We should provide private (user only) available REST API endpoints that allow addition, removal and modifcation of data on:
+  \begin{enumerate}
+    \item Buildings.
+    \item Floors.
+    \item Rooms.
+    \item Smart boxes.
+    \item Users.
+  \end{enumerate}
+ \item We should provide a front-end display that provides an interface for the public api to end users.
+ \item We should also provide a front-end display that provides an interface for the private api.
 \end{enumerate}
 
 \section{Non-functional Requirements}
-\subsection{Sensor data collection}
+For each functional requirement we also state several non-functional requirments that are still essential to an effective solution.
+
+\subsection{Sensor data collection (A)}
 \begin{itemize}
   \item Ideally each smart sensor box should be as cheap as possible while providing adequte data, in order for the system to be scaled up without large overhead costs.
-  \item For each sensor method, if the data can be collected continuously i.e results can be streamed in real time, then it should be done so with as little downtime as possible. If the data cannot be collected continuously, meaning they require some amount of time to compute results before obtaining a new reading, then we should perform as many iterations as possible to ensure that results are up to date.
+  \item If the data cannot be collected continuously, meaning they require some amount of time to compute results before obtaining a new reading, then we should perform as many iterations as possible to ensure that results are up to date.
   \item The data collection should be able to run for as long as possible without human intervention to reduce the amount of maintainence required.
 \end{itemize}
 
-\subsection{Reporting}
-\begin{itemize}	
-  \item To ensure that occupancy reports and predictions are not outdated, RPis should be able to send reports at a rate of atleast one report per minute. The reports should also stick to the specified rate with fair accuracy and not deviate too far from a steady report rate.
-  \item To prevent irregularities in the sensor data affecting reports, the reports should use some form of smoothing mechanism, which would cause any sudden changes in sensor readings to have a smaller effect on the overall estimate.
-  \item Report structure should allow for partial reports from sensor boxes not equipped with all sensors, and also allow for easy extensibility to allow for new sensor additions.
-  \item Report structure should take a common format such as JSON.
+
+\subsection{Sensor data processing (B)}
+\begin{itemize}
+  \item The post processing should be as quick as possible to ensure that final reports are not heavily delayed.
+  \item The processing required should be as light as possible, as the Raspberry Pi does not have a large processing capacity. We should also seek to use optimised processing implementations where possible.
 \end{itemize}
 
-\subsection{Estimation}
+\subsection{Reporting (C)}
+\begin{itemize}	
+  \item To ensure that occupancy reports and predictions are not outdated, RPis should be able to send reports at a rate of atleast one report per minute. The reports should also stick to the specified rate with fair accuracy and not deviate too far from a steady report rate.
+  \item Extensibility - the report formatting should take a standard form such as JSON and be easily extendible to allow the use of more sensors.
+\end{itemize}
+
+\subsection{Estimating occupancy (D)}
 \begin{itemize}	
   \item The estimates should be as accurate as possible.
   \item Estimates should be produced at a reasonable enough rate to ensure that they are not out of date.
 \end{itemize}
 
-\subsection{Data serving}
-All data served to users should be:
+\subsection{Data storage (E)}
+Any data stored should be:
 \begin{itemize}	
-  \item In a user-friendly and informative format.
-  \item As close to real time as possible.
-  \item Data 
-
-\end{itemize}
-
-\subsection{Data storage}
-Any data stored should:
-\begin{itemize}	
-  \item Be implemented in an efficient and correct manner, without unnecessary dependencies between data.
-  \item Easily scaleable without any major modifications.
+  \item Implemented in an efficient and correct manner, without unnecessary dependencies between data.
+  \item Scalable without any major modifications.
   \item Accessible as quickly as possible and with no down-time.
   \item Secure from malicious attack or unauthorised access.
+\end{itemize}
+
+\subsection{Data serving (F)}
+Any data stored should be:
+\begin{itemize}	
+  \item User friendly and easy to use.
+  \item As up to date as possible.
 \end{itemize}
 
 
