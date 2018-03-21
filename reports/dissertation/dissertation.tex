@@ -186,18 +186,7 @@ The smart sensor boxes should be able to:
   \item Log any reports that are given to file.
 \end{enumerate}
 
-\subsection{Estimating occupancy (D)}
-The system should be able to use smart box reports, to give an estimation of occupancy for each location with reports.
-\begin{enumerate}
-  \item Generate some form of regression model for each sensor type.
-  \item Train each model using a combination of smart box reports values and true readings for the associated room and time range.
-  \item We should be able to continue to train the models on and off, so they can continually improve throughout service.
-  \item Use future reports to generate occupancy estimates using an average of all recent report data for each smart sensor box.
-  \item The system should be capable of making estimated with missing report values to ensure that not all sensors are essential for every smart box node.
-  \item The system should also be able to use reports from multiple smart sensor boxes in the same area, and take an average of the seperate estimations.
-\end{enumerate}
-
-\subsection{Data storage (E)}
+\subsection{Data storage (D)}
 The system must be capable of storing data about: 
 \begin{enumerate}
   \item Buildings, floors, rooms.
@@ -241,6 +230,16 @@ The system must be capable of storing data about:
 \end{enumerate}
 \end{enumerate}
 
+\subsection{Estimating occupancy (E)}
+The system should be able to use smart box reports, to give an estimation of occupancy for each location with reports.
+\begin{enumerate}
+  \item Generate some form of regression model for each sensor type.
+  \item Train each model using a combination of smart box reports values and true readings for the associated room and time range.
+  \item We should be able to continue to train the models on and off, so they can continually improve throughout service.
+  \item Use future reports to generate occupancy estimates using an average of all recent report data for each smart sensor box.
+  \item The system should be capable of making estimated with missing report values to ensure that not all sensors are essential for every smart box node.
+  \item The system should also be able to use reports from multiple smart sensor boxes in the same area, and take an average of the seperate estimations.
+\end{enumerate}
 
 \subsection{Data serving (F)}
 \begin{enumerate} 
@@ -286,13 +285,7 @@ For each functional requirement we also state several non-functional requirments
   \item Extensibility - the report formatting should take a standard form such as JSON and be easily extendible to allow the use of more sensors.
 \end{itemize}
 
-\subsection{Estimating occupancy (D)}
-\begin{itemize}	
-  \item The estimates should be as accurate as possible.
-  \item Estimates should be produced at a reasonable enough rate to ensure that they are not out of date.
-\end{itemize}
-
-\subsection{Data storage (E)}
+\subsection{Data storage (D)}
 Any data stored should be:
 \begin{itemize}	
   \item Implemented in an efficient and correct manner, without unnecessary dependencies between data.
@@ -300,6 +293,14 @@ Any data stored should be:
   \item Accessible as quickly as possible and with no down-time.
   \item Secure from malicious attack or unauthorised access.
 \end{itemize}
+
+
+\subsection{Estimating occupancy (E)}
+\begin{itemize}	
+  \item The estimates should be as accurate as possible.
+  \item Estimates should be produced at a reasonable enough rate to ensure that they are not out of date.
+\end{itemize}
+
 
 \subsection{Data serving (F)}
 Any data stored should be:
@@ -332,7 +333,7 @@ Figure \ref{fig:overalldiag} Shows a simple high level diagram of the system des
 \end{figure}
 
 \section{Components}
-\subsection{Smart Sensor Boxes}
+\subsection{Smart Sensor Boxes (A-C)}
 The smart sensor box logic consist of a main reporter algorithm which initialises scanning for each detection method and monitors the output. Every time a report is required, the algorithm takes the outputs from each output queue, and collates them to a report which is sent to the HTTP server for furthur use.  Algorithm \ref{RPA} shows the pseudocode for this algorithm.
 
 The detection methods supported are:
@@ -426,7 +427,7 @@ The detection methods supported are:
 \end{algorithm}
 
 
-\subsection{Centralised Storage}
+\subsection{Centralised Storage (D)}
 \begin{itemize}	
   \item Show ER diagram.
 Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
@@ -436,15 +437,11 @@ Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 \caption{ER diagram of database design.}
 \label{fig:ERdiagram}
 \end{figure}
-
-
-
-
   \item Discuss relations.
   \item storing passwords as hash
 \end{itemize}
 
-\subsection{HTTP Server}
+\subsection{HTTP Server (E-F)}
 
 
 
@@ -456,7 +453,7 @@ Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 
 \section{High Level Summary}
 \section{Components}
-\subsection{Smart Sensor Boxes}
+\subsection{Smart Sensor Boxes (A-C}
 The smart sensor boxes were implemented using the popular brand of microprocessors “Raspberry Pi”, the RPis were a great choice for a smart sensor box such as this due to the fact that it is compatible with a wide variety of sensors and have relatively powerful computation ability. Specifically we use the most recent version, “Raspberry Pi 3 Model B” which features inbuilt WiFi and Bluetooth adapters, as well as a dedicated RPi camera port.
 
 The RPi camera port allows us to take still images at a resolution of 5 megapixels, using the Python module “picamera”.
@@ -465,15 +462,22 @@ Once captured, still images are then passed as argument through a terminal comma
 Since the RPi 3B also has an inbuilt bluetooth adapter, we can use the Python module “bluez” to constantly perform a scan for bluetooth devices that are broadcasting nearby.
 Similarly, we use the module “bluepy” to scan for Bluetooth Low Energy devices.
 
-This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions.
+This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions. \ref{fig:rpidiag}
 
-\subsection{Centralised Storage}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{rpidiag}
+\caption{High level diagram of the smart sensor box implementation.}
+\label{fig:rpidiag}
+\end{figure}
+
+\subsection{Centralised Storage (D)}
 We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end to end, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
 
 For added protection against database corruption or loss of data, we can enable automatic backups through the Google Cloud console which would allow us to restore lost data from previous copies of the database.
  
 
-\subsection{HTTP Server}
+\subsection{HTTP Server (E-F)}
 
 In order to quickly develop and deploy a web server, we use the Python microframework “Flask” which requires very little setup or configuration. 
 
