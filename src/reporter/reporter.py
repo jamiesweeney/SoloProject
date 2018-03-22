@@ -138,11 +138,12 @@ class CameraOutput:
         return people
 
 
-cycle_period = 20
-report_period = 10
+cycle_period = 60
+image_period = 20
+report_period = 30
 hash_addrs = False
 log_output = True
-timeout = 300
+timeout = 86400
 detection_dict = None
 push = True
 decay_time = 120
@@ -176,7 +177,7 @@ bluetooth_monitor_thread = threading.Thread( name = 'bluetooth_monitor',
 # Initialise bluetooth LE monitor thread
 bluetoothle_monitor_thread = threading.Thread( name = 'bluetoothle_monitor',
                                             target = monitor,
-                                            args = ("BTLE", device_dict, (cycle_period, hash_addrs, log_output, timeout)))
+                                            args = ("BTLE", device_dict, (image_period, hash_addrs, log_output, timeout)))
 
 # Initialise camera monitor thread
 camera_monitor_thread = threading.Thread( name = 'camera_monitor',
@@ -222,6 +223,5 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
     req = urllib2.Request(address)
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(post_data))
-
     time.sleep(report_period)
 
