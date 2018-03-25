@@ -193,13 +193,16 @@ camera_monitor_thread.start()
 
 # Setup post request data
 host = os.getenv("REPORT_SERVER_HOST")
-print (host)
 api_ext = "/api/v1/pi-reports/add"
-print (api_ext)
 address = host + api_ext
-roomID = os.getenv("REPORT_ROOM_ID")
 
-post_data = {"auth" : "BLANK_KEY", "roomID" : roomID, "time" : None, "people" : None, "devices" : None}
+
+auth_file = os.getenv("REPORT_RPI_AUTH")
+
+with open(auth_file) as data_file:
+    data = json.load(data_file)
+
+post_data = {"auth_key" : data["auth_key"], "rpi_id" : data["id"], "time" : None, "people" : None, "devices" : None}
 
 # Start reporting
 while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive() or camera_monitor_thread.isAlive()):
@@ -224,4 +227,3 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(post_data))
     time.sleep(report_period)
-
