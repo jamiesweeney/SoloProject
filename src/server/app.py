@@ -1192,6 +1192,7 @@ def applyTrainingData(data):
 
     return
 
+@app.route("/api/v1/do-estimates")
 def makePredictions():
 
     # Get list of all rooms
