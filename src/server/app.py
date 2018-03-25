@@ -1,4 +1,5 @@
 import sys
+import string
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from flask import Flask
@@ -17,7 +18,7 @@ import pickle
 import numpy as np
 import time
 import glob
-
+import random
 
 
 class Config(object):
@@ -669,7 +670,7 @@ def adminAddRpi():
     cur = conn.cursor()
 
     # Generate a secure key of size 255 bytes for authentication
-    content["auth_key"] = os.urandom(255)
+    content["auth_key"] = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(255)])
 
     # Add rpi to database
     cur.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(content["room_id"]), content["name"], content["description"], content["auth_key"])])
@@ -837,12 +838,24 @@ def addReport():
     cur = conn.cursor()
 
     # Verify auth data
-    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {}").format(rpi_id)
+    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {};".format(rpi_id))
     ans = cur.fetchone()
+
+    print (len(ans))
+    print (len(ans[0]))
+    print (len(auth))
+    print (content)
+    print ("#####")
+    print (ans[0] + "---------------------" + auth)
+
+    print ("##############################################################################################")
+
+    print (auth)
+    print ("#####")
 
     # If invalid, serve unauthorized response
     if (ans[0] != auth):
-        return "AUTH KEY INVALID"
+        return
 
     # Else, get report data
     time_n = content['time']
@@ -850,9 +863,13 @@ def addReport():
     people = content['people']
 
     # Add report data to database
-    cursor.executemany("INSERT INTO reports (rpiID, time, devices, people) VALUES (%s, %s, %s, %s, %s)", [(rpi_id, time_n, devices, people)])
+    cur.executemany("INSERT INTO reports (rpiID, time, devices, people) VALUES (%s, %s, %s, %s)", [(rpi_id, time_n, devices, people)])
     ans = cur.fetchall()
     conn.commit()
+
+    cur.execute("SELECT * from reports;")
+    ans = cur.fetchall()
+    print (ans)
 
     # Serve sucess response
     return "OK"
@@ -965,7 +982,7 @@ def editRoom(cursor, rid, name, desc):
 
 # Adds a rpi with specified rpi, name and description
 def addRPi(cursor, room_id, name, desc):
-    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc, os.urandom(255))])
+    cursor.executemany("INSERT INTO rpis (roomID, name, description, auth_key) VALUES (%s, %s, %s, %s)", [(str(room_id), name, desc,''.join([random.choice(string.ascii_letters + string.digits) for n in range(255)]))])
 
 # Edits a rpi with new name and description
 def editRPi(cursor, rid, name, desc):
