@@ -20,40 +20,24 @@
           "name": "Kitchen",
           "description": "The kitchen",
           "rpis": [
-            {
-              "name" : "living room pi",
-              "description": "-----"
-            }
           ]
         },
         {
           "name": "My room",
           "description": "My bedroom room",
           "rpis": [
-            {
-              "name" : "living room pi",
-              "description": "-----"
-            }
           ]
         },
         {
           "name": "Kennys room",
           "description": "Kennys bedroom room",
           "rpis": [
-            {
-              "name" : "living room pi",
-              "description": "-----"
-            }
           ]
         },
         {
           "name": "Hallway",
           "description": "The hallway",
           "rpis": [
-            {
-              "name" : "living room pi",
-              "description": "-----"
-            }
           ]
         }
       ]
