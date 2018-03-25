@@ -837,7 +837,7 @@ def addReport():
     cur = conn.cursor()
 
     # Verify auth data
-    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {}").format(rpi_id)
+    cur.execute("SELECT auth_key from rpis as r WHERE r.id = \"{}\"").format(rpi_id)
     ans = cur.fetchone()
 
     # If invalid, serve unauthorized response
@@ -850,7 +850,7 @@ def addReport():
     people = content['people']
 
     # Add report data to database
-    cursor.executemany("INSERT INTO reports (rpiID, time_n, devices, people) VALUES (%s, %s, %s, %s, %s)", [(rpi_id, time_n, devices, people)])
+    cursor.executemany("INSERT INTO reports (rpiID, time, devices, people) VALUES (%s, %s, %s, %s, %s)", [(rpi_id, time_n, devices, people)])
     ans = cur.fetchall()
     conn.commit()
 
