@@ -837,7 +837,7 @@ def addReport():
     cur = conn.cursor()
 
     # Verify auth data
-    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {}).format(rpi_id)
+    cur.execute("SELECT auth_key from rpis as r WHERE r.id = {}").format(rpi_id)
     ans = cur.fetchone()
 
     # If invalid, serve unauthorized response
