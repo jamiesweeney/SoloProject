@@ -37,9 +37,8 @@ database = os.getenv('SERVER_DB_NAME')
 
 #-- Create ssl dictionary object --#
 ssl =   {
-        'ca': ssl_ca,
-        'key': ssl_key,
-        'cert': ssl_cert
+         'key': ssl_key,
+         'cert': ssl_cert
         }
 
 
@@ -896,7 +895,7 @@ def load_user(user_id):
 
 
 #--  URL management --#
-# Checks if a redirect url is safe to redirect to
+# Checks if a redirect url within domain
 def is_safe_url(next):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, next))

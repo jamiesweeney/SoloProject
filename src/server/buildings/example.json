@@ -1,0 +1,27 @@
+{
+  "name" : "Example building",
+  "description" : "This is a pretend building, used for example purposes.",
+  "floors" : [
+    {
+      "name" : "Example floor 0",
+      "description" : "Example building's ground floor.",
+      "rooms" : [
+        {
+          "name" : "Example room 0",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : [
+            {
+              "name" : "Example rpi 0",
+              "description" : "The only ground floor rpi in the example building."
+            }
+          ]
+        },
+        {
+          "name" : "Example room 1",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : []
+        }
+      ]
+    }
+  ]
+}
