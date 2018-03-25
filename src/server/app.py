@@ -30,7 +30,7 @@ class Config(object):
             'seconds': 60
         }
     ]
-    SECRET_KEY = os.getenv('SEVER_SECRET')
+    SECRET_KEY = os.getenv('SERVER_SECRET')
     SCHEDULER_API_ENABLED = True
 
 
