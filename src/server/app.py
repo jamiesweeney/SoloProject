@@ -30,8 +30,7 @@ class Config(object):
             'seconds': 60
         }
     ]
-    SECRET_KEY = os.urandom(24)
-
+    SECRET_KEY = os.getenv('SEVER_SECRET')
     SCHEDULER_API_ENABLED = True
 
 
