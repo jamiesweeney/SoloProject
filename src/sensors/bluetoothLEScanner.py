@@ -55,11 +55,7 @@ def scan_loop(scanner, cycle_period, timeout):
 
     # Keep doing scans until timeout is reached
     while ((((timeit.default_timer()) - start_time) < timeout) or timeout == 0):
-        try:
-            scanner.scan(timeout=cycle_period)
-        except Exception as exc:
-            print ("ERROR STARTING BTLE SCAN, exception:")
-            print (exc)
+        scanner.scan()
 
 
 #-- Prints to the specified log file --#
@@ -86,7 +82,7 @@ def hash_address(address):
 
 #-- Will print a discovery to log --#
 def log_discovery(device):
-    log_str = device[0] + " " + device[1] + " " + device[2]
+    log_str = device[0] + " " + device[1] + " " + str(device[2])
 
 
 #-- Class which defines how each discovery is handles --#
@@ -101,6 +97,7 @@ class ScanDelegate(DefaultDelegate):
 
     # Handles a new device discovery
     def handleDiscovery(self, device, isNewDev, isNewData):
+	print (device)
 
         # Get discovery vars
         disc_time = str(int(time.time()))
@@ -121,3 +118,5 @@ class ScanDelegate(DefaultDelegate):
         # Log device
         if (self.log_out):
             log_discovery(device)
+
+#start_ble()

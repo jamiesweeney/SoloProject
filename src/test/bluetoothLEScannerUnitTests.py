@@ -24,14 +24,15 @@ class TestAddressHashing(unittest.TestCase):
         ans1 = btle.hash_address(address)
         self.assertTrue(ans1 != None)
         self.assertTrue(ans1 != address)
-        self.assertTrue(len(ans1) == 28)
+	print (len(ans1))
+        self.assertTrue(len(ans1) == 56)
         self.assertTrue(ans1 == btle.hash_address(address))
 
         address = "3010B3212D3E"
         ans2 = btle.hash_address(address)
         self.assertTrue(ans2 != None)
         self.assertTrue(ans2 != address)
-        self.assertTrue(len(ans2) == 28)
+        self.assertTrue(len(ans2) == 56)
         self.assertTrue(ans2 == btle.hash_address(address))
 
         self.assertTrue(ans1 == ans2)
@@ -41,11 +42,13 @@ class TestAddressHashing(unittest.TestCase):
 class TestDeviceLogging(unittest.TestCase):
 
     def setUp(self):
-        config.BLUETOOTHLE_SCANNER_LOG == "test"
+        config.BLUETOOTHLE_SCANNER_LOG = os.path.dirname("test.log")
 
     def test_null(self):
-        print (config.BLUETOOTHLE_SCANNER_LOG)
-        self.assertTrue(True)
+        btle.print_to_log("TEST STRING")
+	with open(config.BLUETOOTHLE_SCANNER_LOG, "r") as f:
+            print (f.read())
+        
 
 if __name__ == '__main__':
     unittest.main()

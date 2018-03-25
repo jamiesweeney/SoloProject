@@ -206,6 +206,8 @@ def device_inquiry(sock, cycle_period, hash_addrs, log_out, device_queue):
 #-- Registers device with system and logs it --#
 def register_device(addr, rssi, log_out, device_queue):
 
+    print (addr)
+
     #Get current time
     current_time = str(int(time.time()))
 
@@ -228,3 +230,5 @@ def errorMsg(text, error):
     print (text)
     print (error)
     sys.exit(1)
+
+#start()

@@ -1,0 +1,785 @@
+turned on bluetooth
+turned on bluetooth interface
+starting
+https://www.peoplecount.cf/
+/api/v1/pi-reports/add
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 0, 'people': 0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 4, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 8, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 8, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 8, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 9, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 9, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 8, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.0}
+['person: 25%']
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.5}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.5}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.25}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.25}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.03125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.03125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.015625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.015625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0078125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0078125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.00390625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.00390625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.001953125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.001953125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0009765625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0009765625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.00048828125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.00048828125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.000244140625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.000244140625}
+['person: 65%']
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.5001220703125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.5001220703125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.25006103515625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.25006103515625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.125030517578125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 7, 'people': 0.125030517578125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0625152587890625}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0625152587890625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.03125762939453125}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.03125762939453125}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.015628814697265625}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.007814407348632812}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.007814407348632812}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.003907203674316406}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.003907203674316406}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.001953601837158203}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.001953601837158203}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0009768009185791016}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0009768009185791016}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0004884004592895508}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 5, 'people': 0.0004884004592895508}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0002442002296447754}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0002442002296447754}
+[]
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.0001221001148223877}
+BT - True
+BTLE - True
+CAMERA - True
+{'devices': 6, 'people': 0.00012210

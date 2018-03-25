@@ -196,7 +196,7 @@ host = os.getenv("REPORT_SERVER_HOST")
 api_ext = "/api/v1/pi-reports/add"
 address = host + api_ext
 
-
+print (address)
 auth_file = os.getenv("REPORT_RPI_AUTH")
 
 with open(auth_file) as data_file:
@@ -225,5 +225,6 @@ while (bluetooth_monitor_thread.isAlive() or bluetoothle_monitor_thread.isAlive(
     # Post data to server
     req = urllib2.Request(address)
     req.add_header('Content-Type', 'application/json')
+    print (post_data)
     response = urllib2.urlopen(req, json.dumps(post_data))
     time.sleep(report_period)
