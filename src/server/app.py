@@ -19,10 +19,28 @@ import time
 import glob
 
 
+
+class Config(object):
+    JOBS = [
+        {
+            'id': 'estimate-job',
+            'func': 'app:makePredictions',
+            'args': (),
+            'trigger': 'interval',
+            'seconds': 60
+        }
+    ]
+    SECRET_KEY = os.urandom(24)
+
+    SCHEDULER_API_ENABLED = True
+
+
+
 #-- Flask app config --#
 app = Flask(__name__)
-app.config.update(SECRET_KEY = os.getenv('SERVER_SECRET'))
-
+app.config.from_object(Config())
+scheduler = APScheduler()
+scheduler.start()
 
 #-- MySQL command and arguments --#
 mysql_cmd = os.getenv('SERVER_MYSQL_PATH')
@@ -1299,11 +1317,6 @@ def makeRoomPrediction(room):
 
     return
 
-def predictionSwitch():
-    print (scheduler)
-    print (self.scheduler)
-
-
 
 #-- Auxilary code for testing --#
 
@@ -1315,20 +1328,6 @@ def setDatabaseName(name):
     global database
     database = name
 
-
-
-class Config(object):
-    JOBS = [
-        {
-            'id': 'estimate-job',
-            'func': 'app:makePredictions',
-            'args': (),
-            'trigger': 'interval',
-            'seconds': 60
-        }
-    ]
-
-    SCHEDULER_API_ENABLED = True
 
 
 if __name__ == "__main__":
