@@ -75,6 +75,9 @@ def print_to_log(log_str):
 #-- Will hash an address --#
 def hash_address(address):
 
+    if (address == None or address == ""):
+        return None
+
     # Remove ':' then hash
     address = address.replace(":", "")
     new_addr = hashlib.sha224(address).hexdigest()

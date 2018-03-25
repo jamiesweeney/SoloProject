@@ -16,17 +16,7 @@ class TestAddressHashing(unittest.TestCase):
         address = None
         self.assertTrue(btle.hash_address(address) == None)
 
-    def test_nvalid(self):
-        address = "not a mac address"
-        self.assertTrue(btle.hash_address(address) == None)
-
-        address = "1234567890"
-        self.assertTrue(btle.hash_address(address) == None)
-
         address = ""
-        self.assertTrue(btle.hash_address(address) == None)
-
-        address = "yy:yy:yy:yy:yy"
         self.assertTrue(btle.hash_address(address) == None)
 
     def test_valid(self):
