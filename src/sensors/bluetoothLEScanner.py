@@ -42,7 +42,7 @@ def start_ble(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, dev
     if (log_out):
         print_to_log(log_start_str)
 
-    scan_loop(scanner, cycle_period)
+    scan_loop(scanner, cycle_period, timeout)
 
     # Scan end
     if (log_out):
@@ -50,7 +50,7 @@ def start_ble(cycle_period=20, hash_addrs=False, log_out=False, timeout=180, dev
 
 
 #-- Performs a scan loop --#
-def scan_loop(scanner, cycle_period):
+def scan_loop(scanner, cycle_period, timeout):
     start_time = timeit.default_timer()
 
     # Keep doing scans until timeout is reached
