@@ -446,18 +446,35 @@ The detection methods supported are:
 \end{algorithm}
 %=========
 
-
-
-
-
 \subsection{Centralised Storage (D)}
-\begin{itemize}	
-  \item Show ER diagram.
-Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
+The centralised storage component should take the form of a database. We start by defining the entities as:
 
-  \item Discuss relations.
-  \item storing passwords as hash
+\begin{itemize}	
+  \item Building
+  \item Floor
+  \item Room
+  \item Rpi
+  \item Report
+  \item Estimate
+  \item Reading
+  \item User
 \end{itemize}
+
+In addition to the data fields set out in the requirements stage, we must use foreign keys to map out the relationships between these entities:
+\begin{itemize}
+  \item Buildings may contain one or more floors.
+  \item Floors may contain one or more rooms.	
+  \item Rooms may contain one or more RPis.
+  \item RPis may produce one or more reports.
+  \item An estimate has one associated room, and room may have one or more estimates.
+  \item An reading has one associated room, and room may have one or more reading.
+\end{itemize}
+
+To ensure that each entity instance can be uniquely identified, the database should store an associated integer id for each table row.
+We must also store an authorisation key for each smart sensor box, that will allow the server to verify the validity of any incoming reports.
+It is also important to note that when storing passwords we should hash them beforehand, this ensures that passwords are not compromised, while still allowing us to verify user logins.
+
+Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 %=========
 \begin{figure}
 \centering
