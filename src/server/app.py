@@ -510,6 +510,7 @@ def adminDelBuilding():
 def adminClearBuildings():
 
     deleteBuildingTables()
+    createBuildingTables()
     return "OK"
 
 # Request for resetting building database
@@ -1036,7 +1037,8 @@ def createBuildingFromJSON(cursor, building):
 def restoreBuildingFromFile():
     conn = aquireSQLConnection("reports")
     cur = conn.cursor()
-    for filename in glob.iglob(os.path.dirname + 'buildings/*.json'):
+    print (os.path.dirname(os.path.realpath(__file__)) + '/buildings/*.json')
+    for filename in glob.iglob(os.path.dirname(os.path.realpath(__file__)) + '/buildings/*.json'):
          with open(filename) as data_file:
              build = json.load(data_file)
          newb = createBuildingFromJSON(cur, build)
@@ -1080,7 +1082,7 @@ def restoreUserFromFile():
     cursor = conn.cursor()
     conn.begin()
 
-    with open(os.path.dirname + "users/admin.json") as data_file:
+    with open(os.path.dirname(os.path.realpath(__file__)) + "/users/admin.json") as data_file:
         user = json.load(data_file)
 
     addUser(cursor, user["username"],user["password"])
@@ -1138,12 +1140,12 @@ def applyTrainingData(data):
 
     # Read regression algorithms from file
     try:
-        with open(os.path.dirname + 'regression_devices.pickle', 'rb') as f:
+        with open(os.path.dirname(os.path.realpath(__file__)) + '/regression_devices.pickle', 'rb') as f:
             dev_reg = pickle.load(f)
     except:
         dev_reg = linear_model.SGDRegressor(loss="huber", epsilon=0.075)
     try:
-        with open(os.path.dirname + 'regression_people.pickle', 'rb') as f:
+        with open(os.path.dirname(os.path.realpath(__file__)) + '/regression_people.pickle', 'rb') as f:
             peo_reg = pickle.load(f)
     except:
         peo_reg = linear_model.SGDRegressor(loss="huber", epsilon=0.075)
@@ -1166,9 +1168,9 @@ def applyTrainingData(data):
 
 
     # Save modified regression algorithm to file
-    with open(os.path.dirname + 'regression_devices.pickle', 'wb') as f:
+    with open(os.path.dirname(os.path.realpath(__file__)) + '/regression_devices.pickle', 'wb') as f:
         pickle.dump(dev_reg, f, protocol=pickle.HIGHEST_PROTOCOL)
-    with open(os.path.dirname + 'regression_people.pickle', 'wb') as f:
+    with open(os.path.dirname(os.path.realpath(__file__)) + '/regression_people.pickle', 'wb') as f:
         pickle.dump(peo_reg, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     return
@@ -1221,13 +1223,13 @@ def makeRoomPrediction(room):
 
     # Get regression algorithms
     try:
-        with open(os.path.dirname + 'regression_devices.pickle', 'rb') as f:
+        with open(os.path.dirname(os.path.realpath(__file__)) + '/regression_devices.pickle', 'rb') as f:
             dev_reg = pickle.load(f)
     except:
         print ("No device regression algorithm found!")
         return
     try:
-        with open(os.path.dirname + 'regression_people.pickle', 'rb') as f:
+        with open(os.path.dirname(os.path.realpath(__file__))  + '/regression_people.pickle', 'rb') as f:
             peo_reg = pickle.load(f)
     except:
         print ("No people regression algorithm found!")
