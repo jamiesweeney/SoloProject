@@ -685,9 +685,24 @@ Due to ethical considerations, it would not have been reasonable to utilise the 
 \label{fig:testrpi}
 \end{figure}
 
-Our findings are unexpected, however they provide insight into the issues associated with a use in a production environment that were not uncovered during the first stage of evaluation. Most notibly we found that Bluetooth Low Energy devices detection made up around 90-100\% of the total devices, with standard Bluetooth barely ever being detected.
-  
-** DEVICES / OCCUPANTS GRAPH HERE
+Our findings are unexpected, however they provide insight into the issues associated with a use in a production environment that were not uncovered during the first stage of evaluation. Most notably we found that Bluetooth Low Energy devices detection made up around 90-100\% of the total devices, with standard Bluetooth barely ever being detected. The 3rd year laboratory (BO720) sensor box seemed to produce relatively stable reports, albeit with several occurances of zero devices being reported, Figure \ref{fig:bo720devices} shows the reported devices against the recorded number of people in the labaratory. In comparison, the 1st year laboratory BO715 smart sensor boxes reports were highly inconsistent, we found that the number of devices would frequently drop to zero suddenly and go back to normal sudden. We are still not sure what the cause of this error is, my suspicion is that multiple instances of the reporter scripts were running on the same machine and one had acess to the resources, while another did not. However to mitigate this we proceed with evaluation using only the reports from BO720. Figure \ref{fig:bo720devices} shows the number of reported devices and the number of people counted at that time.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{bo720devices}
+\caption{BO720 reports against people counted. 26/03/2018  13:30-17:00}
+\label{fig:bo720devices}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{bo715devices}
+\caption{BO715 reports against people counted. 26/03/2018  13:30-17:00}
+\label{fig:bo715devices}
+\end{figure}
+
+
 
 
 \subsection{Non-functional Evaluation}
@@ -810,7 +825,6 @@ Figure \ref{fig:userrev} shows the results for the public group, results were ov
 \end{itemize}
 	
 \begin{figure}
-\centering
 \includegraphics[width=\textwidth]{userrev}
 \caption{Public user interface review.}
 \label{fig:userrev}
