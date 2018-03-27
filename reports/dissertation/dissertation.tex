@@ -8,6 +8,8 @@
 
 \usepackage[]{algorithm2e}
 \usepackage{graphicx}
+\usepackage{tabularx}
+
 \graphicspath{ {images/} }
 
 \begin{document}
@@ -570,6 +572,161 @@ All API endpoints follow the scheme "peoplecount.cf/api/...". An example of both
 
 \chapter{Evaluation}
 
+We perform some simple test on the Python modules produced to ensure that they work as planned, however the codebase could have benifited greatly from using automated testing. Unfortunately this was not considered until a later date and as a result the code is difficult to effectively test without either major refactoring or extensive use of mock components. In terms of the smart sensor boxes, the algorithms for data post-processing and reporting could benifit from being rewritten to be highly modular, which would allow for easy unit testing. In addition, the public and private REST API could be more thoroughly evaluated if integration test were used with a mock database which allowed the server to test all functionality without damaging any of the production data. In retrospect, this is a key area of improvement.
+
+
+\section{Sensor data collection}
+
+We evaluate the sensor data collection methods in two environments, a test environment (my home) and a production scenario where smart sensor boxes are placed in the University of Glasgow Boyd Orr building. 
+
+\subsection{Test environment}
+We attempt to evaluate the types of devices found for both device scanning methods, however only a small number of devices were personally available. Tests were done by performing a background scan to collect the idle state of the test environment, then tests were conducted one by one while monitoring scanner output. We find that both scans have their seperate strengths and weaknesses:
+
+We found that it was possible for a standard bluetooth device to be detected using a Bluetooth scan upto a distance of 10-13m, even if the devices were in another room. However we should note that walls in university buildings are generally a lot thicker and are likely to be composed of materials with a higher blocking power than residential buildings. We also found that some mobile devices sometimes had to be unlocked and on a settings page before they would broadcast presence. In addition we were unable to detect smaller devices such as a wireless mouse. For Bluetooth devices., we found that MAC addresses appeared to be genuine i.e devices did not broadcast using a anonymous address.
+
+In contrast, the Bluetooth Low Energy scans did not discover mobile phones, but proved more sucessful at detecting smaller Bluetooth devices. We also found a large number of unidentified devices, since all BTLE devices inside my flat were accounted for, it is reasonable to assume that Bluetooth Low Energy signals are able to transmit more effectively through walls and obstructions. We also found that laptops were also discoverable, however restarting the Bluetooth service would change the address broadcasted. Table \ref{table:evalscan} gives a breakdown of devices used and the findings. 
+
+\begin{table}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+\textbf{Device} & \textbf{Bluetooth} & \textbf{Bluetooth LE} \tabularnewline
+\hline
+Smart phone (1) & Found with static address when on Bluetooth settings screen. & Not found. \\
+\hline
+Smart phone (2) & Found with static address.. & Not found. \\
+\hline
+Laptop (1) & Found with static address. & Found with changing address. \\
+\hline
+Laptop (2) & Found with static address. & Found with changing address. \\
+\hline
+Tablet & Found with static address when on Bluetooth settings screen. & Not found \\
+\hline
+Wireless mouse (1) & Not found & Found with static address. \\
+\hline
+Wireless mouse (2) & Not found & Found with static address. \\
+\hline
+\end{tabularx}
+\caption{BT and BTLE scan home test findings.}
+\label{table:evalscan}
+\end{table}
+
+In addition we can test the image detection, this is relatively simple as we can just take some images, and access them through VNC Viewer connection to confirm they are correct. Appendix \ref{appendix:rawimgs} contains some example images that have been captured
+
+\subsection{Production environment}
+
+As previously stated, we also deploy two Raspberry Pi smart sensor boxes to the UoG Boyd Orr building. We choose rooms BO720 and BO715 for the following reasons:
+
+\begin{itemize}	
+  \item Both rooms are equipped with suitable infrastructure (power and ethernet).
+  \item Both rooms are accessible to myself.
+  \item Rooms are of similar size and are therefore more easily comparable.
+\end{itemize}
+
+Due to ethical considerations, it would not have been reasonable to utilise the camera sensor within the lab, as occupants would need to give prior consent which is highly unfeasible to pursue. However we were able to perform a production evaluation for the Bluetooth and Bluetooth Low Energy scanners, given that we address the ethical concerns:
+\begin{itemize}	
+  \item Device address collection - Although the smart sensor boxes briefly store device MAC addresses in memory, they are immediately hashed to assure anonymity.
+  \item Transparency - Smart sensor boxes were situated in plain sight with clear explanation and contact information. Figure \ref{fig:testrpi} shows the setup in BO720.
+\end{itemize}
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{testrpi}
+\caption{The production evaluation setup in BO720.}
+\label{fig:testrpi}
+\end{figure}
+
+Our findings are unexpected, however they provide insight into the issues associated with a use in a production environment that were not uncovered during the first stage of evaluation. Most notibly we found that Bluetooth Low Energy devices detection made up around 90-100\% of the total devices, with standard Bluetooth barely ever being detected.
+  
+** DEVICES / OCCUPANTS GRAPH HERE
+
+
+\subsection{Non-functional Evaluation}
+To fully evaluate the smart sensor boxes, we also evaluate the status of each non-functional requirement set out in the requirements chapter.
+
+\begin{itemize}	
+  \item Price - We calculate the standard price of a single smart sensor box to be around £52, however purchising in bulk would reduce this cost considerably, appendix \ref{appendix:rpiprice} shows the calculations made.
+  \item Data collection rate - Both BT and BTLE scans are continuous which is ideal, the image capturing however, requires some processing time. We take the average time required to take an image using 5 seperate captures, we find that the time varies very little and takes an average of 4 seconds per image, which is definetely fast enough for our needs. 
+  \item Maintenance required - During the production environment tests, we found that errors in the scanning processes would crash that scan, and the reporter must be manually restarted in order to restart the scanning. However the code could be modified slightly to log any error to file and attempt and automatic restart.
+\end{itemize}
+
+
+
+
+\section{Sesor data processing}
+
+We perform a set of manual tests to gain an evaluation of the post processing algorithms. Tables \ref{table:scanproc} and \ref{table:imgproc} detail the manual tests performed, we find that the algorithms are mostly sufficient, however there is several oppurtunities for furthur improvements. Additionally we encountered some limitations on the system that were unavoidable as far as my knowledge.
+\begin{table}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+\textbf{Sub-requirement} & \textbf{Test} & \textbf{Result} & \textbf{Status}\tabularnewline
+\hline
+Logging & Manually compare standard output with log files. &  We find that devices are being correctly logged. & Adequate. \\
+\hline 
+Anonymisation of addresses & Monitor output of scan with anonymisation set as true. & Device addresses are sucessfully one-way hashed, hashing the same address produces the same result. & Adequate. \\
+\hline
+Collation of results & Monitor output of both threads, and of parent thread. & Devices are merged and parent output contains all devices found. & Adequate.\\
+\hline
+Duplicate removal & Monitor output of both threads, and of parent thread. & We find that when devices broadcast an anonymous address or respond to both Bluetooth and BTLE scans with different addresses, there is no way to merge the discoveries as they appear to be seperate devices. & Limitations. \\
+\hline
+Keeping results & Output is monitored with conrolled devices. & Devices data persists for the required amount of time and disappears afterwards. &  Adequate.\\ 
+\hline
+Smoothing results  & Manual calculations compared to post-processing standard output. & Device RSSI smoothes according to the weighted average definition. However the weightings could potentially be optimised for more accurate readings. & Possible improvements.\\
+\hline
+\end{tabularx}
+\caption{BT and BTLE device processing test findings.}
+\label{table:scanproc}
+\end{table}
+\begin{table}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+\textbf{Sub-requirement} & \textbf{Test} & \textbf{Result} & \textbf{Status}\tabularnewline
+\hline
+Logging & Verify that any captured or processed images are saved to file. &  We find that all images are being correctly logged. & Adequate. \\
+\hline 
+Object recognition & Basic test with test image set and home-use, manually comparing bounding boxes with actual object in the image. & We find that there are many situations where people are not recognised e.g occlusion from other objects or bad angles. We could continue to train the object recognition model to obtain as accurate results as possible. & Possible improvements. \\
+\hline
+Parsing & Monitor output of object detection , and of parsing thread. & As expected, this is a simple parsing operation and has no issues. & Adequate.\\
+\hline
+Smoothing results  & Manual calculations compared to post-processing standard output. & The number of people smooths accordingly, however the weightings could potentially be optimised for more accurate readings. & Possible improvements.\\
+\hline
+\end{tabularx}
+\caption{Image processing test findings.}
+\label{table:imgproc}
+\end{table}
+
+
+
+\subsection{Non-functional Evaluation}
+As before, evaluate the status of each non-functional requirement.
+
+\begin{itemize}	
+  \item Data processing speed - Since devices are loaded into the output object in virtually real-time, we must only consider the image post processing. We found that over 5 cases, the average time taken to post-process the image was 10 seconds.
+  \item Data processing intensity  - We find the same is true with process intensity, the device processing is negligible, compared to the image processing which is very processer intensive, however I believe we have one of the best suited YOLO implementations and the nature of image processing tasks is unavoidable.
+\end{itemize}
+
+
+
+\section{Reports}
+
+Additionally we perform a set of manual tests on the reporter script:
+\begin{table}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+\textbf{Sub-requirement} & \textbf{Test} & \textbf{Result} & \textbf{Status}\tabularnewline
+\hline
+Collection of post-process state  & Verify that any captured or processed images are saved to file. &  We find that all images are being correctly logged. & Adequate. \\
+\hline 
+Reporting & Verify on sever side that reports are being recieved and have correct structure. & We find that reports that have no associated camera, give people = 0 instead of people = null. Additionally server side errors i.e 500 Server Error, will crash the reporter script upon response. & Minor issues. \\
+\hline
+Logging & Monitor output of reporter script, and compare to log file. & We find that log files match correctly. & Adequate.\\
+\hline
+\end{tabularx}
+\end{table}
+
+
+\section{Centralised Storage}
+\section{Estimating Occupancy}
+\section{Data Serving}
 
 
 %==============================================================================
@@ -617,13 +774,6 @@ All API endpoints follow the scheme "peoplecount.cf/api/...". An example of both
 %              %
 %%%%%%%%%%%%%%%%
 \begin{appendices}
-
-\chapter{Title of appendix}
-Put some data in here:
-\begin{verbatim}
-      > blahblahblah
-\end{verbatim}
-
 \end{appendices}
 
 %%%%%%%%%%%%%%%%%%%%
