@@ -794,12 +794,12 @@ The HTTP API is one of the main components that would have benifited from test c
 
 We also assess the usability of the interface by performing a user experience questionnaire for both the public and admin GUI. Since the target audience of the system is mostly students, we will use students to evaluate the user experience. Our test subjects are split into 2 groups of 3 users each, based on experience with computer science. The group more familiar with computers are used to evaluate the admin GUI and conversely the less familiar group are used to evaluate the public GUI. Users are asked to explore the relevant interface and answer the following questions:
 
-\begin{itemize}	
+\begin{enumerate}	
   \item "How would you rate the usability (how easy it was to perform desired actions) from 1-10?"
   \item "How would you the aesthetics of the site from 1-10?"
   \item "How would you the speed/delay experienced when using site from 1-10?"
   \item "What additional comments do you have?"
-\end{itemize}
+\end{enumerate}
 
 Figure \ref{fig:userrev} shows the results for the public group, results were overall positive, with all participants noting the response time. Additionally several great suggestions were made that could be acted on given more time:
 \begin{itemize}	
@@ -808,7 +808,6 @@ Figure \ref{fig:userrev} shows the results for the public group, results were ov
   \item Another suggestion was adding labels to buttons on the building/floor/room page so that it was more clear that the user should click the floors/rooms etc.
   \item Finally, it was suggested that a legend should be added to the help page, showing the range of occupancy and the associated colours, as this was not immediately clear to the user.
 \end{itemize}
-
 	
 \begin{figure}
 \centering
@@ -817,6 +816,21 @@ Figure \ref{fig:userrev} shows the results for the public group, results were ov
 \label{fig:userrev}
 \end{figure}
 
+Figure \ref{fig:adminrev} shows the results for the admin group, which were slightly worse than the public interface however still good overall. There were a couple of key issues that were the main cause of most missing points:
+\begin{itemize}	
+  \item Datetime selector for the 'add new reading' was not very user friendly, it was suggested that we attempt to create the datetime popup selector on click of the time input field, instead of requiring the user to press a icon inside the input field.
+  \item When adding new data, the application would reload and fail to expand previously expanded tables, so users would have to extend an entity and rescroll all the way to the bottom of the page after every change. Although this does not impair functionality, it has a negative effect on the user experience and could be easily fixed.
+  \item Another potential improvement was to combine the building, floor, room and rpi table into one table. This sounds promisisng however would require some careful design before being able to fit all the data in the table in a user friendly way.
+
+
+\end{itemize}
+	
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{adminrev}
+\caption{Admin panel user interface review.}
+\label{fig:adminrev}
+\end{figure}
 
 
 
