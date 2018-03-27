@@ -490,6 +490,17 @@ Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 
 \subsection{HTTP Server (E-F)}
 
+Server design is fairly boilerplate, the only notable design choices are concerning the webpage design and the prediction model.
+
+We set out the pseudocode for performing tasks relating to estimation and predictions.
+
+
+Additionally we provide wireframes to base the final web pages on. We design a simple page for each of: Home, building page, floor page androom page 
+
+
+
+
+
 
 
 %==============================================================================
@@ -497,9 +508,8 @@ Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 %==============================================================================
 
 \chapter{Implementation}
+The system was implemented using as many extenal libraries as possible, in order to reduce the code required and time taken to develop. A private Github repository was used to manage versions, in addition we use the default Github ticket management service to organise the workload and document progress. We use 3 milestones to seperate the tasks by priority, low priority tasks are assigned to milestone 'Minor', wheras higher priority tasks get assigned to 'Urgent', the lowest priority is 'Backlog' which holds tasks that likely will not get completed due to time restraints. We also use the convenient Github wiki service which allows us to document  everything along with source code. We attempt to document as much as possible during implemation as this is a crucial step in producing a realistically usable software product. 
 
-
-\section{High Level Summary}
 \section{Smart Sensor Boxes (A-C)}
 The smart sensor boxes were implemented using the popular brand of microprocessors “Raspberry Pi”, the RPis were a great choice for a smart sensor box such as this due to the fact that it is compatible with a wide variety of sensors and have relatively powerful computation ability. Specifically we use the most recent version, “Raspberry Pi 3 Model B” which features inbuilt WiFi and Bluetooth adapters, as well as a dedicated RPi camera port.
 
@@ -742,7 +752,7 @@ PREDICTION / OCCUPANCY GRAPH HERE
 
 The HTTP API is one of the main components that would have benifited from test cases, manual tests were performed on the public API and several small issues were uncovered. The admin API was tested through the use of the admin interface panel, however more thourough testing could be done on the API endpoints themselved as this may uncovered bugs that could arise from automated admin API calls. However since the system performs validation on admin API requests client-side (JavaScript), this will not be an immediate issue. Functional evaluation of the user interface goes well, with only a few minor issues discovered, however this is to be expected as the user interface has relatively little functionality. Table \ref{table:evaldata} gives the details of evaluation. 
 
-We also assess the usability of the interface by performing a user experience questionnaire for both the public and admin GUI. Since the target audience of the system is mostly students, we will use students to evaluate the user experience. Our test subjects are split into 2 groups based on experience with computer science. The group more familiar with computers are used to evaluate the admin GUI and conversely the less familiar group are used to evaluate the public GUI. Users are asked to explore the relevant interface and answer the following questions:
+We also assess the usability of the interface by performing a user experience questionnaire for both the public and admin GUI. Since the target audience of the system is mostly students, we will use students to evaluate the user experience. Our test subjects are split into 2 groups of 3 users each, based on experience with computer science. The group more familiar with computers are used to evaluate the admin GUI and conversely the less familiar group are used to evaluate the public GUI. Users are asked to explore the relevant interface and answer the following questions:
 
 \begin{itemize}	
   \item "How would you rate the usability (how easy it was to perform desired actions) from 1-10?"
@@ -750,6 +760,24 @@ We also assess the usability of the interface by performing a user experience qu
   \item "How would you the speed/delay experienced when using site from 1-10?"
   \item "What additional comments do you have?"
 \end{itemize}
+
+Figure \ref{fig:userrev} shows the results for the public group, results were overall positive, with all participants noting the response time. Additionally several great suggestions were made that could be acted on given more time:
+\begin{itemize}	
+  \item One user felt that the help page could be improved by making it more simple, specifically omitting the part about the 'HTTP API' which was generally confusing. This could be resolved by splitting the help section into two parts, one for basic users, and one for API specifics.
+  \item Another user suggesting font changes to make the website stand out more.
+  \item Another suggestion was adding labels to buttons on the building/floor/room page so that it was more clear that the user should click the floors/rooms etc.
+  \item Finally, it was suggested that a legend should be added to the help page, showing the range of occupancy and the associated colours, as this was not immediately clear to the user.
+\end{itemize}
+
+	
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{userrev}
+\caption{Public user interface review.}
+\label{fig:userrev}
+\end{figure}
+
+
 
 
 
