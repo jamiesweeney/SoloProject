@@ -346,8 +346,7 @@ Figure \ref{fig:overalldiag} Shows a simple high level diagram of the system des
 %=========
 
 
-\section{Components}
-\subsection{Smart Sensor Boxes (A-C)}
+\section{Smart Sensor Boxes (A-C)}
 The smart sensor box logic consist of a main reporter algorithm which initialises scanning for each detection method and monitors the output. Every time a report is required, the algorithm takes the outputs from each output queue, and collates them to a report which is sent to the HTTP server for furthur use.  Algorithm \ref{RPA} shows the pseudocode for this algorithm.
 %=========
 \begin{figure}
@@ -448,7 +447,7 @@ The detection methods supported are:
 \end{algorithm}
 %=========
 
-\subsection{Centralised Storage (D)}
+\section{Centralised Storage (D)}
 The centralised storage component should take the form of a database. We start by defining the entities as:
 
 \begin{itemize}	
@@ -488,14 +487,55 @@ Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
 
 
 
-\subsection{HTTP Server (E-F)}
+\section{HTTP Server (E-F)}
 
 Server design is fairly boilerplate, the only notable design choices are concerning the webpage design and the prediction model.
 
 We set out the pseudocode for performing tasks relating to estimation and predictions.
 
+Additionally we provide wireframes to base the final web pages on. We design a simple page for each of the public pages: home, building page, floor page and room page. The page title is left blank for now, but should be replaced with a suitable title e.g "Room Occupancy Viewer".
 
-Additionally we provide wireframes to base the final web pages on. We design a simple page for each of: Home, building page, floor page androom page 
+Figure \ref{fig:homewireframe}, Figure \ref{fig:buildingwireframe}, Figure \ref{fig:floorwireframe} and Figure \ref{fig:roomwireframe} show these wireframe designs. The header buttons will allow the user to navigate between pages, in addition clicking on a building, floor or room should take the user to the page for that entitiy. For further clarification, the final wireframe depicts a room page, consisting of a small information box and a line graph showing the estimate over time.
+
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{homewireframe}
+\caption{Home page wireframe.}
+\label{fig:homewireframe}
+\end{figure}
+%=========
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{buildingwireframe}
+\caption{Building page wireframe.}
+\label{fig:buildingwireframe}
+\end{figure}
+%=========
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{floorwireframe}
+\caption{Floor page wireframe.}
+\label{fig:floorwireframe}
+\end{figure}
+%=========
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{roomwireframe}
+\caption{Room page wireframe.}
+\label{fig:roomwireframe}
+\end{figure}
+%=========
+
+
+
+
+
+
+
 
 
 
