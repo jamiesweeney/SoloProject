@@ -694,10 +694,7 @@ Smoothing results  & Manual calculations compared to post-processing standard ou
 \label{table:imgproc}
 \end{table}
 
-
-
-\subsection{Non-functional Evaluation}
-As before, evaluate the status of each non-functional requirement.
+As before, we evaluate the status of each non-functional requirement.
 
 \begin{itemize}	
   \item Data processing speed - Since devices are loaded into the output object in virtually real-time, we must only consider the image post processing. We found that over 5 cases, the average time taken to post-process the image was 10 seconds.
@@ -708,7 +705,7 @@ As before, evaluate the status of each non-functional requirement.
 
 \section{Reports}
 
-Additionally we perform a set of manual tests on the reporter script:
+Additionally we perform a set of manual tests on the reporter script and discover some minor issues. The problems are relatively easy to fix, and would not be an issue if discovered sooner, this is an example of where unit integrated testing would have been useful. Table \ref{table:evalreport} gives the detaills. 
 \begin{table}
 \begin{tabularx}{\textwidth}{|X|X|X|X|}
 \hline
@@ -721,12 +718,58 @@ Reporting & Verify on sever side that reports are being recieved and have correc
 Logging & Monitor output of reporter script, and compare to log file. & We find that log files match correctly. & Adequate.\\
 \hline
 \end{tabularx}
+\caption{Report manual test details.}
+\label{table:evalreport}
 \end{table}
 
+The non-functional requirements are achieved for the most part, we find that since the reporter algorithm is run as a seperate process it does not suffer delay from data collection/processing. As a result, reports are accurate to the time schedule even in cases where reports are required every 5 seconds or less, however a report per minute should suffice. As stated, JSON encoding was used to format the report, which allows it to be easily extendible, we could further improve the structure by storing report sensor data as a dictionary within the "report" object. This would allow us to easily add and remove sensors without much change to design.
 
 \section{Centralised Storage}
+
+Evaluation of the centralised storage is fairly simple, we can see from Figure \ref{fig:ERdiagram} that all required data points are accounted for, along with the associated entity relationships. We also find that all non-functional requirements are satisfied through the Google Cloud SQL instance, specifically the access to the database is secured by SSL certificates and manual authorisation of IP addresses (of servers, development evironments etc.). 
+
+
 \section{Estimating Occupancy}
+
+Alongside the sensor data collection tests we evaluated the estimation model in the same environments. In the develoment environment, we found that there was not enough varience in occupancy or sensor readings to give a indication of real life performance. To evaluate the functional requirements before deploying, we populate the database with fake reports containing random integers. We find that the locally hosted flask application can sucessfully receive occupancy readings from admin users and then use those readings in combination with report data to generate training data. Since our choice of regression algorithm supports partially training (training multiple times), the model can be continually trained with new data. We also confirmed that multiple smart sensor boxes in the same area could be used to give an average prediction, however in retrospect it may have been more useful to take a sum of the predictions, which would make the system more scaleable to large rooms.
+
+At first we used 2 rooms to train the model, however as we have shown in the sensor data collection evaluation section, the device scanner results were extremely different for each room. We decided that a better design choice would be to have seperate models for each room, or group the rooms and assign models for each group. This would require significant code change and was not feasible for implementation at this stage. In order to get a better understanding of how the desired system would perform, we decided to continue training the model using only the report data from BO720. 
+
+PREDICTION / OCCUPANCY GRAPH HERE
+
+
 \section{Data Serving}
+
+The HTTP API is one of the main components that would have benifited from test cases, manual tests were performed on the public API and several small issues were uncovered. The admin API was tested through the use of the admin interface panel, however more thourough testing could be done on the API endpoints themselved as this may uncovered bugs that could arise from automated admin API calls. However since the system performs validation on admin API requests client-side (JavaScript), this will not be an immediate issue. Functional evaluation of the user interface goes well, with only a few minor issues discovered, however this is to be expected as the user interface has relatively little functionality. Table \ref{table:evaldata} gives the details of evaluation. 
+
+We also assess the usability of the interface by performing a user experience questionnaire for both the public and admin GUI. Since the target audience of the system is mostly students, we will use students to evaluate the user experience. Our test subjects are split into 2 groups based on experience with computer science. The group more familiar with computers are used to evaluate the admin GUI and conversely the less familiar group are used to evaluate the public GUI. Users are asked to explore the relevant interface and answer the following questions:
+
+\begin{itemize}	
+  \item "How would you rate the usability (how easy it was to perform desired actions) from 1-10?"
+  \item "How would you the aesthetics of the site from 1-10?"
+  \item "How would you the speed/delay experienced when using site from 1-10?"
+  \item "What additional comments do you have?"
+\end{itemize}
+
+
+
+\begin{table}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+\textbf{Sub-requirement} & \textbf{Test} & \textbf{Result} & \textbf{Status}\tabularnewline
+\hline
+Public API & Manual testing of public api calls to localhost. & Several issues were uncovered during testing, most severe bug discovered was 500 Server Errors when requesting non-existant buildings, floors etc. & Moderate issues. \\
+\hline
+Admin API & Manual testing through web interface & No errors occurred when using the API through the user interface. & No issues discovered. \\
+\hline
+Public user interface & Manual testing of required functions & One small bug found, floors with no predictions would give a "NULL" total instead of "???". & Small issue. \\
+\hline
+Admin user interface & Manual testing of required functions & We found that sometimes refreshing the page was necessary to update the page with new changes. However all functions perform as expected. & Possible improvements. \\
+\hline
+\end{tabularx}
+\caption{Functional evaluation details of data serving component.}
+\label{table:evaldata}
+\end{table}
 
 
 %==============================================================================
