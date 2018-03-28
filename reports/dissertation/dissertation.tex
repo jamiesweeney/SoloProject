@@ -89,7 +89,7 @@ Sensors are a key element in almost every real-world computing application, espe
 Background research on previously conducted studies gives us a comprehensive list of applicable sensor, and their specific advantages and disadvantages.
 
 \subsection{Infrared Light}
-Infrared light is the electromagnetic radiation emitted by all objects with a temperature above 0°K, giving the feeling of heat. The wavelength of IR light spans from 700 nm to 1 mm, existing just outside of the range of human vision\cite{c-inred}. PIR sensors feature a “sensor face” that can detect a change in the average amount of IR light hitting the surface, the sensor then outputs a signal indicating this change, with a low voltage indicating low change, and a higher voltage indicating a greater change\cite{c-pir}.
+Infrared light is the electromagnetic radiation emitted by all objects with a temperature above 0°K, giving the feeling of heat. The wavelength of IR light spans from 700 nm to 1 mm, existing just outside of the range of human vision\cite{c-inred}. PIR (passive infrared)sensors feature a “sensor face” that can detect a change in the average amount of IR light hitting the surface, the sensor then outputs a signal indicating this change, with a low voltage indicating low change, and a higher voltage indicating a greater change\cite{c-pir}.
 
 They are most commonly used in PIR-based motion detectors such as automatic lighting systems. Generally the purpose of a PIR sensor is to detect the presence of humans at a binary level i.e true or false. However it has been shown that with suitable positioning and utilisation of machine learning techniques, a single PIR sensor can be used to predict the number of occupants in a room within a small range to fair accuracy\cite{c-pir-study}.
 
@@ -100,7 +100,7 @@ Although it will be difficult to obtain a precise estimation by a PIR sensor alo
 \subsection{Digital Images}
 The field of computer vision first emerged in the 1960s and has been developing steadily ever since with large abouts of research being done for a number of different problems. With endless applications from manufacturing to self-driving vehicles, it’s not surprising that there is a variety of methods available to us, specifically much research has been done on object detection and recognition. 
 
-Primitive solutions to object detection might include matching edges from input imagery to predefined templates or a taking and analysing a histogram of oriented gradients (HOG). 
+Primitive solutions to object detection might include matching edges from input imagery to predefined templates or a taking and analysing a histogram of oriented gradients (HOG)\cite{c-hog}. 
 
 In recent years, more complex designs have been produced, often in combination with machine learning algorithms and a training dataset which has been shown to be effective in a variety of object detection problem areas. 
 
@@ -112,7 +112,7 @@ To conclude, it seems that computer vision could play a vital role in the final 
 
 As humans, audio plays a crutial role in understanding our evironment and communicating with each another, as a result we are able to detect human voices with almost absolute certainty. This close relationship suggests that it is a promising area of study in relation to human detection, i.e we use it sucessfully, therefore machine may be able to do the same. 
 
-We find that this is not quite as promising as previously thought, although a fair amount of research has been done on audio analyis by machine for high level tasks such as human detection, we have yet to see an implementation that can perform anywhere near the level of humans for such tasks. Most sucessful applications of audio analysis have been in speech recognition, for example speech to text functionality which has impoved the accessability of many computer systems and applications.
+We find that this is not quite as promising as previously thought, although a fair amount of research has been done on audio analyis by machine for high level tasks such as human detection, we have yet to see an implementation that can perform anywhere near the level of humans for such tasks. Most sucessful applications of audio analysis have been in speech recognition, for example speech to text functionality which has impoved the accessability of many computer systems and applications\cite{c-speech}.
 
 We find that there a few key problems facing predicting human occupancy using audio, one of them being the fact that noise the environment is constantly disturbing audio detections with noise, from a variety of sources. Much progress has been made over the past few decades concerning the analysis of a single human voice, however little has been made in developing to solutions that would be applicable to mass human detection.
 
@@ -120,11 +120,11 @@ Although audio analyis clearly has the potential to be a major componenet in a s
 
 \subsection{Other}
 \subsubsection{Luminosity}
-Luminosity sensors contain photodiodes which convert light to electric energy, allowing them to effectively measure the lighting level of there surrounding. The typical luminosity range of an office or classroom is between 0 and 500 lux, which is well within the standard sensor range of 0 to 40,000 lux . A commonplace example of an application of these sensors would be street lights which turn on and off. Not much information could be found on cases of luminosity sensors being used for human occupancy prediction, but we find that a cheap and easily available luminosity sensor would be able to provide an indication of occupancy, as a dark room would suggest that there are no occupants. We must also consider the possible interferences that may affect the luminosity of the room, or the reading produced by the sensor. Sunlight shining through a window onto the sensor would greatly increase its reading, and could give an inaccurate reading of the room lighting as a whole.
+Luminosity sensors contain photodiodes which convert light to electric energy, allowing them to effectively measure the lighting level of there surrounding. The typical luminosity range of an office or classroom is between 0 and 500 lux, which is well within the standard sensor range of 0 to 40,000 lux \cite{c-lux}. A commonplace example of an application of these sensors would be street lights which turn on and off. Not much information could be found on cases of luminosity sensors being used for human occupancy prediction, but we find that a cheap and easily available luminosity sensor would be able to provide an indication of occupancy, as a dark room would suggest that there are no occupants. We must also consider the possible interferences that may affect the luminosity of the room, or the reading produced by the sensor. Sunlight shining through a window onto the sensor would greatly increase its reading, and could give an inaccurate reading of the room lighting as a whole.
 \subsubsection{Temperature}
-Another sign of human occupancy could be room temperature, as occupants naturally heat the air through emission of body heat. However the standard precision of an appropriate temperature sensor is usually 0.5°C, which it too low to be useful in determining exact temperature reading. The temperature change undergone when a group of people enter the room is unlikely be high enough to be properly detected by the sensor and be a guaranteed indication of human occupancy. This is especially true when the room temperature is subject to external factors, for example sun shining through the window will cause the room temperature to increase rapidly. We find that it would be too difficult to separate such an event from temperature rises that indicate human activity, so it follows that temperature sensors would be of little use for this problem.
+Another sign of human occupancy could be room temperature, as occupants naturally heat the air through emission of body heat. However the standard precision of an appropriate temperature sensor is usually 0.5°C \cite{c-temp}, which it too low to be useful in determining exact temperature reading. The temperature change undergone when a group of people enter the room is unlikely be high enough to be properly detected by the sensor and be a guaranteed indication of human occupancy. This is especially true when the room temperature is subject to external factors, for example sun shining through the window will cause the room temperature to increase rapidly. We find that it would be too difficult to separate such an event from temperature rises that indicate human activity, so it follows that temperature sensors would be of little use for this problem.
 \subsubsection{CO2 and humidity}
-In an unregulated air system, human occupants would also give rise to CO2 and humidity levels through breathing, a higher number of occupants would see that the change in CO2 and humidity would be faster meaning the rate of change could give us a fairly accurate prediction. However for this very reason, building air must be properly regulated to ensure that it is safe for human occupancy, therefore any measurements we took would be expected to be within a fairly small range and would be highly influenced by external factors such as air conditioning, open windows and air flows.
+In an unregulated air system, human occupants would also give rise to CO2 and humidity levels through breathing, a higher number of occupants would see that the change in CO2 and humidity would be faster meaning the rate of change could give us a fairly accurate prediction \cite{c-humid}. However for this very reason, building air must be properly regulated to ensure that it is safe for human occupancy, therefore any measurements we took would be expected to be within a fairly small range and would be highly influenced by external factors such as air conditioning, open windows and air flows.
 
 
 \section{Device Detection}
@@ -132,7 +132,7 @@ Although the aim of this system is to detect human occupancy, everyday more and 
 
 Over the years, smartphone development has brought about faster and more robust wireless protocols and methods. Since many of these protocols are the same ones used by microcontrollers, it is reasonable to think we may also be able to get an estimation of wireless devices nearby using similar techniques to human detection.
 
-Although this system would greatly benifit from being able to detect all devices in the nearby area, obviously this is not technically feasible with any device, since many users would choose to not broadcast their devices and many protocols are not built with device broadcasting in mind, for example communicating on 3G will not let all other nearby 3G devices know the location such as bluetooth communication might.
+Although this system would greatly benifit from being able to detect all devices in the nearby area, obviously this is not technically feasible with any device, since many users would choose to not broadcast their devices and many protocols are not built with device broadcasting in mind, for example communicating on 3G will not let all other nearby 3G devices know the location such as Bluetooth communication might.
 
 The only feasible device detection method we can see is using Bluetooth and Bluetooth Low Energy device scanning, which will recieve alerts from nearby devices that have broadcasting enabled. Although not every bluetooth device will broadcast it's location in response to a device scan, the ratio of devices that respond should be relatively constant for similar audiences. 
  
@@ -336,6 +336,7 @@ We start by splitting the requirements to three seperate components with individ
 	A simple HTTP application that can receive sensor report data from the smart sensor boxes. The sever should also be able to perform estimations for locations based on reports and also feature a web application that serves this data to the users. 
 \end{enumerate}
 Figure \ref{fig:overalldiag} Shows a simple high level diagram of the system design.
+
 %=========
 \begin{figure}
 \centering
@@ -348,14 +349,7 @@ Figure \ref{fig:overalldiag} Shows a simple high level diagram of the system des
 
 \section{Smart Sensor Boxes (A-C)}
 The smart sensor box logic consist of a main reporter algorithm which initialises scanning for each detection method and monitors the output. Every time a report is required, the algorithm takes the outputs from each output queue, and collates them to a report which is sent to the HTTP server for furthur use.  Algorithm \ref{RPA} shows the pseudocode for this algorithm.
-%=========
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{rpidiag}
-\caption{High level diagram of the smart sensor box implementation.}
-\label{fig:rpidiag}
-\end{figure}
-%=========
+
 
 
 The detection methods supported are:
@@ -476,6 +470,9 @@ We must also store an authorisation key for each smart sensor box, that will all
 It is also important to note that when storing passwords we should hash them beforehand, this ensures that passwords are not compromised, while still allowing us to verify user logins.
 
 Figure \ref{fig:ERdiagram} Shows an ER diagram of database design.
+
+
+
 %=========
 \begin{figure}
 \centering
@@ -548,69 +545,75 @@ Figure \ref{fig:homewireframe}, Figure \ref{fig:buildingwireframe}, Figure \ref{
 %==============================================================================
 
 \chapter{Implementation}
-The system was implemented using as many extenal libraries as possible, in order to reduce the code required and time taken to develop. A private Github repository was used to manage versions, in addition we use the default Github ticket management service to organise the workload and document progress. We use 3 milestones to seperate the tasks by priority, low priority tasks are assigned to milestone 'Minor', wheras higher priority tasks get assigned to 'Urgent', the lowest priority is 'Backlog' which holds tasks that likely will not get completed due to time restraints. We also use the convenient Github wiki service which allows us to document  everything along with source code. We attempt to document as much as possible during implemation as this is a crucial step in producing a realistically usable software product. 
+The system was implemented using as many extenal libraries as possible, in order to reduce the code required and time taken to develop. A private Github repository was used to manage versions, in addition we use the default Github ticket management service to organise the workload and document progress. We use 3 milestones to seperate the tasks by priority, low priority tasks are assigned to milestone 'Minor', wheras higher priority tasks get assigned to 'Urgent', the lowest priority is 'Backlog' which holds tasks that likely will not get completed due to time restraints. We also use the convenient Github wiki service which allows us to document  everything along with source code. We attempt to document as much as possible during implemation as this is a crucial step in producing a realistically usable software product\cite{c-github}.
 
 \section{Smart Sensor Boxes (A-C)}
-The smart sensor boxes were implemented using the popular brand of microprocessors “Raspberry Pi”, the RPis were a great choice for a smart sensor box such as this due to the fact that it is compatible with a wide variety of sensors and have relatively powerful computation ability. Specifically we use the most recent version, “Raspberry Pi 3 Model B” which features inbuilt WiFi and Bluetooth adapters, as well as a dedicated RPi camera port.
+The smart sensor boxes were implemented using the popular brand of microprocessors “Raspberry Pi”, the RPis were a great choice for a smart sensor box such as this due to the fact that it is compatible with a wide variety of sensors and have relatively powerful computation ability. Specifically we use the most recent version, “Raspberry Pi 3 Model B” which features inbuilt WiFi and Bluetooth adapters, as well as a dedicated RPi camera port\cite{c-rpi3b}. 
 
 \subsection{Sensor data collection}
-Since the RPi 3B has an inbuilt Bluetooth adapter, we can use the Python module “bluez” to constantly perform a scan for nearby Bluetooth devices that are broadcasting nearby. We find an example Python script with similar desired functionality, we modified this file by adding a 'start' function that other Python modules can call with an output queue. Similarly, we use the module “bluepy” to scan for Bluetooth Low Energy devices, implementation is relatively simple, we perform a standard BTLE scan with a custom class to handle devices, which are sent to the BTLE output queue. 
+Since the RPi 3B has an inbuilt Bluetooth adapter, we can use the Python module “bluez” to constantly perform a scan for nearby Bluetooth devices that are broadcasting nearby\cite{c-bluez}. We find an example Python script with similar desired functionality, we modified this file by adding a 'start' function that other Python modules can call with an output queue. Similarly, we use the module “bluepy” to scan for Bluetooth Low Energy devices\cite{c-bluepy}, implementation is relatively simple, we perform a standard BTLE scan with a custom class to handle devices, which are sent to the BTLE output queue. 
 
-We collect still images from the camera module using the Python module "picamera" which provides a Python interface for the Raspberry Pi camera module. Obtaining an image is as simple as a function call, with a filename as argument.
+We collect still images from the camera module using the Python module "picamera" which provides a Python interface for the Raspberry Pi camera module\cite{c-pypicamera}. Obtaining an image is as simple as a function call, with a filename as argument.
 
 
 \subsection{Sensor data processing}
 To process all Bluetooth and BTLE devices, we create a thread-safe dictionary object that holds device infomation as value, with device address as the key. When we perform device scanning, we pass a seperate output queue to each device scanner and periodically check for new additions, these additions are taken from the que and inserted to the dictionary using a custom 'add' method.
 
-Captured image files are then immediately passed by argument through a terminal command to an implementation of the object detection algorithm “You Only Look Once” also known as YOLO, once the detection algorithm has completed, the standard output can be parsed for detected objects and their associated probability. We then count the occurences of "person" to get a integer reading, which is added to the output queue.
+Captured image files are then immediately passed by argument through a terminal command to an implementation of the object detection algorithm “You Only Look Once” also known as YOLO\cite{c-yolo}, once the detection algorithm has completed, the standard output can be parsed for detected objects and their associated probability. We then count the occurences of "person" to get a integer reading, which is added to the output queue.
 
-An original implementation “darknet” was chosen, however the RPi inbuilt GPU is not very powerful and was taking around 180 seconds per still image. To mediate this we switched to a darknet version that was optimised for ARM processors, which brought the total time taken down to 35 seconds. This would have been sufficient, however it was found that by using a less intensive configuration files package,  “tiny-YOLO”, we could improve the time further to 10 seconds, with relatively little difference in accuracy.
+An original implementation “darknet” was chosen\cite{c-darknet}, however the RPi inbuilt GPU is not very powerful and was taking around 180 seconds per still image. To mediate this we switched to a darknet version that was optimised for ARM processors, which brought the total time taken down to 35 seconds\cite{c-darknetnn}. This would have been sufficient, however it was found that by using a less intensive configuration files package,  “tiny-YOLO”, we could improve the time further to 10 seconds, with relatively little difference in accuracy.
 
 \subsection{Sensor data reporting}
 
 Reporting the processed sensor data is relatively simple, we built a Python script that initialises all three scanning methods with seperate output queues
 
+This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions. Figure \ref{fig:rpidiag} shows a high level overview of the smart sensor box implmentation.
 
-
-This functionality is implemented as 3 separate python scripts that can be called as subprocess from the reporter process. We pass in an output queue to each script on execution to allow the main process to read any devices and YOLO predictions. \ref{fig:rpidiag}
-
+%=========
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{rpidiag}
+\caption{High level diagram of the smart sensor box implementation.}
+\label{fig:rpidiag}
+\end{figure}
+%=========
 
 
 \section{Centralised Storage (D)}
-We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end to end, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
+We implement our centralised storage using a Google Cloud SQL instance which hosts a MySQL 5.7 server containing our databases \cite{c-gcloud}. The users table is implemented as one database named "users", all the other tables are contained within another database named "reports". To access the SQL instance, we add the IP address of the connecting device to the authorised networks list. To ensure that all data transmitted to and from the SQL instance is encrypted end to end, we can enfore SSL connections and generate client certificates that can be used by client devices (servers, development environments etc.).
 
 For added protection against database corruption or loss of data, we can enable automatic backups through the Google Cloud console which would allow us to restore lost data from previous copies of the database.
  
 
 \section{HTTP Server (E-F)}
-In order to quickly develop and deploy a web server, we use the Python microframework “Flask” which requires very little setup or configuration. 
+In order to quickly develop and deploy a web server, we use the Python microframework “Flask” which requires very little setup or configuration \cite{c-flask}. 
 
-To access the central storage instance, we create a user for the server and add the IP to authorised network list. Then we can use the Python module "MySQLdb" which provides an interface for Python to use MySQL. In order to keep the communication secure we must also store the client SSL certificates with the application so that they are accessible to MySQLdb.
+To access the central storage instance, we create a user for the server and add the IP to authorised network list. Then we can use the Python module "MySQLdb" which provides an interface for Python to use MySQL \cite{c-mysqldb}. In order to keep the communication secure we must also store the client SSL certificates with the application so that they are accessible to MySQLdb.
 
-Although suitable for development of web applications, Flask alone is not sufficient for deploying applications to a production environment due to the fact that it scales poorly. To use our Flask application in a production environment, we need to use "mod\_wsgi" package which will host our application, making it suitable for realistic usage.
+Although suitable for development of web applications, Flask alone is not sufficient for deploying applications to a production environment due to the fact that it scales poorly. To use our Flask application in a production environment, we need to use "mod\_wsgi" package which will host our application, making it suitable for realistic usage \cite{c-wsgi}.
 
-The production environment is installed on a Google Cloud compute engine which serves the webpage, to serve this to the public we obtain the domain "peoplecount.cf" and route DNS for that domain to the static IP address of the instance.
+The production environment is installed on a Google Cloud compute engine\cite{c-gcloud} which serves the webpage, to serve this to the public we obtain the domain "peoplecount.cf" and route DNS for that domain to the static IP address of the instance.
 
 Since the data our application will be sending and receiving must be secure, we must ensure that our application serves and receives data through HTTP over TLS (HTTPS), which will ensure that the data is end-to-end encrypted and safe from interception.
 To make sure that HTTPS is enforced, we set up a redirect from any HTTP requests to the HTTPS equivalent.
 
 \subsection{Estimating occupancy}
 
-We choose to use the Python machine learning module "sklearn", since it has a wide range of machine learning techniques to choose from and is very easy to use. Specifically we choose to use the Stochastic Gradient Descent Regressor model (SGDRegressor), which trains one sample at a time, updating each time at a decreasing learning rate. This allows us to continually train the model with new training samples, while still making estimates on real data. This type of regression is best suited for large amount of training data, which is good as it allows us to keep training, if the model is not accurate enough.
+We choose to use the Python machine learning module "sklearn", since it has a wide range of machine learning techniques to choose from and is very easy to use \cite{c-sklearn}. Specifically we choose to use the Stochastic Gradient Descent Regressor model (SGDRegressor), which trains one sample at a time, updating each time at a decreasing learning rate \cite{c-sgdreg}. This allows us to continually train the model with new training samples, while still making estimates on real data. This type of regression is best suited for large amount of training data, which is good as it allows us to keep training, if the model is not accurate enough.
 
 We implement a seperate regression model for each type of report value, devices and people seen. This means that the system can still make estimates for rooms that are not fully equipped or are faulty. Reports are split into their seperate values, with regression being performed on each non-null value, a final estimate is taken by averaging the seperate results. In addition it makes the regression process a little more extensible, new sesor types could be added without updating existing smart sensor hardware or software.
 
-We schedule the whole estimation process to happen every 60 seconds, this functionality is implemented using 'flask\_apscheduler' which provides an advanced process scheduler. We simply set a job configuration with a 60 second timer, and start the scheduler at runtime.
+We schedule the whole estimation process to happen every 60 seconds, this functionality is implemented using 'flask\_apscheduler' which provides an advanced process scheduler \cite{c-flaskap}. We simply set a job configuration with a 60 second timer, and start the scheduler at runtime.
 
-Since we need our regression models to persist, even if the application terminates, we can use the Python 'pickle' module, which can dump the regression instances to a pickle file. When the estimates are being performed, the models can be loaded from file and used before discarding the new model instances. Similary we can load a model, continue training with new training data, and then overwrite the pickle file with the updated model.
+Since we need our regression models to persist, even if the application terminates, we can use the Python 'pickle' module, which can dump the regression instances to a pickle file \cite{c-pickle}. When the estimates are being performed, the models can be loaded from file and used before discarding the new model instances. Similary we can load a model, continue training with new training data, and then overwrite the pickle file with the updated model.
 
 
 \subsection{Data serving}
 Web pages are served through the url scheme "peoplecount.cf/webapp/...", when a web page is requested, the application will send the associated HTML templates, however the data is populated by server side JavaScript using asynchronous requests to the public and private API endpoints. This allows us to simplify the web page reponse code while maintaining functionality through the existing API. In addition, it allows us to set repeated timers on these requests, so the page is constantly being updated with the most recent data.
 
-The server must also allow admin functionality, this requires us to use some method of authentication for any admin users. We use the “Flask-login” builtin functionality to implement a simple username/password system with new user registration restricted to admin users. Endpoints that require authentication can now simply be wrapped with "@login\_required" which will ensure that any responses not authenticated will be required to provide login details. After logging in, authentication data is stored in session cookies that are safe from tamper.
+The server must also allow admin functionality, this requires us to use some method of authentication for any admin users. We use the “Flask-login” builtin functionality to implement a simple username/password system with new user registration restricted to admin users\cite{c-flasklogin}. Endpoints that require authentication can now simply be wrapped with "@login\_required" which will ensure that any responses not authenticated will be required to provide login details. After logging in, authentication data is stored in session cookies that are safe from tamper.
 
-In order to ensure the GUI is intuitive, we use familiar icons in place of text / buttons to minimise the learning curve. For example a '+' icon is immediately associated with addition, similarly a waste bin icon will be associated with removal or deletion. Fortunately, we can use 'Font Awesome Web Application Icons' which feature a wide range of intuitive icons for free commercial use. Furthermore, we use colour to give a general indication of occupancy when viewing a building or floor page. For example a busy room would have a red background, compared to a mostly empty room which would have a green one.
+In order to ensure the GUI is intuitive, we use familiar icons in place of text / buttons to minimise the learning curve. For example a '+' icon is immediately associated with addition, similarly a waste bin icon will be associated with removal or deletion. Fortunately, we can use 'Font Awesome Web Application Icons' which feature a wide range of intuitive icons for free commercial use \cite{c-fawai}. Furthermore, we use colour to give a general indication of occupancy when viewing a building or floor page. For example a busy room would have a red background, compared to a mostly empty room which would have a green one.
 
 All API endpoints follow the scheme "peoplecount.cf/api/...". An example of both of these would be "peoplecount.cf/webapp/home" and "peoplecount.cf/api/buildings/get-all".
 
@@ -632,7 +635,7 @@ We evaluate the sensor data collection methods in two environments, a test envir
 \subsection{Test environment}
 We attempt to evaluate the types of devices found for both device scanning methods, however only a small number of devices were personally available. Tests were done by performing a background scan to collect the idle state of the test environment, then tests were conducted one by one while monitoring scanner output. We find that both scans have their seperate strengths and weaknesses:
 
-We found that it was possible for a standard bluetooth device to be detected using a Bluetooth scan upto a distance of 10-13m, even if the devices were in another room. However we should note that walls in university buildings are generally a lot thicker and are likely to be composed of materials with a higher blocking power than residential buildings. We also found that some mobile devices sometimes had to be unlocked and on a settings page before they would broadcast presence. In addition we were unable to detect smaller devices such as a wireless mouse. For Bluetooth devices., we found that MAC addresses appeared to be genuine i.e devices did not broadcast using a anonymous address.
+We found that it was possible for a standard Bluetooth device to be detected using a Bluetooth scan upto a distance of 10-13m, even if the devices were in another room. However we should note that walls in university buildings are generally a lot thicker and are likely to be composed of materials with a higher blocking power than residential buildings. We also found that some mobile devices sometimes had to be unlocked and on a settings page before they would broadcast presence. In addition we were unable to detect smaller devices such as a wireless mouse. For Bluetooth devices., we found that MAC addresses appeared to be genuine i.e devices did not broadcast using a anonymous address.
 
 In contrast, the Bluetooth Low Energy scans did not discover mobile phones, but proved more sucessful at detecting smaller Bluetooth devices. We also found a large number of unidentified devices, since all BTLE devices inside my flat were accounted for, it is reasonable to assume that Bluetooth Low Energy signals are able to transmit more effectively through walls and obstructions. We also found that laptops were also discoverable, however restarting the Bluetooth service would change the address broadcasted. Table \ref{table:evalscan} gives a breakdown of devices used and the findings. 
 
@@ -709,12 +712,10 @@ Our findings are unexpected, however they provide insight into the issues associ
 To fully evaluate the smart sensor boxes, we also evaluate the status of each non-functional requirement set out in the requirements chapter.
 
 \begin{itemize}	
-  \item Price - We calculate the standard price of a single smart sensor box to be around £52, however purchising in bulk would reduce this cost considerably, appendix \ref{appendix:rpiprice} shows the calculations made.
+  \item Price - We calculate the standard price of a single smart sensor box to be around \textsterling52, however purchising in bulk would reduce this cost considerably, appendix \ref{appendix:rpiprice} shows the calculations made.
   \item Data collection rate - Both BT and BTLE scans are continuous which is ideal, the image capturing however, requires some processing time. We take the average time required to take an image using 5 seperate captures, we find that the time varies very little and takes an average of 4 seconds per image, which is definetely fast enough for our needs. 
-  \item Maintenance required - During the production environment tests, we found that errors in the scanning processes would crash that scan, and the reporter must be manually restarted in order to restart the scanning. However the code could be modified slightly to log any error to file and attempt and automatic restart.
+  \item Maintenance required - During the production environment tests, we found that errors in the scanning processes would crash that scan, and the reporter must be manually restarted in order to restart the scanning. However the code could be modified slightly to log any error to file and attempt and automatic restart. In the case where no errors occur the smart sensor box will sucessfully transmit reports for the required amount of time, this was confirmed with a time of 24 hours. 
 \end{itemize}
-
-
 
 
 \section{Sesor data processing}
@@ -798,9 +799,21 @@ Evaluation of the centralised storage is fairly simple, we can see from Figure \
 
 Alongside the sensor data collection tests we evaluated the estimation model in the same environments. In the develoment environment, we found that there was not enough varience in occupancy or sensor readings to give a indication of real life performance. To evaluate the functional requirements before deploying, we populate the database with fake reports containing random integers. We find that the locally hosted flask application can sucessfully receive occupancy readings from admin users and then use those readings in combination with report data to generate training data. Since our choice of regression algorithm supports partially training (training multiple times), the model can be continually trained with new data. We also confirmed that multiple smart sensor boxes in the same area could be used to give an average prediction, however in retrospect it may have been more useful to take a sum of the predictions, which would make the system more scaleable to large rooms.
 
-At first we used 2 rooms to train the model, however as we have shown in the sensor data collection evaluation section, the device scanner results were extremely different for each room. We decided that a better design choice would be to have seperate models for each room, or group the rooms and assign models for each group. This would require significant code change and was not feasible for implementation at this stage. In order to get a better understanding of how the desired system would perform, we decided to continue training the model using only the report data from BO720. 
+It was also discovered during the production evaluation that Flask APScheduler which was being used to schedule estimates every minute was being initialised many times, due to the fact that mod\_wsgi hosts several flask web applications and a scheduler was being created for each one. To temporarily avoid this problem during evaluation, we simply set up a HTTP GET request that can be queried to perform the estimation a single time. Altough this was far from ideal, the solution was sufficient for the task at hand and allowed us to produce estimates, albeit at a less precise schedule. 
 
-PREDICTION / OCCUPANCY GRAPH HERE
+At first we used 2 rooms to train the model, however as we have shown in the sensor data collection evaluation section, the device scanner results were extremely different for each room. We decided that a better design choice would be to have seperate models for each room, or group the rooms and assign models for each group. This would require significant code change and was not feasible for implementation at this stage. In order to get a better understanding of how the desired system would perform, we decided to continue training the model using only the report data from BO720. The model was trained in half hour intervals and tested throughout. The prediction evalation took place on the 2nd day of production testing, after we had evaluated the sensor device scans, however with if the model was continually trained, we would expect the predictions to get more and more accurate. Figure 
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{bo720predictions}
+\caption{BO720 predictions against people counted. 26/03/2018  13:30-17:00}
+\label{fig:bo720predictions}
+\end{figure}
+
+
+
+
 
 
 \section{Data Serving}
@@ -835,8 +848,6 @@ Figure \ref{fig:adminrev} shows the results for the admin group, which were slig
   \item Datetime selector for the 'add new reading' was not very user friendly, it was suggested that we attempt to create the datetime popup selector on click of the time input field, instead of requiring the user to press a icon inside the input field.
   \item When adding new data, the application would reload and fail to expand previously expanded tables, so users would have to extend an entity and rescroll all the way to the bottom of the page after every change. Although this does not impair functionality, it has a negative effect on the user experience and could be easily fixed.
   \item Another potential improvement was to combine the building, floor, room and rpi table into one table. This sounds promisisng however would require some careful design before being able to fit all the data in the table in a user friendly way.
-
-
 \end{itemize}
 	
 \begin{figure}
@@ -873,38 +884,29 @@ Admin user interface & Manual testing of required functions & We found that some
 %==============================================================================
 \chapter{Conclusion}
 \section{Summary}
+
+To conclude this paper so far, we have sucessfully analysed and designed a suitable system for room occupancy prediction, in addition many of system features were implemented however as shown in the evaluation, the system requires a lot more work to be production viable. In its current state, the system serves as a fairly accurate demonstation of how the final product would behave. We will discuss the steps needed to bring the system to a production standard of quality, in addition to the possible improvements that were unavailable to myself, buit that I believe would provide a massive boost to performance with a relatively small amount of additional work. Finally we dicuss my personal reflection on the project as a whole, what I have learned from this experience, what I would do differently given the project again and also how I personally adapted my methodology of work in hindsight of my performance.
+
+
 \section{Future Work}
+
+For clarity, the future work is split into 2 sections, the future work I would personally undertake on the system, in addition to a sample of potential improvements that would not be made by myself, but could have massive implications on the system performance.
+
+\subsection{Personal future work}
+
+In terms of the system I have built, there are many changes to be made, from missing exception catching to additional sensor, there is a very large amount of additional work that was either not considered due to limitations or uncovered during the evaluation process, First and foremost, system wide unit testing is a must have, by the end of the project the application had grown significantly from initial expectations and as a result we found large amount of minor issues. As I will discuss in the reflection, there a both positives and negatives to this, however realistically the proposed system has many flaws that would not be acceptable for a final product, especially one that features a public API and potentially has a real world effects e.g ventilation management. Given more time I would create unit and integration tests for a large percent of the system, specifically fault testing on the REST API, I would then use these test results to guide furthur improvement opting for a test based development model. I would continue to fix issues uncovered through testing until the final application was production valid. Following from this, I would take on the advice given by both user evaluation teams, fixing any minor issues with the user interface and making it as intuitive as possible. Finally I would begin to experiment with the effectiveness of additional sensors that were considered but not taken into scope, firstly audio and moving on to less promising sensors such as temperature and CO2 sensors.
+
+
+\subsection{System wide improvements}
+
+Although we have shown that smart sensor boxes can be usde fairly effectively, in combination with machine learning to predict room occupancy, in a real system, I would suggest some major changes. First and foremost, the prediction system must be built specifically to fit the environment that is in question, as a general system is bound to be poorly informed unless a large amount of resources are spent on the product. We find that in many of the areas where smart sensor boxes are applicable, e.g workplaces, schools and universities actually already have most of the infrastructure in place to generate accurate estimates. For example the Boyd Orr labs have CCTV and student card scanners in operation, understandably these resources were not available for this project. Additionally if the area has internet enabled resources such as computers, we could stream the computer usage to the prediction system to be used in a similar way to devices found. To list a few more resources that would potentially be of use to a system such as this: timetable information, WiFi usage (eduroam, workplace WiFi etc.) and elevator usage could provide critical information that allows a similar prediction model to generate accurate results. The scope of such a system is virtually endless, and more closely fits the theme of the Internet of Things, in addition if web server hosting was being performed, a similar system using a basic subset of these features could be implemented with the only costs being labour and a small increase in computational power. In my personal opinon that this is the best method of room occupancy prediction that I could imagine, while having to make relatively little change to the target environment. 
+
 \section{Reflection}
 
+Personally, there is a lot to be learned from the outcome of this project, most importantly I believe that the project scope is large, and the final desired application was too much work for one person, as a result the final system is faulty and is really not viable for real world use. In retrospect this should have been identified during requirements gathering, and resolved by choosing only a subset of features to implement. I believe this would have allowed me to produce a near-perfect component with appropriate tests and evaluation, instead of a much larger but patchy system. However I also belive that building big and fast was necessary to demonstate the system as a whole. It is also worth noting that in my opinion the final product provides a exellent platform on which to improve and that realistically there was no way for me to implement a similarly complex system while ensuring that it functioned perfectly. Given the oppurtunity to start again, I would attempt to design, implement and evaluate one component at a time, ensuring that each part was as perfect as possible before moving on.
 
+In short I have learned much about undertaking solo project over the past 6 months and have adapted my methodology accordingly, most importantly I have learned the value of starting small and being accepting of the fact that building one component perfectly is better than building a whole system that needs major reworking. Such a component could easily be incorporated into a future project by seperate parties, whereas the entire system required more time and effort to achieve understanding of what has been done, how it has been done and how it needs to be improved. Overall I all pleased with my achievements and believe that although mistakes were made, the final system is a great starting point for future improvements.
 
-
-
-
-
-
-
-
-
-%==============================================================================
-%==============================================================================
-%==============================================================================
-%==Images and algorithms
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%==============================================================================
 %==============================================================================
 %==============================================================================
 %%%%%%%%%%%%%%%%
