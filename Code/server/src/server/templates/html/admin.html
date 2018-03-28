@@ -1,0 +1,305 @@
+{% extends "html/base.html" %}
+
+
+{% block contents %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<div class= id="admin-panel">
+
+  <ul id="admin-nav-pills"class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#tab-buildings">Building data</a></li>
+    <li><a data-toggle="pill" href="#tab-upl">Upload building </a></li>
+    <li><a data-toggle="pill" href="#tab-users">User data</a></li>
+    <li><a data-toggle="pill" href="#tab-reading">Give reading</a></li>
+    <li><a data-toggle="pill" href="#tab-settings">Settings</a></li>
+    <li><a data-toggle="pill" href="#tab-help">Help</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="tab-buildings" class="tab-pane fade in active">
+      <h2>Buildings</h2>
+      <table id="admin-buildings">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(3)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(4)')" style="cursor:pointer">#Floors</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
+          <th onclick="w3.sortHTML('#admin-buildings', '.admin-building', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
+
+          <tr>
+            <td></td>
+            <td><input id="new-building-name" type="text" name="name"></td>
+            <td><input id="new-building-desc" type="text" name="description"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><button class="admin-button-add" onclick="addNewBuilding()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-buildings-body">
+        </tbody>
+      </table>
+
+      <h2 id="admin-floors-title"></h2>
+      <table id="admin-floors">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(2)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(3)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(4)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(5)')" style="cursor:pointer">#Rooms</th>
+          <th onclick="w3.sortHTML('#admin-floors', '.admin-floor', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><input id="new-floor-name" type="text" name="name"></td>
+            <td><input id="new-floor-desc" type="text" name="description"></td>
+            <td></td>
+            <td></td>
+            <td><button class="admin-button-add" onclick="addNewFloor()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-floors-body">
+        </tbody>
+      </table>
+
+      <h2 id="admin-rooms-title"></h2>
+      <table id="admin-rooms">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(3)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(4)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(5)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-rooms', '.admin-room', 'td:nth-child(6)')" style="cursor:pointer">#RPis</th>
+          <th style="cursor:pointer">Tools</th>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="new-room-name" type="text" name="name"></td>
+            <td><input id="new-room-desc" type="text" name="description"></td>
+            <td></td>
+            <td><button class="admin-button-add" onclick="addNewRoom()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-rooms-body">
+        </tbody>
+      </table>
+
+      <h2 id="admin-rpis-title"></h2>
+      <table id="admin-rpis">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(1)')" style="cursor:pointer">Building ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(2)')" style="cursor:pointer">Floor ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(3)')" style="cursor:pointer">Room ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(4)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(5)')" style="cursor:pointer">Name</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(6)')" style="cursor:pointer">Description</th>
+          <th onclick="w3.sortHTML('#admin-rpis', '.admin-rpi', 'td:nth-child(8)')" style="cursor:pointer">Last report</th>
+          <th style="cursor:pointer">Tools</th>
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="new-rpi-name" type="text" name="name"></td>
+            <td><input id="new-rpi-desc" type="text" name="description"></td>
+            <td></td>
+            <td><button class="admin-button-add" onclick="addNewRpi()"><i class="fa fa-plus"></i></button></td>
+          </tr>
+        </thead>
+        <tbody class="admin-rpis-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-upl" class="tab-pane fade">
+      <h2>Upload a building</h2>
+      <div id="new-building-form">
+        <h3>Building Data:</h3>
+        <textarea rows="10" cols="80" id="new-building-data"></textarea>
+        <input id="new-building-button" type="submit" value="Add building" onclick="addNewBuildingFromJSON()">
+      </div>
+    </div>
+
+    <div id="tab-users" class="tab-pane fade">
+
+      <h2>Add new user</h2>
+      <div id="new-user-form">
+        <h3>Username:</h3>
+        <input id="new-user-name" type="text" name="name">
+        <h3>Password:</h3>
+        <input id="new-user-pass1" type="password" name="name">
+        <h3>Password (again):</h3>
+        <input id="new-user-pass2" type="password" name="name">
+        <input id="new-user-button" type="submit" value="Add user" onclick="addNewUser()">
+      </div>
+
+      <h2>Users</h2>
+      <table id="admin-users">
+        <thead>
+          <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(1)')" style="cursor:pointer">ID</th>
+          <th onclick="w3.sortHTML('#admin-users', '.admin-user', 'td:nth-child(2)')" style="cursor:pointer">Name</th>
+          <th style="cursor:pointer">Tools</th>
+        </thead>
+        <tbody class="admin-users-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-reading" class="tab-pane fade">
+
+      <h2>Give a new reading</h2>
+      <div id="new-reading-form">
+        <h3>Room:</h3>
+        <input id="new-reading-room" type="text" name="room">
+        <h3>Start time:</h3>
+        <input id="new-reading-stime" type="datetime-local" value="" name="stime">
+        <h3>End time:</h3>
+        <input id="new-reading-etime" type="datetime-local" value="" name="etime">
+        <h3>Reading:</h3>
+        <input id="new-reading-value" type="text" name="reading">
+        <input id="new-reading-button" type="submit" value="Add reading" onclick="addNewReading()">
+      </div>
+    </div>
+
+    <div id="tab-settings" class="tab-pane fade">
+      <h2>Settings/Tools</h2>
+      <div id="settings-form">
+
+        <h3>Estimate jobs:</h3>
+        <p id="estimate-status"></p>
+        <input id="start-estimates-button" type="submit" value="START" onclick="startEstimates()">
+        <input id="stop-estimates-button" type="submit" value="STOP" onclick="stopEstimates()">
+        <br /><br /><br />
+
+        <h3>Clear building data:</h3>
+        <p>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.</p>
+        <input id="clear-buildings-button" type="submit" value="CLEAR" onclick="clearBuildings()">
+        <br /><br /><br />
+
+        <h3>Reset building data:</h3>
+        <p>This will remove all buildings, floors, rooms, rpis as well as any reports and estimates produced.</p>
+        <p>The database will then be repopulated with building configurations that are saved to file.</p>
+        <input id="reset-estimates-button" type="submit" value="RESET" onclick="resetBuildings()">
+        <br /><br /><br />
+
+
+
+        <h3>Reset user data:</h3>
+        <p>This will remove all users, a single admin user will then be created with on-file configuration.</p>
+        <p>Please note that if you are not logged in as the default admin user then you will not be admin authorised after resetting.</p>
+        <input id="reset-users-button" type="submit" value="RESET" onclick="resetUsers()">
+        <br /><br /><br />
+
+      </div>
+    </div>
+    <div id="tab-help" class="tab-pane fade">
+      <h2>Help</h2>
+      <div id="admin-help">
+
+        <h3>Overview</h3>
+        <p>
+          Welcome the the room occupancy prediction admin page.
+          Use the tabs above to navigate through the admin panel.
+        </p>
+        <br />
+
+        <h3>Building data</h3>
+        <p>In this section you can view all the building, floor, room and RPi data stored in the database.</p>
+        <p>You can create a new building, floor, room or RPi by filling in the relevant text boxes with a name and description
+          and clicking the <i class="fa fa-plus" style="color: #86af49; border: 0px; font-size: 20pt;"></i> icon.
+        </p>
+        <p>You can edit an expand a building, floor or room to see it's contents by clicking the <i class="fa fa-bars" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon which will create a new table underneath with the contents, to close this table just click the icon again.
+        </p>
+        <p>You can edit an existing building, floor, room or RPi by clicking the <i class="fa fa-edit" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon and changing the name / description. When your changes are made, click the <i class="fa fa-edit" style="color: black; border: 0px; font-size: 20pt;"></i>
+          icon again to save the changes to the database.
+        </p>
+        <p>To download the authentication details for a RPi contents by clicking the <i class="fa fa-download" style="color: #337ab7; border: 0px; font-size: 20pt;"></i>
+          icon which will create a new JSON file and initiate download.
+        </p>
+        <br />
+
+        <h3>Upload building</h3>
+        <p>
+          In this section you can upload a building to the database in JSON format. An example input is shown below:
+        </p>
+        <!-- Indentation to remain -->
+        <!-- 'pre' maintains whitepace -->
+        <pre>
+{
+  "name" : "Example building",
+  "description" : "This is a pretend building, used for example purposes.",
+  "floors" : [
+    {
+      "name" : "Example floor 0",
+      "description" : "Example building's ground floor.",
+      "rooms" : [
+        {
+          "name" : "Example room 0",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : [
+            {
+              "name" : "Example rpi 0",
+              "description" : "The only ground floor rpi in the example building."
+            }
+          ]
+        },
+        {
+          "name" : "Example room 1",
+          "description" : "Example room on ground floor of example building.",
+          "rpis" : []
+        }
+      ]
+    }
+  ]
+}</pre>
+        <p>
+          Please ensure that all JSON is formatted correctly as helpful debug messages will <b>not</b> be given.
+        </p>
+        <br />
+
+        <h3>User data</h3>
+        <p>In this section you can view all the admin users stored in the database.</p>
+        <p>You can create a new user with a given name and password by filling in the add new user form.</p>
+        <p>Passwords must be greater than 4 characters long and cannot be whitespace.</p>
+        <p>Use the <i class="fa fa-trash" style="color: red; border: 0px; font-size: 20pt;"></i> icon to delete any existing users.</p>
+        <br />
+
+        <h3>Give reading</h3>
+        <p>In this section you can submit a real occupancy reading to the database for a specific room.</p>
+        <p>The reading is then taken and applied to the prediction algorithm to make the results more accurate.</p>
+        <p>When inserting a new reading, please make sure that:</p>
+        <ul>
+          <li> The room number correctly corresponds to the room of interest. </li>
+          <li> The start and end times are complete and are consecutive. </li>
+          <li> The reading given is a valid integer i.e '15' not 'fifteen' or '15.0'. </li>
+        </ul>
+        </p>
+        <br />
+
+        <h3>Settings</h3>
+        <p>This section contains various buttons that allow admins to perform high level functions.</p>
+        <p>To start or stop estimates being produced, use the buttons under the 'Estimate jobs' section.</p>
+        <p>To clear all buildings, floors, rooms, rpis, reports and estimates from the database, use the button under the 'Clear building data' section.</p>
+        <p>Similarly the button under the 'Reset building data' section will clear the data and then repopulate the database with on-file JSON data.</p>
+        <p>We can do the same thing for database information on admin users by clicking the button in the 'Reset user data' section.</p>
+        <br />
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

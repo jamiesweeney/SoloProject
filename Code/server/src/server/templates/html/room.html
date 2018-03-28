@@ -1,0 +1,21 @@
+{% extends "html/base.html" %}
+
+{% block contents %}
+  <div id="room_info">
+    <div id="room_name">
+
+    </div>
+    <div id="room_desc">
+
+    </div>
+  </div>
+
+  <div id="room_estimates">
+  </div>
+
+{% endblock %}
+
+{% block script %}
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="{{ url_for('static', filename='js/room.js') }}"></script>
+{% endblock %}

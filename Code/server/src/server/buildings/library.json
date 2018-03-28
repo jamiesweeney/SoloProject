@@ -1,0 +1,112 @@
+{
+  "name" : "UoG Library",
+  "description" : "The University of Glasgow Library.",
+  "floors" : [
+    {
+      "name" : "Ground Floor",
+      "description" : "The ground floor of the library.",
+      "rooms" : [
+        {
+          "name" : "room 001",
+          "description" : "R001",
+          "rpis" : [
+            {
+              "name" : "rpi 001",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 002",
+          "description" : "R002",
+          "rpis" : [
+            {
+              "name" : "rpi 002",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 003",
+          "description" : "R003",
+          "rpis" : [
+            {
+              "name" : "rpi 003",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 004",
+          "description" : "R004",
+          "rpis" : [
+            {
+              "name" : "rpi 004",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 005",
+          "description" : "R005",
+          "rpis" : [
+            {
+              "name" : "rpi 005",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 006",
+          "description" : "R006",
+          "rpis" : [
+            {
+              "name" : "rpi 006",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 007",
+          "description" : "R007",
+          "rpis" : [
+            {
+              "name" : "rpi 007",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 008",
+          "description" : "R008",
+          "rpis" : [
+            {
+              "name" : "rpi 008",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 009",
+          "description" : "R009",
+          "rpis" : [
+            {
+              "name" : "rpi 009",
+              "description" : ""
+            }
+          ]
+        },
+        {
+          "name" : "room 010",
+          "description" : "R010",
+          "rpis" : [
+            {
+              "name" : "rpi 010",
+              "description" : ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

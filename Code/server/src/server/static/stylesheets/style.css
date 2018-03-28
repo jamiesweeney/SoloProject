@@ -1,0 +1,652 @@
+
+html, body {
+
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+
+  margin: 0;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Header style */
+.header {
+
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 10%;
+  height: 10%;
+  max-height: 10%;
+
+  background-color: darkslategrey;
+
+  display: flex;
+  justify-content: center;
+}
+
+.header_info {
+
+  width: 100%;
+  max-width: 1200px;
+
+  height: 80%;
+  max-height: 80%;
+
+  background-color: darkslategrey;
+  color: whitesmoke;
+
+  margin: auto;
+
+
+  display: flex;
+  justify-content: left;
+
+}
+
+.header_title {
+  line-height: normal;
+  font-size: 30pt;
+  height: 100%;
+  margin 0;
+  display: flex;
+  align-items: center;
+
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.header_links {
+  line-height: normal;
+  font-size: 20pt;
+  height: 100%;
+  margin 0;
+  display: flex;
+  align-items: center;
+
+
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.header_link {
+  line-height: normal;
+  height: 80%;
+  margin 0;
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  margin-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border-radius: 5px;
+
+  background-color: #86af49;
+}
+
+.header_link a {
+  color: whitesmoke;
+  font-size: 16pt;
+}
+
+
+
+.header_log {
+  line-height: normal;
+  font-size: 20pt;
+  height: 100%;
+  margin 0;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  right: 0;
+  position:inherit;
+  float: right;
+}
+
+
+/* Content box - contains everything */
+#contentsbox {
+
+  width : 100%;
+  max-width: 1200px;
+
+  min-height: 85%;
+  height: 85%;
+
+  overflow-y: auto;
+
+  background-color: whitesmoke;
+
+
+  margin: 0 auto;
+}
+
+/* Another box inside content box for admin data */
+#admin-panel {
+
+  align-self: center;
+  vertical-align: top;
+  width: 90%;
+  height: 85%;
+
+  overflow: auto;
+
+  padding: 5%;
+
+  align-items: center;
+}
+
+/* Admin navigation tabs */
+#admin-nav-pills {
+
+  align-items: center;
+  align-self: center;
+}
+
+#admin-nav-pills li.active a {
+  color : whitesmoke;
+  background-color: #86af49 !important;
+
+}
+
+#admin-nav-pills li a {
+  color : black;
+  background-color: whitesmoke !important;
+
+}
+
+
+/* Admin navigation tabs - content */
+#tab-buildings {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-upl {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-users {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-reading {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-settings {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+#tab-help {
+  height: 90%;
+  width: 90%;
+  margin: 5%
+}
+
+
+#admin-help {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+
+/* Input forms */
+#login-user-form, #new-user-form, #new-reading-form, #new-building-form, #settings-form{
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+#login-user-form input, #new-user-form input, #new-reading-form input{
+  width: 80%;
+  height: 30px;
+  margin-left: 10%;
+  margin-right: 10%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#settings-form input{
+  width: 40%;
+  height: 40px;
+  margin-left: 5%;
+  margin-right: 5%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  background-color: #f44336;
+  color: white;
+  cursor: pointer;
+
+  float: left;
+
+
+}
+
+#new-building-form textarea{
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+
+
+
+#login-user-form input[type=submit], #new-user-form input[type=submit], #new-reading-form input[type=submit], #new-building-form input[type=submit]{
+    width: 80%;
+    height: 40px;
+    background-color: #86af49;
+    color: white;
+    margin-top: 5%;
+    margin-left: 10%;
+    margin-right: 10%;
+    cursor: pointer;
+}
+
+#login-user-form{
+  background-color: whitesmoke
+}
+
+.login-warning{
+  font-size: 14px;
+  color: red;
+}
+
+
+
+
+
+/* Tables */
+table{
+  width:100%;
+  max-width: 100%;
+  overflow:auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid black;
+  text-align: center;
+}
+
+thead {
+  text-align: center;
+  width: 100%;
+  font-size: 18pt;
+  border: 1px solid black;
+}
+
+thead {
+  width: 100%;
+  font-size: 14pt;
+  border: 1px solid black;
+}
+
+
+thead th {
+  text-align: center;
+  background-color: #86af49;
+  color: #fff ;
+  padding: 1%;
+  border: 1px solid black;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+thead td {
+  text-align: center;
+  background-color: #d5e1df;
+  border: 1px solid black;
+  padding: 1%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+
+tbody td {
+  text-align: center;
+  background-color: #d5e1df;
+  border: 1px solid black;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+thead tr input[type=text], tbody td input[type=text]{
+  width: 80%;
+  height: 30px;
+  margin-left: 10%;
+  margin-right: 10%;
+  display: inline-block;
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+
+/* Action buttons */
+.admin-button-add {
+  background-color: #d5e1df;
+  color: #86af49;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-expand {
+  background-color: #d5e1df;
+  color: black;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-edit {
+  background-color: #d5e1df;
+  color: black;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-download {
+  background-color: #d5e1df;
+  color: black;
+  border: 0px;
+  font-size: 20pt;
+}
+
+.admin-button-delete {
+  background-color: #d5e1df;
+  color: red;
+  border: 0px;
+  font-size: 20pt;
+}
+
+
+
+#admin-floors, #admin-floors-title {
+  visibility: collapse;
+}
+
+
+#admin-rooms, #admin-rooms-title {
+  visibility: collapse;
+}
+
+#admin-rpis, #admin-rpis-title{
+  visibility: collapse;
+}
+
+
+#buildings, #floors, #rooms {
+
+  width: 100%;
+
+  height: 100%;
+
+  overflow:auto;
+
+  align-items: center;
+
+  padding: 4vh;
+}
+
+.building {
+
+  float:left;
+  align : center;
+  text-align: center;
+  align-items: left;
+
+  min-height: 20vh;
+  max-height: 20vh;
+
+  border-radius: 10px;
+
+  width: 100%;
+
+  margin-bottom: 4vh;
+
+  display: flex;
+
+  background-color: darkslategrey;
+  padding: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.building_img {
+
+  min-width: 18vh;
+  max-width: 18vh;
+
+  display:block;
+  width: 20%;
+  float: left;
+}
+
+.building_info{
+
+  display:block;
+  width: 40%;
+  color: whitesmoke;
+  float: left;
+}
+
+
+.floor {
+  float:left;
+  align : center;
+  text-align: center;
+  align-items: left;
+
+  min-height: 10vh;
+  max-height: 10vh;
+
+  border-radius: 10px;
+
+  margin-bottom: 4vh;
+
+  width: 100%;
+
+  display: flex;
+  background-color: grey;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.floorName {
+  width: 50%;
+  height: 80%;
+  float: left;
+  text-align: center;
+}
+
+
+.floorNum {
+  width: 50%;
+  height: 80%;
+  text-align: center;
+  float: right;
+}
+
+.room {
+
+  float:left;
+  align : center;
+  text-align: center;
+
+  min-height: 10vh;
+  max-height: 10vh;
+
+  margin-bottom: 4vh;
+
+  border-radius: 10px;
+
+  width: 45%;
+
+  display: flex;
+  background-color: grey;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.roomSpace {
+
+    float:left;
+    align : center;
+    text-align: center;
+
+    min-height: 10vh;
+    max-height: 10vh;
+
+    border-radius: 10px;
+
+    width: 10%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.roomName {
+  width: 50%;
+  height: 80%;
+  float: left;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  display: flex;
+justify-content: center;
+align-items: center;
+}
+
+
+.roomNum {
+  width: 50%;
+  height: 80%;
+  align-items: middle;
+  text-align: center;
+  float: right;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  display: flex;
+justify-content: center;
+align-items: center;
+}
+
+
+#room_info {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+  margin: 5%;
+  width: 90%;
+  text-align: center;
+
+}
+
+#room_estimates {
+  background-color: #d5e1df;
+  margin: 5%;
+  width: 90%;
+
+}
+
+
+#help_info {
+  background-color: #d5e1df;
+  align-self: center;
+  align-content: left;
+  align-items: left;
+  margin-bottom: 30px;
+  padding: 15px;
+  margin: 5%;
+  width: 90%;
+  text-align: left;
+}
+
+
+
+.footer {
+  background-color: darkslategrey;
+  width : 100%;
+  height : 5%;
+  bottom : 0px;
+  position: fixed;
+}
+
+
+
+
+
+
+
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+width: 12px;
+height: 12px;
+}
+
+::-webkit-scrollbar-track {
+border: 1px solid seagreen;
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+background: seagreen;
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: seagreen;
+}
